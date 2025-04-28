@@ -7,7 +7,7 @@ import 'package:modern_grocery/repositery/model/updateDeliveryAddress.dart';
 class UpdateDeliveryAddressapi {
   ApiClient apiClient = ApiClient();
 
-  Future<UpdateDeliveryAddress> getUpdateDeliveryAddress() async {
+  Future<UpdateDeliveryAddress> getUpdateAddress() async {
     String trendingpath =
         'http://localhost:4055/api/user/update-delivery-address/68092f3a6649ccf83c38958b';
 
