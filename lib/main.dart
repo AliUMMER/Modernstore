@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
+String basePath = "";
 void main() {
   runApp(const MyApp());
 }
