@@ -157,7 +157,7 @@ class _ManualLocationState extends State<ManualLocation> {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          if (isAdmin == true) {
+          if (isAdmin == false) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AdminNavibar()),
