@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
-// ignore: depend_on_referenced_packages
+
 import 'package:http/http.dart' as http;
 import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_exception.dart';
@@ -10,9 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiClient {
   Future<http.Response> invokeAPI(
       String path, String method, Object? body) async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('Token');
-    // final BizUserId = preferences.getString('UserId');
+    // final preferences = await SharedPreferences.getInstance();
+    // final token = preferences.getString('Token');
 
     String url = basePath + path;
     if (kDebugMode) {
@@ -21,19 +20,15 @@ class ApiClient {
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer $token',
-    };
-    Map<String, String> Bizheaders = {
-      'Content-Type': 'application/json',
-      // 'authorization': 'Bearer $BizToken',
+      // 'authorization': 'Bearer $token',
     };
 
     http.Response response;
 
     switch (method) {
       case "POST":
-        response = await http.post(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
+        response =
+            await http.post(Uri.parse(url), headers: headers, body: body);
         break;
       case "PUT":
         response = await http.put(Uri.parse(url),
@@ -50,17 +45,6 @@ class ApiClient {
           Uri.parse(url),
         );
         request.headers.addAll(headers);
-
-        final streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-        break;
-      case "BIZGET":
-        // Handling GET with body
-        final request = http.Request(
-          'GET',
-          Uri.parse(url),
-        );
-        request.headers.addAll(Bizheaders);
 
         final streamedResponse = await request.send();
         response = await http.Response.fromStream(streamedResponse);

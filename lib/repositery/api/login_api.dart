@@ -7,7 +7,7 @@ class Loginapi {
   ApiClient apiclient = ApiClient();
 
   Future<Login> getLogin() async {
-    String trendingpath = 'http://localhost:4055/api/auth/login';
+    String trendingpath = '/auth/login';
 
     var body = {"phoneNumber": "1101010100", "otp": "573201"};
 
