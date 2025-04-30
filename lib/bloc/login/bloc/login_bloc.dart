@@ -17,7 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(loginBlocLoading());
       try {
         login = await loginapi.getLogin();
-        emit(loginBlocLoaded());
+        emit(loginBlocLoaded(login: login));
       } catch (e) {
         if (kDebugMode) {
           print(e);

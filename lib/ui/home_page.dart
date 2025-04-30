@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/ui/fruites_page.dart';
 import 'package:modern_grocery/ui/product_details.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // For efficient image loading
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,13 +16,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late GetAllCategoriesModel data;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch categories data when the widget initializes
+    BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
+  }
+
   final List<String> slidingimage = [
     'assets/BANNER.png',
     'assets/BANNER 2.webp',
     'assets/Slider.png',
   ];
 
-  final List<Map<String, String>> categories = [
+  // Local categories as fallback in case API fails
+  final List<Map<String, String>> localCategories = [
     {'name': 'Fruits', 'image': 'assets/Fruites.png'},
     {'name': 'Milk', 'image': 'assets/Milk.png'},
     {'name': 'Meats', 'image': 'assets/Meats.png'},
@@ -346,39 +360,74 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (context) => FruitesPage()),
                 );
               },
-              child: Container(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                          left: index == 0 ? 20.w : 10.w, right: 10.w),
-                      child: Column(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Color(0xffFCF8E8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                categories[index]['image']!,
-                                fit: BoxFit.cover,
+              child: BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
+                  builder: (context, state) {
+                if (state is GetAllCategoriesLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (state is GetAllCategoriesError) {
+                  return Center(child: Text('Catogeries not Recogainised'));
+                }
+                if (state is GetAllCategoriesLoaded) {
+                  data = BlocProvider.of<GetAllCategoriesBloc>(context)
+                      .getAllCategoriesModel;
+                  return Container(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount:
+                          data.categories?.length ?? localCategories.length,
+                      itemBuilder: (context, index) {
+                        final category = data.categories?[index];
+                        final String categoryName =
+                            category?.name ?? localCategories[index]['name']!;
+                        final String imageUrl = category?.image ?? '';
+                        final bool useLocalImage = imageUrl.isEmpty;
+
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              left: index == 0 ? 20.w : 10.w, right: 10.w),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Color(0xffFCF8E8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: useLocalImage
+                                      ? Image.asset(
+                                          localCategories[index]['image']!,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: imageUrl,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                            localCategories[index]['image']!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 10),
+                              Text(
+                                categoryName,
+                                style: TextStyle(color: Color(0xffFCF8E8)),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                            categories[index]['name']!,
-                            style: TextStyle(color: Color(0xffFCF8E8)),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              }),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),

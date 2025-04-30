@@ -1,16 +1,19 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/getAllProduct.dart';
+import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 
-class GetallproductApi {
+class GetallcategoriesApi {
   ApiClient apiClient = ApiClient();
 
-  Future<GetAllProduct> getGetAllProduct() async {
+  Future<GetAllCategoriesModel> getGetAllCategories() async {
     String trendingpath = '/category/get/all';
 
     var body = {};
+
     Response response = await apiClient.invokeAPI(trendingpath, 'GET', body);
 
-    return GetAllProduct.fromJson(response.body as Map<String, dynamic>);
+    return GetAllCategoriesModel.fromJson(json as Map<String, dynamic>);
   }
 }

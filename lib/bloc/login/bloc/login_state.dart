@@ -7,6 +7,9 @@ class LoginInitial extends LoginState {}
 
 class loginBlocLoading extends LoginState {}
 
-class loginBlocLoaded extends LoginState {}
+class loginBlocLoaded extends LoginState {
+  late Login login;
+  loginBlocLoaded({required this.login});
+}
 
 class loginBlocError extends LoginState {}

@@ -1,0 +1,28 @@
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
+import 'package:modern_grocery/repositery/api/getallproduct_api.dart';
+import 'package:modern_grocery/repositery/model/getAllProduct.dart';
+
+part 'get_all_product_event.dart';
+part 'get_all_product_state.dart';
+
+class GetAllProductBloc extends Bloc<GetAllProductEvent, GetAllProductState> {
+  GetallproductApi getallproductApi = GetallproductApi();
+
+  late GetAllProduct getAllProduct;
+
+  GetAllProductBloc() : super(GetAllProductInitial()) {
+    on<fetchGetAllProduct>((event, emit) async {
+      emit(GetAllProductLoading());
+
+      try {
+        getAllProduct = await getallproductApi.getGetAllProduct();
+        emit(GetAllProductLoaded());
+      } catch (e) {
+        print(e);
+        emit(GetAllProductError());
+      }
+      // TODO: implement event handler
+    });
+  }
+}

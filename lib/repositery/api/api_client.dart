@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiClient {
   Future<http.Response> invokeAPI(
       String path, String method, Object? body) async {
-    // final preferences = await SharedPreferences.getInstance();
-    // final token = preferences.getString('Token');
+    final preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString('Token');
 
     String url = basePath + path;
     if (kDebugMode) {
@@ -20,7 +20,7 @@ class ApiClient {
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      // 'authorization': 'Bearer $token',
+       'authorization': 'Bearer $token',
     };
 
     http.Response response;

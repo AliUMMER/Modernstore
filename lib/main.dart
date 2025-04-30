@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
-String basePath = "http://192.168.171.42:4055/api";
+String basePath = "http://192.168.1.564055/api";
 void main() {
   runApp(const MyApp());
 }
@@ -16,12 +17,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(430, 917),
-      minTextAdapt: true, 
+      minTextAdapt: true,
       builder: (context, child) {
-        return BlocProvider(
-          create: (context) => LoginBloc(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => LoginBloc(),
+            ),
+            BlocProvider(
+              create: (context) => GetAllCategoriesBloc(),
+            ),
+          ],
           child: MaterialApp(
-            debugShowCheckedModeBanner: false, 
+            debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

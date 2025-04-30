@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
-import 'package:modern_grocery/repositery/model/login_model.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
-import 'package:modern_grocery/ui/home_page.dart';
 import 'package:modern_grocery/ui/verify_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterScreen extends StatefulWidget {
   const EnterScreen({super.key});
@@ -16,62 +15,80 @@ class EnterScreen extends StatefulWidget {
 
 class _EnterScreenState extends State<EnterScreen> {
   final TextEditingController phoneController = TextEditingController();
+  String selectedCountryCode = '+91';
+  String selectedCountryFlag = '🇮🇳';
+
+
 
   @override
   Widget build(BuildContext context) {
+    // Get screen dimensions
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return BlocListener<LoginBloc, LoginState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is loginBlocLoaded) {
-          Navigator.push(
+          final token = state.login.accessToken; 
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('Token', token!);
+          print('Token saved: $token');
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => NavigationBarWidget()),
+            MaterialPageRoute(
+                builder: (context) => const NavigationBarWidget()),
           );
-          ;
+        } else if (state is loginBlocError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login error. Please try again.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is loginBlocLoading) {
+          // Show loading indicator if needed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  CircularProgressIndicator(color: Colors.white),
+                  SizedBox(width: 20),
+                  Text('Processing...'),
+                ],
+              ),
+              duration: Duration(seconds: 1),
+            ),
+          );
         }
-        if (state is loginBlocError) {
-          Center(child: Text('Login Error'));
-        }
-        if (state is loginBlocLoaded) {
-          Center(child: CircularProgressIndicator());
-        }
-        // TODO: implement listener
       },
       child: Scaffold(
-        backgroundColor: Color(0XFF0A0909),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 75.h,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 325.w,
-                ),
-                Container(
-                  width: 55,
-                  height: 27,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 55,
-                          height: 27,
-                          decoration: ShapeDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment(0.00, -1.00),
-                              end: Alignment(0, 1),
-                              colors: [Color(0xFFF5E9B5), Color(0xFF8F8769)],
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
+        backgroundColor: const Color(0XFF0A0909),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0.05 * screenWidth),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 0.05 * screenHeight),
+
+                  // Skip button
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      width: 55.w,
+                      height: 27.h,
+                      decoration: ShapeDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment(0.00, -1.00),
+                          end: Alignment(0, 1),
+                          colors: [Color(0xFFF5E9B5), Color(0xFF8F8769)],
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
                         ),
                       ),
-                      Center(
+                      child: const Center(
                         child: Text(
                           'Skip',
                           style: TextStyle(
@@ -82,212 +99,247 @@ class _EnterScreenState extends State<EnterScreen> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 105.h,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 68.w,
-                ),
-                Container(
-                  width: 295,
-                  height: 236,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 12,
-                        top: 177,
-                        child: Container(
-                          width: 249,
-                          height: 37,
-                          decoration: ShapeDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment(1.00, 0.00),
-                              end: Alignment(-1, 0),
-                              colors: [Color(0xFFFFFDD4), Color(0xC1FCF8E8)],
-                            ),
-                            shape: OvalBorder(),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 295,
-                          height: 236,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/Group 3 (1).png"),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 62.h,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50.w,
-                ),
-                Text(
-                  'Enter your number',
-                  style: TextStyle(
-                    color: Color(0xFFF5E9B5),
-                    fontSize: 25,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 13.h,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50.w,
-                ),
-                Text(
-                  'Mobile Number',
-                  style: TextStyle(
-                    color: Color(0xFFFCF8E8),
-                    fontSize: 13,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 49.w,
-                ),
-                Container(
-                  width: 83,
-                  height: 54,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF0A0808),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Color(0xFFFCF8E8)),
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: DropdownButton<String>(
-                    value: '🇮🇳',
-                    items: [
-                      DropdownMenuItem(
-                        value: '🇮🇳',
-                        child: Text('🇮🇳 +91',
-                            style: TextStyle(
-                              color: Color(0xFFF5E9B5),
-                            )),
-                      ),
-                      // Add more country codes here
-                    ],
-                    onChanged: (value) {},
-                    underline: SizedBox(),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 249,
-                  height: 54,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF0A0808),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 2, color: Color(0xFFFCF8E8)),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: TextField(
-                    controller: phoneController,
-                    style: TextStyle(color: Color(0xFFF5E9B5)),
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.black,
-                      hintText: 'Enter your mobile number',
-                      hintStyle: TextStyle(color: Color(0xFFF5E9B5)),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 100.w,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 75.w,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    BlocProvider.of<LoginBloc>(context).add(fetchlogin());
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => VerifyScreen()),
-                    // );
-                  },
-                  child: Container(
-                    width: 281,
-                    height: 54,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          child: Container(
-                            width: 281,
-                            height: 54,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFFF5E9B5),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+
+                  SizedBox(height: 0.08 * screenHeight),
+
+                  // Logo image with shadow
+                  Center(
+                    child: SizedBox(
+                      width: 0.7 * screenWidth,
+                      height: 0.25 * screenHeight,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Shadow
+                          Positioned(
+                            bottom: 0,
+                            child: Container(
+                              width: 0.6 * screenWidth,
+                              height: 37.h,
+                              decoration: const ShapeDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment(1.00, 0.00),
+                                  end: Alignment(-1, 0),
+                                  colors: [
+                                    Color(0xFFFFFDD4),
+                                    Color(0xC1FCF8E8)
+                                  ],
+                                ),
+                                shape: OvalBorder(),
                               ),
                             ),
                           ),
+                          // Logo
+                          Image.asset(
+                            "assets/Group 3 (1).png",
+                            fit: BoxFit.contain,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 0.05 * screenHeight),
+
+                  // Title
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 0.02 * screenWidth),
+                    child: const Text(
+                      'Enter your number',
+                      style: TextStyle(
+                        color: Color(0xFFF5E9B5),
+                        fontSize: 25,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 13.h),
+
+                  // Subtitle
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 0.02 * screenWidth),
+                    child: const Text(
+                      'Mobile Number',
+                      style: TextStyle(
+                        color: Color(0xFFFCF8E8),
+                        fontSize: 13,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10.h),
+
+                  // Phone input fields
+                  Row(
+                    children: [
+                      // Country code dropdown
+                      Container(
+                        width: 0.2 * screenWidth,
+                        height: 54.h,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFF0A0808),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 2, color: Color(0xFFFCF8E8)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                        Positioned(
-                          left: 99,
-                          top: 13,
+                        child: DropdownButton<String>(
+                          value: selectedCountryFlag,
+                          icon: const Icon(Icons.arrow_drop_down,
+                              color: Color(0xFFF5E9B5)),
+                          isExpanded: true,
+                          underline: Container(),
+                          dropdownColor: const Color(0xFF0A0808),
+                          items: [
+                            DropdownMenuItem(
+                              value: '🇮🇳',
+                              child: Center(
+                                child: Text(
+                                  '🇮🇳 +91',
+                                  style: TextStyle(
+                                    color: const Color(0xFFF5E9B5),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Add more country codes here
+                            DropdownMenuItem(
+                              value: '🇺🇸',
+                              child: Center(
+                                child: Text(
+                                  '🇺🇸 +1',
+                                  style: TextStyle(
+                                    color: const Color(0xFFF5E9B5),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: '🇬🇧',
+                              child: Center(
+                                child: Text(
+                                  '🇬🇧 +44',
+                                  style: TextStyle(
+                                    color: const Color(0xFFF5E9B5),
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCountryFlag = value!;
+                              // Update country code based on selection
+                              if (value == '🇮🇳') selectedCountryCode = '+91';
+                              if (value == '🇺🇸') selectedCountryCode = '+1';
+                              if (value == '🇬🇧') selectedCountryCode = '+44';
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(width: 0.02 * screenWidth),
+
+                      // Phone number input
+                      Expanded(
+                        child: Container(
+                          height: 54.h,
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFF0A0808),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xFFFCF8E8)),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: phoneController,
+                            style: const TextStyle(color: Color(0xFFF5E9B5)),
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15.w, vertical: 15.h),
+                              hintText: 'Enter your mobile number',
+                              hintStyle:
+                                  const TextStyle(color: Color(0x99F5E9B5)),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 0.1 * screenHeight),
+
+                  // Continue button
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        // Validate phone number
+                        if (phoneController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please enter your phone number'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Using the full phone number with country code
+                        final fullPhoneNumber =
+                            '$selectedCountryCode${phoneController.text}';
+
+                        // You might want to pass the phone number to the login event
+                        BlocProvider.of<LoginBloc>(context).add(fetchlogin());
+
+                        // For testing, you might want to navigate to verify screen
+                        // Uncomment this and comment the BlocProvider line above to test navigation
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => const VerifyScreen()),
+                        // );
+                      },
+                      child: Container(
+                        width: 0.7 * screenWidth,
+                        height: 54.h,
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFFF5E9B5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                        child: Center(
                           child: Text(
                             'Continue',
                             style: TextStyle(
-                              color: Color(0xFF0A0808),
-                              fontSize: 18,
+                              color: const Color(0xFF0A0808),
+                              fontSize: 18.sp,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );
