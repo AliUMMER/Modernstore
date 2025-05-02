@@ -66,23 +66,23 @@ class _FavouritePageState extends State<FavouritePage> {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xffF5E9B5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: () {},
-              child: const Center(
-                child:
-                    Text('Add to Cart', style: TextStyle(color: Colors.black)),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: ElevatedButton(
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: Color(0xffF5E9B5),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(30),
+          //       ),
+          //       padding: const EdgeInsets.symmetric(vertical: 16),
+          //     ),
+          //     onPressed: () {},
+          //     child: const Center(
+          //       child:
+          //           Text('Add to Cart', style: TextStyle(color: Colors.black)),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

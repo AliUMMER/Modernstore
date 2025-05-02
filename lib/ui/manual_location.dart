@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart'; // Add this for reverse geocoding
 import 'package:modern_grocery/ui/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/your_location.dart';
@@ -13,11 +15,78 @@ class ManualLocation extends StatefulWidget {
 
 class _ManualLocationState extends State<ManualLocation> {
   bool isAdmin = true; // Default is user
+  String currentLocation = "Tirur"; // Default location
+
+  // Fetch current location using geolocator and convert to address
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content:
+                  Text('Location services are disabled. Please enable them.')),
+        );
+        return;
+      }
+
+      // Check for location permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied.')),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+                'Location permissions are permanently denied. Please enable them in settings.'),
+            action: SnackBarAction(
+              label: 'Open Settings',
+              onPressed: () {
+                Geolocator.openAppSettings();
+              },
+            ),
+          ),
+        );
+        return;
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Reverse geocode to get a readable address
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      Placemark place = placemarks[0];
+      String address =
+          "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
+
+      setState(() {
+        currentLocation = address; // Update with the readable address
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching location: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFF0A0909),
+      backgroundColor: const Color(0xFF0A0909),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -27,24 +96,27 @@ class _ManualLocationState extends State<ManualLocation> {
               Text(
                 'Enter Your Location',
                 style: TextStyle(
-                  color: Color(0xFFF5E9B5),
+                  color: const Color(0xFFF5E9B5),
                   fontSize: 23,
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SizedBox(height: 23),
+              SizedBox(height: 23.h),
               _buildSearchBox(),
-              SizedBox(height: 46),
+              SizedBox(height: 46.h),
               _buildLocationTile(
-                  Icons.my_location, "Use my current location", "Tirur"),
-              SizedBox(height: 46),
+                Icons.my_location,
+                "Use my current location",
+                currentLocation,
+              ),
+              SizedBox(height: 46.h),
               _buildAddNewAddress(),
-              SizedBox(height: 46),
+              SizedBox(height: 46.h),
               _buildSavedAddresses(),
-              SizedBox(height: 200),
+              SizedBox(height: 200.h),
               _buildConfirmButton(),
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),
@@ -55,51 +127,60 @@ class _ManualLocationState extends State<ManualLocation> {
   Widget _buildSearchBox() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFFFCF8E8), width: 2),
+        border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
-        style: TextStyle(color: Color(0x91FCF8E8)),
+        style: const TextStyle(color: Color(0x91FCF8E8)),
         decoration: InputDecoration(
           hintText: "Search for area...",
-          hintStyle: TextStyle(color: Color(0x91FCF8E8), fontSize: 12),
+          hintStyle: const TextStyle(color: Color(0x91FCF8E8), fontSize: 12),
           border: InputBorder.none,
-          prefixIcon: Icon(Icons.search, color: Color(0x91FCF8E8)),
-          contentPadding: EdgeInsets.symmetric(vertical: 15),
+          prefixIcon: const Icon(Icons.search, color: Color(0x91FCF8E8)),
+          contentPadding: const EdgeInsets.symmetric(vertical: 15),
         ),
       ),
     );
   }
 
   Widget _buildLocationTile(IconData icon, String title, String subtitle) {
-    return Container(
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFFFCF8E8), width: 2),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Color(0xE8FCF8E8)),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
+    return GestureDetector(
+      onTap: () {
+        if (title == "Use my current location") {
+          _getCurrentLocation(); // Call the method to fetch location
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xE8FCF8E8)),
+            const SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
                     color: Color(0xE8FCF8E8),
                     fontSize: 15,
-                    fontWeight: FontWeight.w400),
-              ),
-              SizedBox(height: 5),
-              Text(
-                subtitle,
-                style: TextStyle(color: Color(0x91FCF8E8), fontSize: 13),
-              ),
-            ],
-          ),
-        ],
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  subtitle,
+                  style:
+                      const TextStyle(color: Color(0x91FCF8E8), fontSize: 13),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -108,16 +189,16 @@ class _ManualLocationState extends State<ManualLocation> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.add, color: Color(0xE8FCF8E8)),
-        SizedBox(width: 5),
+        const Icon(Icons.add, color: Color(0xE8FCF8E8)),
+        const SizedBox(width: 5),
         GestureDetector(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => YourLocation()),
+              MaterialPageRoute(builder: (context) => const YourLocation()),
             );
           },
-          child: Text(
+          child: const Text(
             "Add new address",
             style: TextStyle(color: Color(0xE8FCF8E8), fontSize: 15),
           ),
@@ -133,22 +214,26 @@ class _ManualLocationState extends State<ManualLocation> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               "Saved addresses",
               style: TextStyle(
-                  color: Color(0xE8FCF8E8),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500),
+                color: Color(0xE8FCF8E8),
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            Text(
+            const Text(
               "Manage",
               style: TextStyle(color: Color(0xE8FCF8E8), fontSize: 15),
             ),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         _buildLocationTile(
-            Icons.location_on, "Tirur", "Tirur ezhur road, 44 villa..."),
+          Icons.location_on,
+          "Tirur",
+          "Tirur ezhur road, 44 villa...",
+        ),
       ],
     );
   }
@@ -157,30 +242,32 @@ class _ManualLocationState extends State<ManualLocation> {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          if (isAdmin == false) {
+          if (!isAdmin) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AdminNavibar()),
+              MaterialPageRoute(builder: (context) => const AdminNavibar()),
             );
           } else {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => NavigationBarWidget()),
+              MaterialPageRoute(
+                  builder: (context) => const NavigationBarWidget()),
             );
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFF5E9B5),
+          backgroundColor: const Color(0xFFF5E9B5),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
         ),
-        child: Text(
+        child: const Text(
           "Confirm address",
           style: TextStyle(
-              color: Color(0xFF0A0808),
-              fontSize: 18,
-              fontWeight: FontWeight.w500),
+            color: Color(0xFF0A0808),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

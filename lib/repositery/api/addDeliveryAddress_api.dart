@@ -7,7 +7,7 @@ class AddDeliveryAddressApi {
   ApiClient apiClient = ApiClient();
 
   Future<AddDeliveryAddress> getaddDeliveryAddress() async {
-    String url = 'http://localhost:4055/api/user/add-delivery-address';
+    String url = '/user/add-delivery-address';
 
     var body = {
       "address": "Root-sys, SkyMall, Edarikkode, Kottakkal",
@@ -22,6 +22,8 @@ class AddDeliveryAddressApi {
       'POST',
       jsonEncode(body),
     );
+
+    print('adddelivery addresssss   $body');
 
     return AddDeliveryAddress.fromJson(jsonDecode(response.body));
   }

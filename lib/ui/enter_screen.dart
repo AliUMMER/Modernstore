@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
+import 'package:modern_grocery/ui/location_page.dart';
 import 'package:modern_grocery/ui/verify_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,8 +19,6 @@ class _EnterScreenState extends State<EnterScreen> {
   String selectedCountryCode = '+91';
   String selectedCountryFlag = '🇮🇳';
 
-
-
   @override
   Widget build(BuildContext context) {
     // Get screen dimensions
@@ -29,14 +28,13 @@ class _EnterScreenState extends State<EnterScreen> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
         if (state is loginBlocLoaded) {
-          final token = state.login.accessToken; 
+          final token = state.login.accessToken;
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('Token', token!);
           print('Token saved: $token');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => const NavigationBarWidget()),
+            MaterialPageRoute(builder: (context) => const LocationPage()),
           );
         } else if (state is loginBlocError) {
           ScaffoldMessenger.of(context).showSnackBar(

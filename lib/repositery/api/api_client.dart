@@ -20,7 +20,7 @@ class ApiClient {
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-       'authorization': 'Bearer $token',
+      'authorization': 'Bearer $token',
     };
 
     http.Response response;

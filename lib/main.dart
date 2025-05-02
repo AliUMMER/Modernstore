@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/addCart_bloc/bloc/add_cart_bloc.dart';
+import 'package:modern_grocery/bloc/addDeliveryAddress/bloc/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
-String basePath = "http://192.168.1.564055/api";
+String basePath = "http://192.168.1.56:4055/api";
 void main() {
   runApp(const MyApp());
 }
@@ -26,6 +28,12 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider(
               create: (context) => GetAllCategoriesBloc(),
+            ),
+            BlocProvider(
+              create: (context) => AddDeliveryAddressBloc(),
+            ),
+            BlocProvider(
+              create: (context) => AddCartBloc(),
             ),
           ],
           child: MaterialApp(
