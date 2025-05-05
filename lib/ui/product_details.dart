@@ -6,7 +6,7 @@ import 'package:modern_grocery/bloc/addCart_bloc/bloc/add_cart_bloc.dart';
 import 'package:modern_grocery/ui/success_cart.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({super.key});
+  const ProductDetails({super.key, required product});
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();

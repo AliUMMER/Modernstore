@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/GetById/bloc/getbyid_bloc.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
+import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 import 'package:modern_grocery/ui/fruites_page.dart';
 import 'package:modern_grocery/ui/product_details.dart';
 import 'package:cached_network_image/cached_network_image.dart'; // For efficient image loading
@@ -17,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late GetAllCategoriesModel data;
+  late GetByIdProduct datas;
 
   @override
   void initState() {
@@ -454,13 +457,66 @@ class _HomePageState extends State<HomePage> {
             ),
 
             /// Horizontal Scroll for Best Deals
+            // SizedBox(
+            //   height: 200, // Set height to ensure items fit well
+            //   child: BlocBuilder<GetbyidBloc, GetbyidState>(
+            //     builder: (context, state) {
+            //       if (state is GetbyidLoading) {
+            //         return Center(child: CircularProgressIndicator());
+            //       }
+            //       if (state is GetbyidError) {
+            //         return Center(
+            //             child: Text(
+            //           'product detail not available',
+            //           style: TextStyle(
+            //             color: Color(0xffFCF8E8),
+            //             fontSize: 24,
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ));
+            //       }
+            //       if (state is GetbyidLoaded) {
+            //         datas =
+            //             BlocProvider.of<GetbyidBloc>(context).getByIdProduct;
+            //         return GestureDetector(
+            //           onTap: () {
+            //             // BlocProvider.of<GetbyidBloc>(context)
+            //             //     .add(FetchGetbyid("6804e14c411ef49d675abd15"));
+            //             Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) => ProductDetails(
+            //                         product: null,
+            //                       )),
+            //             );
+            //           },
+            //           child: ListView.builder(
+            //             scrollDirection: Axis.horizontal,
+            //             itemCount: products.length,
+            //             itemBuilder: (context, index) {
+            //               return Padding(
+            //                 padding: EdgeInsets.only(
+            //                     left: index == 0 ? 20.w : 10.w, right: 10.w),
+            //                 child: ProductCard(product: products[index]),
+            //               );
+            //             },
+            //           ),
+            //         );
+            //       } else
+            //         return SizedBox();
+            //     },
+            //   ),
+            // ),
             SizedBox(
-              height: 200, // Set height to ensure items fit well
+              height: 200, 
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProductDetails()),
+                    MaterialPageRoute(
+                        builder: (context) => ProductDetails(
+                              product: null,
+                            )),
                   );
                 },
                 child: ListView.builder(

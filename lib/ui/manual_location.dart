@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart'; // Add this for reverse geocoding
+import 'package:geocoding/geocoding.dart';
+import 'package:modern_grocery/bloc/addDeliveryAddress/bloc/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/ui/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/your_location.dart';
@@ -15,56 +17,46 @@ class ManualLocation extends StatefulWidget {
 
 class _ManualLocationState extends State<ManualLocation> {
   bool isAdmin = true; // Default is user
-  String currentLocation = "Tirur"; // Default location
+  String currentLocation = "Use My Current Location";
+  String? apiAddress;
+  String selectedAddressType = 'current'; // 'current' or 'api'
 
-  // Fetch current location using geolocator and convert to address
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+    context.read<AddDeliveryAddressBloc>().add(fetchAddDeliveryAddress());
+  }
+
   Future<void> _getCurrentLocation() async {
     try {
-      // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content:
-                  Text('Location services are disabled. Please enable them.')),
-        );
+        _showSnack('Location services are disabled.');
         return;
       }
 
-      // Check for location permission
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied.')),
-          );
+          _showSnack('Location permissions are denied.');
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-                'Location permissions are permanently denied. Please enable them in settings.'),
-            action: SnackBarAction(
-              label: 'Open Settings',
-              onPressed: () {
-                Geolocator.openAppSettings();
-              },
-            ),
-          ),
-        );
+        _showSnack('Location permissions are permanently denied.',
+            actionLabel: 'Settings', action: () {
+          Geolocator.openAppSettings();
+        });
         return;
       }
 
-      // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // Reverse geocode to get a readable address
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -74,50 +66,65 @@ class _ManualLocationState extends State<ManualLocation> {
           "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
 
       setState(() {
-        currentLocation = address; // Update with the readable address
+        currentLocation = address;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching location: $e')),
-      );
+      _showSnack('Error fetching location: $e');
     }
+  }
+
+  void _showSnack(String message, {String? actionLabel, VoidCallback? action}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: actionLabel != null
+            ? SnackBarAction(label: actionLabel, onPressed: action!)
+            : null,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0909),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: ListView(
-            children: [
-              SizedBox(height: 168.h),
-              Text(
-                'Enter Your Location',
-                style: TextStyle(
-                  color: const Color(0xFFF5E9B5),
-                  fontSize: 23,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
+    return BlocListener<AddDeliveryAddressBloc, AddDeliveryAddressState>(
+      listener: (context, state) {
+        if (state is AddDeliveryAddressLoaded) {
+          setState(() {
+            apiAddress = state.addDeliveryAddress.data!.address;
+          });
+        } else if (state is AddDeliveryAddressError) {
+          _showSnack('Failed to fetch address from API');
+        } else if (state is AddDeliveryAddressLoading) {
+          _showSnack('Loading address from API...');
+        }
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFF0A0909),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListView(
+              children: [
+                SizedBox(height: 168.h),
+                Text(
+                  'Select Delivery Address',
+                  style: TextStyle(
+                    color: const Color(0xFFFCF8E8),
+                    fontSize: 18.sp,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
-              SizedBox(height: 23.h),
-              _buildSearchBox(),
-              SizedBox(height: 46.h),
-              _buildLocationTile(
-                Icons.my_location,
-                "Use my current location",
-                currentLocation,
-              ),
-              SizedBox(height: 46.h),
-              _buildAddNewAddress(),
-              SizedBox(height: 46.h),
-              _buildSavedAddresses(),
-              SizedBox(height: 200.h),
-              _buildConfirmButton(),
-              SizedBox(height: 20.h),
-            ],
+                SizedBox(height: 23.h),
+                _buildSearchBox(),
+                SizedBox(height: 46.h),
+                _buildAddressRadioSelection(),
+                SizedBox(height: 46.h),
+                _buildAddNewAddress(),
+                SizedBox(height: 200.h),
+                _buildConfirmButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -143,44 +150,60 @@ class _ManualLocationState extends State<ManualLocation> {
     );
   }
 
-  Widget _buildLocationTile(IconData icon, String title, String subtitle) {
-    return GestureDetector(
-      onTap: () {
-        if (title == "Use my current location") {
-          _getCurrentLocation(); // Call the method to fetch location
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
-          borderRadius: BorderRadius.circular(10),
+  Widget _buildAddressRadioSelection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Choose Address",
+          style: TextStyle(
+            color: const Color(0xFFFCF8E8),
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        child: Row(
-          children: [
-            Icon(icon, color: const Color(0xE8FCF8E8)),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Color(0xE8FCF8E8),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  subtitle,
-                  style:
-                      const TextStyle(color: Color(0x91FCF8E8), fontSize: 13),
-                ),
-              ],
-            ),
-          ],
+        SizedBox(height: 20.h),
+        _buildRadioTile(
+          value: 'current',
+          title: currentLocation,
         ),
+        SizedBox(height: 20.h),
+        if (apiAddress != null)
+          _buildRadioTile(
+            value: 'api',
+            title: apiAddress!,
+          ),
+      ],
+    );
+  }
+
+  Widget _buildRadioTile({required String value, required String title}) {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1C1C1C),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(
+          color: selectedAddressType == value
+              ? const Color(0xFFF5E9B5)
+              : const Color(0xFFFCF8E8),
+          width: 1.5,
+        ),
+      ),
+      child: RadioListTile<String>(
+        value: value,
+        groupValue: selectedAddressType,
+        onChanged: (val) {
+          setState(() {
+            selectedAddressType = val!;
+          });
+        },
+        activeColor: const Color(0xFFF5E9B5),
+        title: Text(
+          title,
+          style: TextStyle(color: const Color(0xFFFCF8E8), fontSize: 14.sp),
+        ),
+        contentPadding: EdgeInsets.zero,
       ),
     );
   }
@@ -207,41 +230,16 @@ class _ManualLocationState extends State<ManualLocation> {
     );
   }
 
-  Widget _buildSavedAddresses() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Saved addresses",
-              style: TextStyle(
-                color: Color(0xE8FCF8E8),
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Text(
-              "Manage",
-              style: TextStyle(color: Color(0xE8FCF8E8), fontSize: 15),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        _buildLocationTile(
-          Icons.location_on,
-          "Tirur",
-          "Tirur ezhur road, 44 villa...",
-        ),
-      ],
-    );
-  }
-
   Widget _buildConfirmButton() {
     return Center(
       child: ElevatedButton(
         onPressed: () {
+          String chosenAddress = selectedAddressType == 'current'
+              ? currentLocation
+              : (apiAddress ?? '');
+
+          print('Chosen Address: $chosenAddress');
+
           if (!isAdmin) {
             Navigator.push(
               context,
