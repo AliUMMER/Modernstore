@@ -1,14 +1,14 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/GetAllBannerBloc/bloc/get_all_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/GetById/bloc/getbyid_bloc.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
+import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
 import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 import 'package:modern_grocery/ui/fruites_page.dart';
 import 'package:modern_grocery/ui/product_details.dart';
-import 'package:cached_network_image/cached_network_image.dart'; // For efficient image loading
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,12 +20,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late GetAllCategoriesModel data;
   late GetByIdProduct datas;
+  late GetAllBannerModel banner;
 
   @override
   void initState() {
     super.initState();
-    // Fetch categories data when the widget initializes
+    // Fetch categories and banner data when the widget initializes
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
+    BlocProvider.of<GetAllBannerBloc>(context).add(fetchGetAllBanner());
   }
 
   final List<String> slidingimage = [
@@ -51,6 +53,7 @@ class _HomePageState extends State<HomePage> {
     {'name': 'Gadget', 'image': 'assets/Gadget.png'},
     {'name': 'Bevarage', 'image': 'assets/Bevarages.png'},
   ];
+
   final List<Map<String, dynamic>> products = [
     {
       'name': 'Banana',
@@ -107,6 +110,7 @@ class _HomePageState extends State<HomePage> {
       'image': 'assets/Pappaya.png'
     },
   ];
+
   final List<Map<String, dynamic>> Bevarages = [
     {
       'name': 'Mango Fruit Drink',
@@ -163,6 +167,7 @@ class _HomePageState extends State<HomePage> {
       'image': 'assets/Pepsi Soft drink.png'
     },
   ];
+
   final List<Map<String, dynamic>> Vegitables = [
     {
       'name': 'Chilli Green',
@@ -240,16 +245,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> imageSliders = slidingimage
-        .map((item) => ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                item,
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ))
-        .toList();
     return Scaffold(
       backgroundColor: const Color(0XFF0A0909),
       body: SingleChildScrollView(
@@ -310,25 +305,69 @@ class _HomePageState extends State<HomePage> {
 
             SizedBox(height: 40.h),
 
-            CarouselSlider(
-              items: slidingimage.map((imagePath) {
-                return Image.asset(imagePath, fit: BoxFit.cover);
-              }).toList(),
-              options: CarouselOptions(
-                height: 200,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
-                initialPage: 0,
-                enableInfiniteScroll: true,
-                reverse: false,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enlargeCenterPage: true,
-                enlargeFactor: 0.3,
-                scrollDirection: Axis.horizontal,
-              ),
+            BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
+              builder: (context, state) {
+                if (state is GetAllBannerLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (state is GetAllBannerError) {
+                  return Center(child: Text('Banner is error'));
+                }
+                if (state is GetAllBannerLoaded) {
+                  banner = BlocProvider.of<GetAllBannerBloc>(context)
+                      .getAllBannerModel;
+                  // Flatten the list of lists into a single List<String>, handling null
+                  final List bannerImages = banner.banners!
+                      .expand((banner) =>
+                          banner.images ??
+                          []) // Use empty list if images is null
+                      .toList();
+                  return Container(
+                    color: Color.fromARGB(255, 216, 176, 15),
+                    width: 80,
+                    height: 80,
+                    // Uncomment and use the CarouselSlider here
+                    // child: CarouselSlider(
+                    //   items: bannerImages.map((imageUrl) {
+                    //     return ClipRRect(
+                    //       borderRadius: BorderRadius.circular(8.0),
+                    //       child: CachedNetworkImage(
+                    //         imageUrl: imageUrl,
+                    //         fit: BoxFit.cover,
+                    //         width: double.infinity,
+                    //         placeholder: (context, url) => const Center(
+                    //             child: CircularProgressIndicator()),
+                    //         errorWidget: (context, url, error) => Image.asset(
+                    //           'assets/placeholder.png',
+                    //           fit: BoxFit.cover,
+                    //         ),
+                    //       ),
+                    //     );
+                    //   }).toList(),
+                    //   options: CarouselOptions(
+                    //     height: 200,
+                    //     aspectRatio: 16 / 9,
+                    //     viewportFraction: 0.8,
+                    //     initialPage: 0,
+                    //     enableInfiniteScroll: true,
+                    //     reverse: false,
+                    //     autoPlay: true,
+                    //     autoPlayInterval: const Duration(seconds: 3),
+                    //     autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                    //     autoPlayCurve: Curves.fastOutSlowIn,
+                    //     enlargeCenterPage: true,
+                    //     enlargeFactor: 0.3,
+                    //     scrollDirection: Axis.horizontal,
+                    //   ),
+                    // ),
+                  );
+                }
+                return Container(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  width: 80,
+                  height: 80,
+                );
+              },
             ),
 
             SizedBox(height: 40),
@@ -369,7 +408,7 @@ class _HomePageState extends State<HomePage> {
                   return Center(child: CircularProgressIndicator());
                 }
                 if (state is GetAllCategoriesError) {
-                  return Center(child: Text('Catogeries not Recogainised'));
+                  return Center(child: Text('Categories not Recognized'));
                 }
                 if (state is GetAllCategoriesLoaded) {
                   data = BlocProvider.of<GetAllCategoriesBloc>(context)
@@ -456,59 +495,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            /// Horizontal Scroll for Best Deals
-            // SizedBox(
-            //   height: 200, // Set height to ensure items fit well
-            //   child: BlocBuilder<GetbyidBloc, GetbyidState>(
-            //     builder: (context, state) {
-            //       if (state is GetbyidLoading) {
-            //         return Center(child: CircularProgressIndicator());
-            //       }
-            //       if (state is GetbyidError) {
-            //         return Center(
-            //             child: Text(
-            //           'product detail not available',
-            //           style: TextStyle(
-            //             color: Color(0xffFCF8E8),
-            //             fontSize: 24,
-            //             fontWeight: FontWeight.bold,
-            //           ),
-            //         ));
-            //       }
-            //       if (state is GetbyidLoaded) {
-            //         datas =
-            //             BlocProvider.of<GetbyidBloc>(context).getByIdProduct;
-            //         return GestureDetector(
-            //           onTap: () {
-            //             // BlocProvider.of<GetbyidBloc>(context)
-            //             //     .add(FetchGetbyid("6804e14c411ef49d675abd15"));
-            //             Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                   builder: (context) => ProductDetails(
-            //                         product: null,
-            //                       )),
-            //             );
-            //           },
-            //           child: ListView.builder(
-            //             scrollDirection: Axis.horizontal,
-            //             itemCount: products.length,
-            //             itemBuilder: (context, index) {
-            //               return Padding(
-            //                 padding: EdgeInsets.only(
-            //                     left: index == 0 ? 20.w : 10.w, right: 10.w),
-            //                 child: ProductCard(product: products[index]),
-            //               );
-            //             },
-            //           ),
-            //         );
-            //       } else
-            //         return SizedBox();
-            //     },
-            //   ),
-            // ),
             SizedBox(
-              height: 200, 
+              height: 200,
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -538,7 +526,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Bevarages',
+                    'Beverages',
                     style: TextStyle(
                       color: Color(0xffFCF8E8),
                       fontSize: 24,
@@ -556,7 +544,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(
-              height: 200, // Set height to ensure items fit well
+              height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: Bevarages.length,
@@ -575,7 +563,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Vegitables',
+                    'Vegetables',
                     style: TextStyle(
                       color: Color(0xffFCF8E8),
                       fontSize: 24,
@@ -593,7 +581,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SizedBox(
-              height: 200, // Set height to ensure items fit well
+              height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: Vegitables.length,
@@ -622,7 +610,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 140, // Fixed width for each product card
+      width: 140,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey[900],
@@ -643,7 +631,7 @@ class ProductCard extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffFCF8E8), // Light background for image
+                    color: Color(0xffFCF8E8),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
@@ -698,92 +686,6 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-class Bevaragecard extends StatelessWidget {
-  final Map<String, dynamic> Bevarages;
-
-  const Bevaragecard({super.key, required this.Bevarages});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 140, // Fixed width for each product card
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black54,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xffFCF8E8), // Light background for image
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(Bevarages['image'], fit: BoxFit.cover),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xffFfffff),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.add, color: Colors.black, size: 18),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            Bevarages['name'],
-            style: TextStyle(
-                color: Color(0xffFCF8E8),
-                fontSize: 14,
-                fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (starIndex) {
-              return Icon(
-                starIndex < Bevarages['rating']
-                    ? Icons.star
-                    : Icons.star_border,
-                color: Colors.amberAccent,
-                size: 14,
-              );
-            }),
-          ),
-          SizedBox(height: 5),
-          Text(
-            Bevarages['price'],
-            style: TextStyle(color: Color(0xffFFFFFF), fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class vegitablecard extends StatelessWidget {
   final Map<String, dynamic> Vegitables;
 
@@ -792,7 +694,7 @@ class vegitablecard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 140, // Fixed width for each product card
+      width: 140,
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.grey[900],
@@ -813,7 +715,7 @@ class vegitablecard extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Color(0xffFCF8E8), // Light background for image
+                    color: Color(0xffFCF8E8),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(

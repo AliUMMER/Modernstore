@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/ui/fruites_page.dart';
 
 class SearchPage extends StatefulWidget {
@@ -9,6 +12,14 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  late GetAllCategoriesModel data;
+
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
+  }
+
   final List<Map<String, String>> categories = [
     {'name': 'Fruits', 'image': 'assets/Fruites.png'},
     {'name': 'Milk', 'image': 'assets/Milk.png'},
@@ -64,24 +75,41 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             const SizedBox(height: 30),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                children: categories.map((category) {
-                  return _buildCategoryCard(
-                      category['name']!, category['image']!);
-                }).toList(),
-              ),
-            ),
+            BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
+                builder: (context, state) {
+              if (state is GetAllCategoriesLoading) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (state is GetAllCategoriesError) {
+                return Center(child: Text('Catogeries not Recogainised'));
+              }
+              if (state is GetAllCategoriesLoaded) {
+                data = BlocProvider.of<GetAllCategoriesBloc>(context)
+                    .getAllCategoriesModel;
+                return Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    children: data.categories!.map((category) {
+                      return _buildCategoryCard(
+                        category.name ?? 'No Name',
+                        category.image ?? 'no image',
+                      );
+                    }).toList(),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            })
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategoryCard(String title, String imagePath) {
+  Widget _buildCategoryCard(String title, String imageUrl) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -97,7 +125,15 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 60),
+            Image.network(
+              imageUrl ?? 'https://via.placeholder.com/80',
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.broken_image);
+              },
+            ),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
