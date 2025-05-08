@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Row(
               children: [
                 SizedBox(
-                  width: 130,
+                  width: 150,
                 ),
                 Text(
                   'My Account',

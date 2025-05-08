@@ -170,11 +170,11 @@ class _AdminProductState extends State<AdminProduct> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
+          title: Text(
             'Add New Product',
             style: TextStyle(
-              color: Color(0xFF3E7BFE),
-              fontSize: 14,
+              color: const Color(0xFF3E7BFE),
+              fontSize: 14.sp,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w700,
             ),
@@ -185,15 +185,15 @@ class _AdminProductState extends State<AdminProduct> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTextFieldLabel('Name your product here',
-                    fontSize: 16, color: const Color(0xFF898A8D)),
+                    fontSize: 16.sp, color: const Color(0xFF898A8D)),
                 _buildTextField(),
-                _buildTextFieldLabel('Category'),
+                _buildTextFieldLabel('Category', fontSize: 14.sp),
                 _buildTextField(),
-                _buildTextFieldLabel('Product Description'),
+                _buildTextFieldLabel('Product Description', fontSize: 14.sp),
                 _buildTextField(),
-                _buildTextFieldLabel('Price'),
+                _buildTextFieldLabel('Price', fontSize: 14.sp),
                 _buildTextField(),
-                _buildTextFieldLabel('Add Image'),
+                _buildTextFieldLabel('Add Image', fontSize: 14.sp),
                 _buildImageUploadField(),
                 SizedBox(height: 15.h),
                 _buildDialogActions(),
@@ -207,8 +207,11 @@ class _AdminProductState extends State<AdminProduct> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context,
+        designSize: const Size(375, 812), minTextAdapt: true);
+
     return Scaffold(
-      backgroundColor: const Color(0XFF0A0909),
+      backgroundColor: const Color(0xFF0A0909),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: SingleChildScrollView(
@@ -228,19 +231,19 @@ class _AdminProductState extends State<AdminProduct> {
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5E9B5),
-                      borderRadius: BorderRadius.circular(39),
+                      borderRadius: BorderRadius.circular(39.r),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.add_circle_outline_outlined,
-                            color: Colors.black),
+                        Icon(Icons.add_circle_outline_outlined,
+                            color: Colors.black, size: 20.w),
                         SizedBox(width: 8.w),
-                        const Text(
+                        Text(
                           'Add Products',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                           ),
@@ -252,7 +255,7 @@ class _AdminProductState extends State<AdminProduct> {
               ),
               SizedBox(height: 31.h),
               SizedBox(
-                height: 262, // Set height to ensure items fit well
+                height: 270.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: fruits.length,
@@ -267,34 +270,34 @@ class _AdminProductState extends State<AdminProduct> {
               ),
               SizedBox(height: 43.h),
               SizedBox(
-                height: 262, // Set height to ensure items fit well
+                height: 270.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: fruits.length,
+                  itemCount: vegetables.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.only(
                           left: index == 0 ? 20.w : 10.w, right: 10.w),
-                      child: vegitablecard(vegetables: vegetables[index]),
+                      child: VegetableCard(vegetables: vegetables[index]),
                     );
                   },
                 ),
               ),
               SizedBox(height: 43.h),
               SizedBox(
-                height: 262, // Set height to ensure items fit well
+                height: 270.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: fruits.length,
+                  itemCount: drinks.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.only(
                           left: index == 0 ? 20.w : 10.w, right: 10.w),
-                      child: drinkscard(drinks: drinks[index]),
+                      child: DrinksCard(drinks: drinks[index]),
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -302,7 +305,6 @@ class _AdminProductState extends State<AdminProduct> {
     );
   }
 
-  /// Builds a labeled text field
   Widget _buildTextFieldLabel(String label,
       {double fontSize = 14, Color color = Colors.black}) {
     return Padding(
@@ -319,41 +321,41 @@ class _AdminProductState extends State<AdminProduct> {
     );
   }
 
-  /// Builds a text input field with border
   Widget _buildTextField() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: const Color(0xFF909090)),
-        borderRadius: BorderRadius.circular(5),
+        border: Border.all(width: 1.w, color: const Color(0xFF909090)),
+        borderRadius: BorderRadius.circular(5.r),
       ),
-      child: const TextField(
+      child: TextField(
         decoration: InputDecoration(
           border: InputBorder.none,
+          hintStyle: TextStyle(fontSize: 12.sp),
         ),
       ),
     );
   }
 
-  /// Builds an image upload field
   Widget _buildImageUploadField() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: const Color(0xFF909090)),
-        borderRadius: BorderRadius.circular(5),
+        border: Border.all(width: 1.w, color: const Color(0xFF909090)),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Row(
         children: [
-          SvgPicture.asset('assets/image gallery.svg', width: 37, height: 37),
+          SvgPicture.asset('assets/image gallery.svg',
+              width: 37.w, height: 37.h),
           SizedBox(width: 10.w),
-          const Text(
+          Text(
             '128564.jpg',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w500,
             ),
@@ -363,7 +365,6 @@ class _AdminProductState extends State<AdminProduct> {
     );
   }
 
-  /// Builds Save and Cancel buttons for the dialog
   Widget _buildDialogActions() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -371,17 +372,18 @@ class _AdminProductState extends State<AdminProduct> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFF5E9B5),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(39)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(39.r)),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
           ),
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text(
+          child: Text(
             'Save Product',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 12,
+              fontSize: 12.sp,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
             ),
@@ -391,11 +393,11 @@ class _AdminProductState extends State<AdminProduct> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text(
+          child: Text(
             'Cancel',
             style: TextStyle(
-              color: Color(0xFF3E7BFE),
-              fontSize: 12,
+              color: const Color(0xFF3E7BFE),
+              fontSize: 12.sp,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
             ),
@@ -410,11 +412,13 @@ class _AdminProductState extends State<AdminProduct> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         badges.Badge(
-          badgeContent: const Text('3', style: TextStyle(color: Colors.white)),
-          child: SvgPicture.asset('assets/Group.svg'),
+          badgeContent:
+              Text('3', style: TextStyle(color: Colors.white, fontSize: 10.sp)),
+          child:
+              SvgPicture.asset('assets/Group.svg', width: 24.w, height: 24.h),
         ),
         SizedBox(width: 24.w),
-        SvgPicture.asset('assets/Group 6918.svg'),
+        SvgPicture.asset('assets/Group 6918.svg', width: 24.w, height: 24.h),
       ],
     );
   }
@@ -424,13 +428,13 @@ class _AdminProductState extends State<AdminProduct> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
-        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFFCF8E8), width: 2.w),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      child: const TextField(
+      child: TextField(
         decoration: InputDecoration(
           hintText: "Search here",
-          hintStyle: TextStyle(color: Color(0x91FCF8E8), fontSize: 12),
+          hintStyle: TextStyle(color: const Color(0x91FCF8E8), fontSize: 12.sp),
           border: InputBorder.none,
         ),
       ),
@@ -446,57 +450,57 @@ class FruitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 270,
-      width: 180, // Slightly increased width for better spacing
+      height: 270.h,
+      width: 190.w, // Increased width to accommodate content
       decoration: BoxDecoration(
-        color: Colors.grey[900], // Dark background for the card
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black54,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            blurRadius: 5.r,
+            offset: Offset(0, 3.h),
           ),
         ],
       ),
       child: Column(
         children: [
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Expanded(
             child: Stack(
               children: [
                 Container(
-                  height: 150, // Slightly increased height
-                  width: 160,
+                  height: 150.h,
+                  width: 160.w,
                   decoration: BoxDecoration(
                     color: const Color(0xffFCF8E8),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.w),
                     child: Image.asset(
                       fruits['image'] ?? 'assets/default_image.png',
-                      height: 76, // Adjusted image size for better fit
-                      width: 94,
+                      height: 76.h,
+                      width: 94.w,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 115,
-                  left: 50,
+                  top: 115.h,
+                  left: 50.w,
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
-                    child: const Text(
+                    child: Text(
                       'ACTIVE',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -505,130 +509,138 @@ class FruitCard extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              Text(
-                fruits['name'] ?? 'Unknown Fruit',
-                style: const TextStyle(
-                  color: Color(0xffFCF8E8),
-                  fontSize: 16, // Slightly larger for better readability
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    fruits['name'] ?? 'Unknown Fruit',
+                    style: TextStyle(
+                      color: const Color(0xffFCF8E8),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 95,
-              ),
-              SvgPicture.asset('assets/product note.svg')
-            ],
+                SizedBox(width: 8.w),
+                SvgPicture.asset('assets/product note.svg', width: 20.w),
+              ],
+            ),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(5, (starIndex) {
               return Icon(
                 starIndex < (fruits['rating'] ?? 0)
                     ? Icons.star
                     : Icons.star_border,
-                color: Color(0xffFFD500),
-                size: 14,
+                color: const Color(0xffFFD500),
+                size: 14.w,
               );
             }),
           ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'MRP ₹${fruits['mrp'] ?? 'N/A'}',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
+          SizedBox(height: 5.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MRP ₹${fruits['mrp'] ?? 'N/A'}',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.sp,
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                    ),
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: fruits['mrp'] != null && fruits['price'] != null
-                          ? '${((1 - (fruits['price'] / fruits['mrp'])) * 100).toStringAsFixed(0)}% OFF'
-                          : 'Discount Unavailable',
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                      TextSpan(text: ' ', style: TextStyle(fontSize: 12.sp)),
+                      TextSpan(
+                        text: fruits['mrp'] != null && fruits['price'] != null
+                            ? '${((1 - (fruits['price'] / fruits['mrp'])) * 100).toStringAsFixed(0)}% OFF'
+                            : 'Discount Unavailable',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
       ),
     );
   }
 }
 
-class vegitablecard extends StatelessWidget {
+class VegetableCard extends StatelessWidget {
   final Map<String, dynamic> vegetables;
 
-  const vegitablecard({super.key, required this.vegetables});
+  const VegetableCard({super.key, required this.vegetables});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 270,
-      width: 180, // Slightly increased width for better spacing
+      height: 270.h,
+      width: 190.w, // Increased width to accommodate content
       decoration: BoxDecoration(
-        color: Colors.grey[900], // Dark background for the card
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black54,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            blurRadius: 5.r,
+            offset: Offset(0, 3.h),
           ),
         ],
       ),
       child: Column(
         children: [
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Expanded(
             child: Stack(
               children: [
                 Container(
-                  height: 150, // Slightly increased height
-                  width: 160,
+                  height: 150.h,
+                  width: 160.w,
                   decoration: BoxDecoration(
                     color: const Color(0xffFCF8E8),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.w),
                     child: Image.asset(
                       vegetables['image'] ?? 'assets/default_image.png',
-                      height: 76, // Adjusted image size for better fit
-                      width: 94,
+                      height: 76.h,
+                      width: 94.w,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 115,
-                  left: 50,
+                  top: 115.h,
+                  left: 50.w,
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
-                    child: const Text(
+                    child: Text(
                       'ACTIVE',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -637,131 +649,139 @@ class vegitablecard extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              Text(
-                vegetables['name'] ?? 'Unknown Fruit',
-                style: const TextStyle(
-                  color: Color(0xffFCF8E8),
-                  fontSize: 16, // Slightly larger for better readability
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    vegetables['name'] ?? 'Unknown Vegetable',
+                    style: TextStyle(
+                      color: const Color(0xffFCF8E8),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 75,
-              ),
-              SvgPicture.asset('assets/product note.svg')
-            ],
+                SizedBox(width: 8.w),
+                SvgPicture.asset('assets/product note.svg', width: 20.w),
+              ],
+            ),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(5, (starIndex) {
               return Icon(
                 starIndex < (vegetables['rating'] ?? 0)
                     ? Icons.star
                     : Icons.star_border,
-                color: Color(0xffFFD500),
-                size: 14,
+                color: const Color(0xffFFD500),
+                size: 14.w,
               );
             }),
           ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'MRP ₹${vegetables['mrp'] ?? 'N/A'}',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
+          SizedBox(height: 5.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MRP ₹${vegetables['mrp'] ?? 'N/A'}',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.sp,
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                    ),
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: vegetables['mrp'] != null &&
-                              vegetables['price'] != null
-                          ? '${((1 - (vegetables['price'] / vegetables['mrp'])) * 100).toStringAsFixed(0)}% OFF'
-                          : 'Discount Unavailable',
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                      TextSpan(text: ' ', style: TextStyle(fontSize: 12.sp)),
+                      TextSpan(
+                        text: vegetables['mrp'] != null &&
+                                vegetables['price'] != null
+                            ? '${((1 - (vegetables['price'] / vegetables['mrp'])) * 100).toStringAsFixed(0)}% OFF'
+                            : 'Discount Unavailable',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
       ),
     );
   }
 }
 
-class drinkscard extends StatelessWidget {
+class DrinksCard extends StatelessWidget {
   final Map<String, dynamic> drinks;
 
-  const drinkscard({super.key, required this.drinks});
+  const DrinksCard({super.key, required this.drinks});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 270,
-      width: 180, // Slightly increased width for better spacing
+      height: 270.h,
+      width: 190.w, // Increased width to accommodate content
       decoration: BoxDecoration(
-        color: Colors.grey[900], // Dark background for the card
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black54,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            blurRadius: 5.r,
+            offset: Offset(0, 3.h),
           ),
         ],
       ),
       child: Column(
         children: [
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Expanded(
             child: Stack(
               children: [
                 Container(
-                  height: 150, // Slightly increased height
-                  width: 160,
+                  height: 150.h,
+                  width: 160.w,
                   decoration: BoxDecoration(
                     color: const Color(0xffFCF8E8),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.w),
                     child: Image.asset(
                       drinks['image'] ?? 'assets/default_image.png',
-                      height: 76, // Adjusted image size for better fit
-                      width: 94,
+                      height: 76.h,
+                      width: 94.w,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 115,
-                  left: 50,
+                  top: 115.h,
+                  left: 50.w,
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
-                    child: const Text(
+                    child: Text(
                       'ACTIVE',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -770,65 +790,73 @@ class drinkscard extends StatelessWidget {
               ],
             ),
           ),
-          Row(
-            children: [
-              Text(
-                drinks['name'] ?? 'Unknown Fruit',
-                style: const TextStyle(
-                  color: Color(0xffFCF8E8),
-                  fontSize: 16, // Slightly larger for better readability
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    drinks['name'] ?? 'Unknown Drink',
+                    style: TextStyle(
+                      color: const Color(0xffFCF8E8),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 55,
-              ),
-              SvgPicture.asset('assets/product note.svg')
-            ],
+                SizedBox(width: 8.w),
+                SvgPicture.asset('assets/product note.svg', width: 20.w),
+              ],
+            ),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(5, (starIndex) {
               return Icon(
                 starIndex < (drinks['rating'] ?? 0)
                     ? Icons.star
                     : Icons.star_border,
-                color: Color(0xffFFD500),
-                size: 14,
+                color: const Color(0xffFFD500),
+                size: 14.w,
               );
             }),
           ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'MRP ₹${drinks['mrp'] ?? 'N/A'}',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
+          SizedBox(height: 5.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Row(
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'MRP ₹${drinks['mrp'] ?? 'N/A'}',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.sp,
+                          decoration: TextDecoration.lineThrough,
+                        ),
                       ),
-                    ),
-                    const TextSpan(text: ' '),
-                    TextSpan(
-                      text: drinks['mrp'] != null && drinks['price'] != null
-                          ? '${((1 - (drinks['price'] / drinks['mrp'])) * 100).toStringAsFixed(0)}% OFF'
-                          : 'Discount Unavailable',
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                      TextSpan(text: ' ', style: TextStyle(fontSize: 12.sp)),
+                      TextSpan(
+                        text: drinks['mrp'] != null && drinks['price'] != null
+                            ? '${((1 - (drinks['price'] / drinks['mrp'])) * 100).toStringAsFixed(0)}% OFF'
+                            : 'Discount Unavailable',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
         ],
       ),
     );

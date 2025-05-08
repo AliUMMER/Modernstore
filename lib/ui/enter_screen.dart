@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
-import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/location_page.dart';
-import 'package:modern_grocery/ui/verify_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterScreen extends StatefulWidget {
@@ -21,7 +19,6 @@ class _EnterScreenState extends State<EnterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -32,6 +29,7 @@ class _EnterScreenState extends State<EnterScreen> {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('Token', token!);
           print('Token saved: $token');
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const LocationPage()),
@@ -44,7 +42,6 @@ class _EnterScreenState extends State<EnterScreen> {
             ),
           );
         } else if (state is loginBlocLoading) {
-          // Show loading indicator if needed
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Row(
@@ -73,27 +70,37 @@ class _EnterScreenState extends State<EnterScreen> {
                   // Skip button
                   Align(
                     alignment: Alignment.topRight,
-                    child: Container(
-                      width: 55.w,
-                      height: 27.h,
-                      decoration: ShapeDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [Color(0xFFF5E9B5), Color(0xFF8F8769)],
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LocationPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 55.w,
+                        height: 27.h,
+                        decoration: ShapeDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.00, -1.00),
+                            end: Alignment(0, 1),
+                            colors: [Color(0xFFF5E9B5), Color(0xFF8F8769)],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Skip',
-                          style: TextStyle(
-                            color: Color(0xFF0A0808),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
+                        child: const Center(
+                          child: Text(
+                            'Skip',
+                            style: TextStyle(
+                              color: Color(0xFF0A0808),
+                              fontSize: 12,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -110,7 +117,6 @@ class _EnterScreenState extends State<EnterScreen> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Shadow
                           Positioned(
                             bottom: 0,
                             child: Container(
@@ -129,7 +135,6 @@ class _EnterScreenState extends State<EnterScreen> {
                               ),
                             ),
                           ),
-                          // Logo
                           Image.asset(
                             "assets/Group 3 (1).png",
                             fit: BoxFit.contain,
@@ -175,7 +180,7 @@ class _EnterScreenState extends State<EnterScreen> {
 
                   SizedBox(height: 10.h),
 
-                  // Phone input fields
+                  // Phone input
                   Row(
                     children: [
                       // Country code dropdown
@@ -210,7 +215,6 @@ class _EnterScreenState extends State<EnterScreen> {
                                 ),
                               ),
                             ),
-                            // Add more country codes here
                             DropdownMenuItem(
                               value: '🇺🇸',
                               child: Center(
@@ -239,7 +243,6 @@ class _EnterScreenState extends State<EnterScreen> {
                           onChanged: (value) {
                             setState(() {
                               selectedCountryFlag = value!;
-                              // Update country code based on selection
                               if (value == '🇮🇳') selectedCountryCode = '+91';
                               if (value == '🇺🇸') selectedCountryCode = '+1';
                               if (value == '🇬🇧') selectedCountryCode = '+44';
@@ -250,7 +253,7 @@ class _EnterScreenState extends State<EnterScreen> {
 
                       SizedBox(width: 0.02 * screenWidth),
 
-                      // Phone number input
+                      // Phone input
                       Expanded(
                         child: Container(
                           height: 54.h,
@@ -286,7 +289,6 @@ class _EnterScreenState extends State<EnterScreen> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        // Validate phone number
                         if (phoneController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -297,19 +299,11 @@ class _EnterScreenState extends State<EnterScreen> {
                           return;
                         }
 
-                        // Using the full phone number with country code
                         final fullPhoneNumber =
                             '$selectedCountryCode${phoneController.text}';
+                        print('Logging in with $fullPhoneNumber');
 
-                        // You might want to pass the phone number to the login event
                         BlocProvider.of<LoginBloc>(context).add(fetchlogin());
-
-                        // For testing, you might want to navigate to verify screen
-                        // Uncomment this and comment the BlocProvider line above to test navigation
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => const VerifyScreen()),
-                        // );
                       },
                       child: Container(
                         width: 0.7 * screenWidth,
