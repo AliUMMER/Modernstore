@@ -12,24 +12,23 @@ part 'create_category_state.dart';
 
 class CreateCategoryBloc
     extends Bloc<CreateCategoryEvent, CreateCategoryState> {
-  CreatecategoryApi createcategoryApi =
-      CreatecategoryApi(apiClient: ApiClient());
-
+  final CreatecategoryApi createcategoryApi;
   late CreateCategoryModel createCategoryModel;
 
-  CreateCategoryBloc({required CreatecategoryApi createcategoryApi})
+  CreateCategoryBloc({required this.createcategoryApi})
       : super(CreateCategoryInitial()) {
     on<FetchCreateCategory>((event, emit) async {
       emit(CreateCategoryLoading());
       try {
-        createCategoryModel = await createcategoryApi.createCategory(
-            categoryName: event.categoryName, imageFile: event.imageFile);
-        emit(CreateCategoryLoaded());
+        final model = await createcategoryApi.uploadCategory(
+          categoryName: event.categoryName,
+          imageFile: event.imageFile!,
+        );
+
+        emit(CreateCategoryLoaded(createCategory: CreateCategoryModel()));
       } catch (e) {
-        print(e);
         emit(CreateCategoryError(message: e.toString()));
       }
-      // TODO: implement event handler
     });
   }
 }

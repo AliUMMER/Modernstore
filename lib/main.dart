@@ -12,7 +12,8 @@ import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/api/createCategory_api.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
-String basePath = "http://192.168.1.56:4055/api";
+// String basePath = "http://192.168.15.66:4055/api";
+String basePath = "http://69.62.79.175:4735/api";
 
 void main() {
   runApp(const MyApp());

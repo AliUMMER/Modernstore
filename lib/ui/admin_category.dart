@@ -16,6 +16,8 @@ class AdminCategory extends StatefulWidget {
 
 class _AdminCategoryState extends State<AdminCategory> {
   File? _image;
+  String? _imageFileType; // e.g., "jpeg" or "png"
+
   final ImagePicker _picker = ImagePicker();
   bool _isUploading = false;
   final TextEditingController categoryController = TextEditingController();
@@ -71,7 +73,9 @@ class _AdminCategoryState extends State<AdminCategory> {
 
         setState(() {
           _image = imageFile;
+          _imageFileType = isJpeg ? 'jpeg' : 'png'; // Save file type
         });
+        print("image root ${imageFile}");
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -251,27 +255,32 @@ class _AdminCategoryState extends State<AdminCategory> {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  if (categoryController.text.trim().isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Please enter a category name'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                    return;
-                                  }
+                                  print(
+                                      "${_image!} ******************************************");
+                                  // Access _image and _imageFileType here
+                                  print('Image path: ${_image!}');
+                                  print('Image type: $_imageFileType');
+                                  // if (categoryController.text.trim().isEmpty) {
+                                  //   ScaffoldMessenger.of(context).showSnackBar(
+                                  //     const SnackBar(
+                                  //       content: Text(
+                                  //           'Please enter a category name'),
+                                  //       backgroundColor: Colors.red,
+                                  //     ),
+                                  //   );
+                                  //   return;
+                                  // }
 
-                                  if (_image == null || !_image!.existsSync()) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text('Please select a valid image'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                    return;
-                                  }
+                                  // if (_image == null || !_image!.existsSync()) {
+                                  //   ScaffoldMessenger.of(context).showSnackBar(
+                                  //     const SnackBar(
+                                  //       content:
+                                  //           Text('Please select a valid image'),
+                                  //       backgroundColor: Colors.red,
+                                  //     ),
+                                  //   );
+                                  //   return;
+                                  // }
 
                                   setState(() => _isUploading = true);
 

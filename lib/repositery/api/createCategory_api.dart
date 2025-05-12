@@ -12,81 +12,48 @@ class CreatecategoryApi {
 
   /// Creates a new category by sending a POST request with category name, description, and image file.
   /// Returns a [CreateCategoryModel] if successful, or throws an exception on failure.
-  Future<CreateCategoryModel> createCategory({
+  Future<void> uploadCategory({
     required String categoryName,
     required File imageFile,
-    String description = 'Default description',
   }) async {
-    const String path = 'http://192.168.1.56:4055/api/category/create';
+    final url = Uri.parse('http://69.62.79.175:4735/api/category/create');
+
+    final request = http.MultipartRequest('POST', url);
+
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('Token');
 
-    // Validate inputs
-    if (categoryName.isEmpty) {
-      throw Exception('Category name cannot be empty');
-    }
-    if (token == null || token.isEmpty) {
-      throw Exception('Authentication token is missing');
-    }
-    if (!imageFile.existsSync()) {
-      throw Exception('Image file does not exist');
+    if (token == null) {
+      throw Exception('Token is missing. User is not authenticated.');
     }
 
-    // Log inputs
-    print('Category Name: $categoryName');
-    print('Description: $description');
-    print(
-        'Image Path: ${imageFile.path}, Size: ${await imageFile.length()} bytes');
-    print('Token: ${token.substring(0, 10)}...');
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['name'] = categoryName;
+    request.fields['description'] = 'Default description';
 
-    // Create a multipart request
-    var request = http.MultipartRequest('POST', Uri.parse(path))
-      ..fields['name'] = categoryName
-      ..fields['description'] = description
-      ..headers.addAll({
-        'authorization': 'Bearer $token',
-      });
-
-    // Add the image file
-    request.files.add(
-      await http.MultipartFile.fromPath('image', imageFile.path),
-    );
+    request.files.add(await http.MultipartFile.fromPath(
+      'image',
+      imageFile.path,
+    ));
 
     try {
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+      final response = await request.send();
+      final resBody = await response.stream.bytesToString();
+
+      print('✅ Response Status: ${response.statusCode}');
+      print('📦 Response Body: $resBody');
 
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-        print('Response JSON: $jsonResponse');
-        if (jsonResponse['success'] == true) {
-          return CreateCategoryModel.fromJson(
-            jsonResponse['category'] as Map<String, dynamic>,
-          );
-        } else {
-          throw Exception(
-              'API returned success: false - ${jsonResponse['message'] ?? 'Unknown error'}');
-        }
+        final data = json.decode(resBody);
+        print('🎉 Category Created: ${data['data'] ?? 'No data returned'}');
       } else {
-        switch (response.statusCode) {
-          case 400:
-            throw Exception(
-                'Bad request: Invalid category data - ${response.body}');
-          case 401:
-            throw Exception('Unauthorized: Authentication required');
-          case 403:
-            throw Exception('Forbidden: Insufficient permissions');
-          case 500:
-            throw Exception('Server error: Please try again later');
-          default:
-            throw Exception(
-                'Failed to create category: ${response.statusCode} - ${response.body}');
-        }
+        final errorResponse = json.decode(resBody);
+        throw Exception(
+            '❌ Failed to create category: ${errorResponse['message']}');
       }
     } catch (e) {
-      throw Exception('Failed to create category: $e');
+      print('❗ Error during upload: $e');
+      throw Exception('Error while uploading category: $e');
     }
   }
 }
