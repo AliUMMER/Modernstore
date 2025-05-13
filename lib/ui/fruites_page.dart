@@ -76,7 +76,10 @@ class FruitCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProductDetails(product: null,)),
+          MaterialPageRoute(
+              builder: (context) => ProductDetails(
+                    product: null,
+                  )),
         );
       },
       child: Container(

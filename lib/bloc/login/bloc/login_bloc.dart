@@ -9,7 +9,6 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Loginapi loginapi = Loginapi();
-
   late Login login;
 
   LoginBloc() : super(LoginInitial()) {
