@@ -8,13 +8,20 @@ class GetUserDlvAddressesapi {
   ApiClient apiClient = ApiClient();
 
   Future<GetUserDlvAddresses> getGetUserDlvAddresses() async {
-    String tendingpath =
-        'http://localhost:4055/api/user/get-delivery-addresses';
+    // Just the relative path here (no protocol or host)
+    String tendingpath = '/user/get-delivery-addresses';
 
-    var body = {};
+    // If your API needs query params or body for GET, add accordingly (usually empty for GET)
+    Map<String, dynamic> body = {};
 
     Response response = await apiClient.invokeAPI(tendingpath, 'GET', body);
 
-    return GetUserDlvAddresses.fromJson(json as Map<String, dynamic>);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      return GetUserDlvAddresses.fromJson(jsonMap);
+    } else {
+      throw Exception(
+          'Failed to load delivery addresses. Status code: ${response.statusCode}');
+    }
   }
 }

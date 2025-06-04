@@ -175,7 +175,7 @@ class _CartPageState extends State<CartPage> {
           border: Border.all(
             color: selectedPaymentMethod == method
                 ? Color(0xFFF5E9B5)!
-                : Colors.transparent,
+                : Colors.transparent,    
           ),
         ),
         child: Row(

@@ -10,6 +10,9 @@ import 'package:modern_grocery/bloc/addDeliveryAddress/bloc/add_delivery_address
 import 'package:modern_grocery/bloc/createProduct/bloc/create_product_bloc.dart';
 import 'package:modern_grocery/bloc/get_all_product/get_all_product_bloc.dart';
 import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
+import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
+import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
+import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/api/createCategory_api.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
@@ -58,6 +61,15 @@ class MyApp extends StatelessWidget {
             BlocProvider(create: (context) => CreateProductBloc()),
             BlocProvider(
               create: (context) => GetAllProductBloc(),
+            ),
+            BlocProvider(
+              create: (context) => UserprofileBloc(),
+            ),
+            BlocProvider(
+              create: (context) => UserdeliveryaddressBloc(),
+            ),
+            BlocProvider(
+              create: (context) => OfferproductBloc(),
             ),
           ],
           child: MaterialApp(
