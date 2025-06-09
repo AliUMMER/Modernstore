@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:fl_chart/fl_chart.dart';
+import 'package:modern_grocery/ui/upload_recentpage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -12,7 +14,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +78,87 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
         SizedBox(width: 16.w),
-        SvgPicture.asset('assets/filter.svg'),
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => Dialog(
+                backgroundColor: Colors.transparent,
+                child: Container(
+                  width: 383.w,
+                  height: 222.h,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3C3C3C), // dark grey background
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset('assets/upload.svg', height: 24.h),
+                            SizedBox(height: 12.h),
+                            Text(
+                              "Add A Banner Image",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Text(
+                              "optimal dimensions 383*222",
+                              style: TextStyle(
+                                color: Colors.grey.shade300,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 12,
+                        right: 12,
+                        child: GestureDetector(
+                          onTap: () async {
+                            final picker = ImagePicker();
+                            final pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
+
+                            if (pickedFile != null) {
+                              print('Selected image: ${pickedFile.path}');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RecentPage(imagePath: pickedFile.path),
+                                ),
+                              );
+                            } else {
+                              print('No image selected.');
+                            }
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(Icons.add,
+                                color: Colors.white, size: 20),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          child: SvgPicture.asset('assets/upload.svg'),
+        ),
       ],
     );
   }

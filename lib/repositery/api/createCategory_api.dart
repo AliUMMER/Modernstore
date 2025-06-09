@@ -16,8 +16,9 @@ class CreatecategoryApi {
     required String categoryName,
     required File imageFile,
   }) async {
-    final url = Uri.parse('http://69.62.79.175:4735/api/category/create');
-
+    // final url = Uri.parse('http://69.62.79.175:4735/api/category/create'
+    // );
+    final url = Uri.parse('http://192.168.1.81:4055/api/category/create');
     final request = http.MultipartRequest('POST', url);
 
     final preferences = await SharedPreferences.getInstance();

@@ -77,9 +77,7 @@ class FruitCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ProductDetails(
-                    product: null,
-                  )),
+              builder: (context) => ProductDetails(productId: '')),
         );
       },
       child: Container(

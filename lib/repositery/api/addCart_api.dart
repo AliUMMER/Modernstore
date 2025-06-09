@@ -15,7 +15,7 @@ class AddcartApi {
     Response response = await apiClient.invokeAPI(
       trendingpath,
       'POST',
-      jsonEncode(body),
+      jsonEncode(body) as Map<String, dynamic>?,
     );
 
     return AddCartModel.fromJson(jsonDecode(response.body));

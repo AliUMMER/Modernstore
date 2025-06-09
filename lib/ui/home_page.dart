@@ -520,7 +520,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          ProductDetails(product: product),
+                                          ProductDetails(productId: ''),
                                     ),
                                   );
                                 },
@@ -583,7 +583,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetails(
-                              product: beverages[index],
+                            productId: ''
                             ),
                           ),
                         );
@@ -633,7 +633,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetails(
-                              product: vegetables[index],
+                              productId: ''
                             ),
                           ),
                         );

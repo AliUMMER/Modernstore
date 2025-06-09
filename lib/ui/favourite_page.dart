@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/GetToWishlist_bloc/bloc/get_to_wishlist_bloc.dart';
+import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
 
 class FavouritePage extends StatefulWidget {
   const FavouritePage({super.key});
@@ -8,6 +12,15 @@ class FavouritePage extends StatefulWidget {
 }
 
 class _FavouritePageState extends State<FavouritePage> {
+  late GetToWishlistModel data;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch data when the widget initializes
+    BlocProvider.of<GetToWishlistBloc>(context).add(fetchGetToWishlistEvent());
+  }
+
   final List<Map<String, dynamic>> favourites = [
     {
       'name': 'Banana',
@@ -57,15 +70,42 @@ class _FavouritePageState extends State<FavouritePage> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: favourites.length,
-              itemBuilder: (context, index) {
-                final item = favourites[index];
-                return FavouriteItemCard(item: item);
-              },
-            ),
-          ),
+          BlocBuilder<GetToWishlistBloc, GetToWishlistState>(
+            builder: (context, state) {
+              if (state is GetToWishlistLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state is GetToWishlistError) {
+                return const Center(child: Text('Favorites not found'));
+              }
+
+              if (state is GetToWishlistLoaded) {
+                final favourites = BlocProvider.of<GetToWishlistBloc>(context)
+                    .getToWishlistModel;
+
+                final wishlistItems = favourites.wishlists ?? [];
+
+                if (wishlistItems.isEmpty) {
+                  return const Center(child: Text('No favorites yet.'));
+                }
+
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: wishlistItems.length,
+                    itemBuilder: (context, index) {
+                      final item = wishlistItems[index];
+                      return FavouriteItemCard(
+                          item: item); // pass the model, not .toJson()
+                    },
+                  ),
+                );
+              }
+
+              return const SizedBox();
+            },
+          )
+
           // Padding(
           //   padding: const EdgeInsets.all(16.0),
           //   child: ElevatedButton(
@@ -90,14 +130,18 @@ class _FavouritePageState extends State<FavouritePage> {
 }
 
 class FavouriteItemCard extends StatelessWidget {
-  final Map<String, dynamic> item;
+  final Wishlists item;
 
   const FavouriteItemCard({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final product = item.productId;
+    final basePrice = product?.basePrice ?? 0;
+    final discountPercentage = product?.discountPercentage ?? 0;
+    final discountedPrice = basePrice - (basePrice * discountPercentage / 100);
+
     return GestureDetector(
-      
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         padding: const EdgeInsets.all(8),
@@ -115,7 +159,16 @@ class FavouriteItemCard extends StatelessWidget {
                 color: const Color(0xF4CCC9BC),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Image.asset(item['image'], fit: BoxFit.contain),
+              child: product?.images != null && product!.images!.isNotEmpty
+                  ? Image.network(
+                      product.images!.first,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.image_not_supported,
+                            color: Colors.grey);
+                      },
+                    )
+                  : const Icon(Icons.image_not_supported, color: Colors.grey),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -123,7 +176,7 @@ class FavouriteItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item['name'],
+                    product?.name ?? 'Unknown Product',
                     style: const TextStyle(
                       color: Color(0xFFFCF8E8),
                       fontSize: 18,
@@ -131,23 +184,24 @@ class FavouriteItemCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'MRP ₹${item['mrp']}',
+                    'MRP ₹$basePrice',
                     style: const TextStyle(
                       color: Color(0xCEB4B2A9),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    '${((1 - item['price'] / item['mrp']) * 100).toStringAsFixed(0)}% OFF',
-                    style: const TextStyle(
-                      color: Color(0xCE7FFC83),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                  if (discountPercentage > 0)
+                    Text(
+                      '$discountPercentage% OFF',
+                      style: const TextStyle(
+                        color: Color(0xCE7FFC83),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
                   Text(
-                    '₹${item['price']}',
+                    '₹${discountedPrice.toStringAsFixed(0)}',
                     style: const TextStyle(
                       color: Color(0xFFFCF8E8),
                       fontSize: 14,
@@ -159,7 +213,10 @@ class FavouriteItemCard extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline, color: Colors.white),
-              onPressed: () {},
+              onPressed: () {
+                // Add your delete functionality here
+                // You can access item.id for the wishlist item ID
+              },
             ),
           ],
         ),

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/addCart_bloc/bloc/add_cart_bloc.dart';
 import 'package:modern_grocery/ui/success_cart.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({super.key, required product});
+  final String productId;
+  const ProductDetails({super.key, required this.productId});
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -116,14 +118,52 @@ class _ProductDetailsState extends State<ProductDetails> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.favorite_outline,
-                              color: Color(0xF2FCF8E8),
-                              size: 24,
-                            ),
-                          ),
+                          BlocConsumer<AddToWishlistBloc, AddToWishlistState>(
+                            listener: (context, state) {
+                              if (state is AddToWishlistLoaded) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Added to wishlist!")),
+                                );
+                              } else if (state is AddToWishlistError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text("Failed to add to wishlist")),
+                                );
+                              }
+                            },
+                            builder: (context, state) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (widget.productId.length == 24) {
+                                    context.read<AddToWishlistBloc>().add(
+                                        fetchAddToWishlistEvent(
+                                            widget.productId));
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text("Invalid Product ID")),
+                                    );
+                                  }
+                                },
+                                icon: state is AddToWishlistLoading
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2),
+                                      )
+                                    : Icon(
+                                        state is AddToWishlistLoaded
+                                            ? Icons.favorite
+                                            : Icons.favorite_outline,
+                                        color: const Color(0xF2FCF8E8),
+                                        size: 24,
+                                      ),
+                              );
+                            },
+                          )
                         ],
                       ),
                       SizedBox(height: 12.h),
