@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modern_grocery/bloc/CreateBanner_bloc/bloc/create_banner_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:modern_grocery/bloc/CreateBanner_bloc/bloc/create_banner_bloc.dart';
 
 class _AppConstants {
   static const primaryColor = Color(0xFFF5E9B5);
@@ -32,6 +32,7 @@ class _RecentPageState extends State<RecentPage> {
   final _typeController = TextEditingController();
   final _categoryIdController = TextEditingController();
   final _linkController = TextEditingController();
+  double _uploadProgress = 0.0;
 
   @override
   void dispose() {
@@ -43,47 +44,58 @@ class _RecentPageState extends State<RecentPage> {
     super.dispose();
   }
 
-  void _saveImage(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      final file = File(widget.imagePath);
+  Future<void> _saveImage(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
 
-      // Debug: Check if file exists and log the path
-      print('Image path: ${widget.imagePath}');
-      print('File exists: ${file.existsSync()}');
+    final file = File(widget.imagePath);
 
-      if (!file.existsSync()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: Image file not found')),
-        );
-        return;
-      }
+    print('Image path: ${widget.imagePath}');
+    print('File exists: ${file.existsSync()}');
 
-      try {
-        // Prepare the form data for multipart request
-        final formData = {
-          'title': _titleController.text,
-          'category': _categoryController.text,
-          'type': _typeController.text,
-          'categoryId': _categoryIdController.text,
-          'link': _linkController.text,
-          'images': await http.MultipartFile.fromPath(
-            'images',
-            widget.imagePath,
-            contentType: MediaType(
-                'image', widget.imagePath.endsWith('.png') ? 'png' : 'jpeg'),
-          ),
-        };
+    if (!file.existsSync()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error: Image file not found')),
+      );
+      return;
+    }
 
-        print('Form data prepared: $formData');
+    try {
+      final fileName = widget.imagePath.split('/').last;
+      final extension = fileName.split('.').last.toLowerCase();
+      final contentType = MediaType('image', extension == 'png' ? 'png' : 'jpeg');
 
-        // Dispatch the event to the BLoC
-        context.read<CreateBannerBloc>().add(fetchCreateBannerEvent());
-      } catch (e) {
-        print('Error creating MultipartFile: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error preparing image: $e')),
-        );
-      }
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://modern-store-backend.onrender.com/api/banner/create'),
+      )
+        ..fields['title'] = _titleController.text
+        ..fields['category'] = _categoryController.text
+        ..fields['type'] = _typeController.text
+        ..fields['categoryId'] = _categoryIdController.text
+        ..fields['link'] = _linkController.text
+        ..files.add(await http.MultipartFile.fromPath(
+          'images',
+          widget.imagePath,
+          filename: fileName,
+          contentType: contentType,
+        ));
+
+      print('Multipart request prepared: fields=${request.fields}, files=${request.files.map((f) => f.filename).toList()}');
+
+      context.read<CreateBannerBloc>().add(FetchCreateBannerEvent(
+        // formData: request,
+        onSendProgress: (sent, total) {
+          setState(() {
+            _uploadProgress = sent / total;
+            print('Upload progress: ${(_uploadProgress * 100).toStringAsFixed(2)}%');
+          });
+        }, title: '', category: '', type: '', categoryId: '', link: '', imagePath: '',
+      ));
+    } catch (e) {
+      print('Error preparing request: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error preparing request: $e')),
+      );
     }
   }
 
@@ -170,9 +182,10 @@ class _RecentPageState extends State<RecentPage> {
             _typeController.clear();
             _categoryIdController.clear();
             _linkController.clear();
+            setState(() => _uploadProgress = 0.0);
           } else if (state is CreateBannerError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error')),
+              SnackBar(content: Text('Error: ${state.message}')),
             );
           }
         },
@@ -183,7 +196,6 @@ class _RecentPageState extends State<RecentPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image Preview Section
                 Container(
                   height: 200,
                   width: double.infinity,
@@ -195,8 +207,22 @@ class _RecentPageState extends State<RecentPage> {
                   child: _buildImagePreview(),
                 ),
                 const SizedBox(height: 24),
-
-                // Form Fields Section
+                if (_uploadProgress > 0 && _uploadProgress < 1)
+                  Column(
+                    children: [
+                      LinearProgressIndicator(
+                        value: _uploadProgress,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: const AlwaysStoppedAnimation<Color>(_AppConstants.accentColor),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
+                        style: const TextStyle(color: _AppConstants.textColor),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 16),
                 const Text(
                   'Banner Details',
                   style: TextStyle(
@@ -206,36 +232,28 @@ class _RecentPageState extends State<RecentPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 _buildTextField(
                   label: 'Title',
                   controller: _titleController,
                 ),
-
                 _buildTextField(
                   label: 'Category',
                   controller: _categoryController,
                 ),
-
                 _buildTextField(
                   label: 'Type',
                   controller: _typeController,
                 ),
-
                 _buildTextField(
                   label: 'Category ID',
                   controller: _categoryIdController,
                 ),
-
                 _buildTextField(
                   label: 'Link',
                   controller: _linkController,
                   isRequired: false,
                 ),
-
                 const SizedBox(height: 24),
-
-                // Save Button
                 BlocBuilder<CreateBannerBloc, CreateBannerState>(
                   builder: (context, state) {
                     return ElevatedButton.icon(
@@ -252,7 +270,9 @@ class _RecentPageState extends State<RecentPage> {
                               ),
                             )
                           : const Icon(Icons.save),
-                      label: const Text('Save Banner'),
+                      label: Text(state is CreateBannerLoading
+                          ? 'Uploading...'
+                          : 'Save Banner'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _AppConstants.buttonColor,
                         foregroundColor: Colors.black,

@@ -5,5 +5,6 @@ abstract class AddToWishlistEvent {}
 
 class fetchAddToWishlistEvent extends AddToWishlistEvent {
   final String productId;
+
   fetchAddToWishlistEvent(this.productId);
 }

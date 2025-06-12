@@ -1,12 +1,26 @@
 part of 'getbyid_bloc.dart';
 
 @immutable
-sealed class GetbyidState {}
+sealed class GetbyidState {@override
+  List<Object?> get props => [];}
+class GetbyidInitial extends GetbyidState {}
 
-final class GetbyidInitial extends GetbyidState {}
+class GetbyidLoading extends GetbyidState {}
 
-final class GetbyidLoading extends GetbyidState {}
+class GetbyidLoaded extends GetbyidState {
+  final GetByIdProduct getByIdProduct;
 
-final class GetbyidLoaded extends GetbyidState {}
+  GetbyidLoaded({required this.getByIdProduct});
 
-final class GetbyidError extends GetbyidState {}
+  @override
+  List<Object?> get props => [getByIdProduct];
+}
+
+class GetbyidError extends GetbyidState {
+  final String message;
+
+  GetbyidError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

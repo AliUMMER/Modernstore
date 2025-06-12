@@ -7,21 +7,23 @@ part 'getbyid_event.dart';
 part 'getbyid_state.dart';
 
 class GetbyidBloc extends Bloc<GetbyidEvent, GetbyidState> {
-  GetbyidproductApi getbyidproductApi = GetbyidproductApi();
+  final GetbyidproductApi getbyidproductApi;
 
-  late GetByIdProduct getByIdProduct;
-
-  GetbyidBloc() : super(GetbyidInitial()) {
+  GetbyidBloc({required this.getbyidproductApi}) : super(GetbyidInitial()) {
     on<FetchGetbyid>((event, emit) async {
       emit(GetbyidLoading());
       try {
-        getByIdProduct = await getbyidproductApi.getGetByIdProduct();
-        emit(GetbyidLoaded());
+        if (event.id.isEmpty) {
+          throw Exception('Product ID is empty');
+        }
+        final getByIdProduct =
+            await getbyidproductApi.getGetByIdProduct(event.id);
+        print('Fetched product: ${getByIdProduct.data?.name}');
+        emit(GetbyidLoaded(getByIdProduct: getByIdProduct));
       } catch (e) {
-        print(e);
+        print('Error fetching product: $e');
+        emit(GetbyidError(message: e.toString()));
       }
-      emit(GetbyidError());
-      // TODO: implement event handler
     });
   }
 }

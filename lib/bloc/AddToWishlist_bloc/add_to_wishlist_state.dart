@@ -1,7 +1,10 @@
 part of 'add_to_wishlist_bloc.dart';
 
 @immutable
-sealed class AddToWishlistState {}
+sealed class AddToWishlistState {
+    @override
+  List<Object?> get props => [];
+}
 
 final class AddToWishlistInitial extends AddToWishlistState {}
 

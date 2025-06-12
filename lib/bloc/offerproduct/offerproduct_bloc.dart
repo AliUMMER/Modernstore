@@ -9,7 +9,6 @@ part 'offerproduct_state.dart';
 
 class OfferproductBloc extends Bloc<OfferproductEvent, OfferproductState> {
   OfferproductApi offerproductApi = OfferproductApi();
-
   late OfferproductModel offerproductModel;
 
   OfferproductBloc() : super(OfferproductInitial()) {
@@ -17,13 +16,13 @@ class OfferproductBloc extends Bloc<OfferproductEvent, OfferproductState> {
       emit(OfferproductLoading());
       try {
         offerproductModel = await offerproductApi.getOfferproductModel();
+        emit(OfferproductLoaded());
       } catch (e) {
-        if (kDebugMode) {
+        if (kDebugMode) { 
           print(e);
         }
         emit(OfferproductError());
       }
-      // TODO: implement event handler
     });
   }
 }

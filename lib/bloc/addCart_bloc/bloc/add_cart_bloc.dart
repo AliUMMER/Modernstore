@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:modern_grocery/repositery/api/addCart_api.dart';
@@ -9,22 +7,20 @@ part 'add_cart_event.dart';
 part 'add_cart_state.dart';
 
 class AddCartBloc extends Bloc<AddCartEvent, AddCartState> {
-  AddcartApi addcartApi = AddcartApi();
+  final AddcartApi addCartApi;
 
-  late AddCartModel addCartModel;
-
-  AddCartBloc() : super(AddCartInitial()) {
-    on<fetchAddCart>((event, emit) async {
-      emit(AddCartLoading());
+  AddCartBloc({required this.addCartApi}) : super(AddCartInitial()) {
+    on<FetchAddCart>((event, emit) async {
       try {
-        addCartModel = await addcartApi.getAddCartModel();
-        emit(AddCartLoaded());
+        emit(AddCartLoading());
+        final addCartModel = await addCartApi.getAddCartModel(
+          event.productId,
+          event.quantity,
+        );
+        emit(AddCartLoaded(addCartModel));
       } catch (e) {
-        print(e);
+        emit(AddCartError('Failed to add to cart: $e'));
       }
-      emit(AddCartError());
-
-      // TODO: implement event handler
     });
   }
 }

@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:modern_grocery/bloc/GetAllBannerBloc/bloc/get_all_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/GetCategoryProducts/bloc/get_category_products_bloc.dart';
 import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
@@ -28,6 +29,10 @@ class _HomePageState extends State<HomePage> {
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
     BlocProvider.of<GetAllBannerBloc>(context).add(fetchGetAllBanner());
     BlocProvider.of<OfferproductBloc>(context).add(fetchOfferproductEvent());
+    BlocProvider.of<GetCategoryProductsBloc>(context)
+        .add(FetchCategoryProducts(categoryId: '67fb1aa6b49a18abdf26144e'));
+    BlocProvider.of<GetCategoryProductsBloc>(context)
+        .add(FetchCategoryProducts(categoryId: '67ec290adaa2fb3cd2af3a2a'));
   }
 
   // Local fallback data
@@ -460,7 +465,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   }
-                  return const SizedBox.shrink();
+                  return const SizedBox();
                 },
               ),
             ),
@@ -470,14 +475,11 @@ class _HomePageState extends State<HomePage> {
                 if (state is OfferproductLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (state is OfferproductError) {
-                  return const Center(
-                      child: Text('Failed to load best deals',
-                          style: TextStyle(color: Colors.white)));
-                }
+
                 if (state is OfferproductLoaded) {
                   final bestDeals = BlocProvider.of<OfferproductBloc>(context)
                       .offerproductModel;
+                  print('bloc loaded successfully');
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -508,9 +510,25 @@ class _HomePageState extends State<HomePage> {
                         height: 200.h,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: bestDeals.data?.length ?? 0,
+                          itemCount: bestDeals.data?.length,
                           itemBuilder: (context, index) {
                             final product = bestDeals.data![index];
+                            // print(bestDeals.data!.length);
+
+                            // // Debug prints to identify the issue
+                            // print(
+                            //     'Debug - product.name: ${product.name} (${product.name.runtimeType})');
+                            // print(
+                            //     'Debug - product.basePrice: ${product.basePrice} (${product.basePrice.runtimeType})');
+                            // print(
+                            //     'Debug - product.v: ${product.v} (${product.v.runtimeType})');
+                            // print(
+                            //     'Debug - product.images: ${product.images} (${product.images.runtimeType})');
+                            // if (product.images?.isNotEmpty ?? false) {
+                            //   print(
+                            //       'Debug - first image: ${product.images![0]} (${product.images![0].runtimeType})');
+                            // }
+
                             return Padding(
                               padding: EdgeInsets.only(
                                   left: index == 0 ? 20.w : 10.w, right: 10.w),
@@ -519,18 +537,23 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProductDetails(productId: ''),
+                                      builder: (context) => ProductDetails(
+                                        productId: product.id.toString(),
+                                      ),
                                     ),
                                   );
                                 },
                                 child: ProductCard(
                                   product: {
-                                    'name': product.name ?? 'Unknown',
-                                    'price': product.basePrice ?? '₹0',
+                                    'name':
+                                        (product.name ?? 'Unknown').toString(),
+                                    'price': (product.basePrice ?? 0)
+                                        .toString(), // Convert int to String
                                     'rating': product.v ?? 0,
-                                    'image': product.images ??
-                                        'assets/placeholder.png',
+                                    'image':
+                                        (product.images?.isNotEmpty ?? false)
+                                            ? product.images![0].toString()
+                                            : 'assets/placeholder.png',
                                   },
                                 ),
                               ),
@@ -540,8 +563,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   );
+                } else if (state is OfferproductError) {
+                  return const Center(
+                      child: Text('Failed to load best deals',
+                          style: TextStyle(color: Colors.white)));
+                } else {
+                  return const SizedBox.shrink();
                 }
-                return const SizedBox.shrink();
               },
             ),
             // Beverages Section
@@ -568,32 +596,58 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 200.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: beverages.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        left: index == 0 ? 20.w : 10.w, right: 10.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                            productId: ''
-                            ),
+            BlocBuilder<GetCategoryProductsBloc, GetCategoryProductsState>(
+              builder: (context, state) {
+                if (state is GetCategoryProductsLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GetCategoryProductsLoaded) {
+                  final beverages = context
+                      .read<GetCategoryProductsBloc>()
+                      .getCategoryProductsModel;
+
+                  // Check if data exists and is not empty
+                  if (beverages.data == null || beverages.data!.isEmpty) {
+                    return const Text("No beverages available");
+                  }
+
+                  return SizedBox(
+                    height: 200.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: beverages.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 10.w,
+                            right: 10.w,
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                    productId: beverages.data![index].id ?? '',
+                                  ),
+                                ),
+                              );
+                            },
+                            // Fix: Access the list item from beverages.data
+                            child: ProductCard(
+                                product: beverages.data![index].toJson()),
                           ),
                         );
                       },
-                      child: ProductCard(product: beverages[index]),
                     ),
                   );
-                },
-              ),
+                } else if (state is GetCategoryProductsError) {
+                  return const Text("Failed to load beverages");
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
             ),
+
             // Vegetables Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -618,31 +672,82 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 200.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: vegetables.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        left: index == 0 ? 20.w : 10.w, right: 10.w),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetails(
-                              productId: ''
+            BlocBuilder<GetCategoryProductsBloc, GetCategoryProductsState>(
+              builder: (context, state) {
+                if (state is GetCategoryProductsLoading) {
+                  return SizedBox(
+                    height: 200.h,
+                    child: const Center(child: CircularProgressIndicator()),
+                  );
+                } else if (state is GetCategoryProductsLoaded) {
+                  final vegetables = context
+                      .read<GetCategoryProductsBloc>()
+                      .getCategoryProductsModel;
+
+                  // Check if data exists and is not empty
+                  if (vegetables.data == null || vegetables.data!.isEmpty) {
+                    return SizedBox(
+                      height: 200.h,
+                      child: const Center(
+                        child: Text(
+                          "No vegetables available",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return SizedBox(
+                    height: 200.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: vegetables.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 10.w,
+                            right: 10.w,
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetails(
+                                    // Pass the actual product ID
+                                    productId: vegetables.data![index].id ?? '',
+                                  ),
+                                ),
+                              );
+                            },
+                            child: ProductCard(
+                              product: vegetables.data![index].toJson(),
                             ),
                           ),
                         );
                       },
-                      child: ProductCard(product: vegetables[index]),
                     ),
                   );
-                },
-              ),
+                } else if (state is GetCategoryProductsError) {
+                  return SizedBox(
+                    height: 200.h,
+                    child: const Center(
+                      child: Text(
+                        "Failed to load vegetables",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 200.h,
+                    child: const SizedBox.shrink(),
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -686,7 +791,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
+                    child: Image.network(
                       product['image'] ?? 'assets/placeholder.png',
                       fit: BoxFit.cover,
                     ),

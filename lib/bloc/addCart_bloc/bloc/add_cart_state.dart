@@ -3,10 +3,18 @@ part of 'add_cart_bloc.dart';
 @immutable
 sealed class AddCartState {}
 
-final class AddCartInitial extends AddCartState {}
+class AddCartInitial extends AddCartState {}
 
-final class AddCartLoading extends AddCartState {}
+class AddCartLoading extends AddCartState {}
 
-final class AddCartLoaded extends AddCartState {}
+class AddCartLoaded extends AddCartState {
+  final AddCartModel addCartModel;
 
-final class AddCartError extends AddCartState {}
+  AddCartLoaded(this.addCartModel);
+}
+
+class AddCartError extends AddCartState {
+  final String message;
+
+  AddCartError(this.message);
+}

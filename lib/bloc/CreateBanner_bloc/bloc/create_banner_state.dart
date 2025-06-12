@@ -1,12 +1,20 @@
 part of 'create_banner_bloc.dart';
 
 @immutable
-sealed class CreateBannerState {}
+abstract class CreateBannerState {}
 
-final class CreateBannerInitial extends CreateBannerState {}
+class CreateBannerInitial extends CreateBannerState {}
 
-final class CreateBannerLoading extends CreateBannerState {}
+class CreateBannerLoading extends CreateBannerState {}
 
-final class CreateBannerLoaded extends CreateBannerState {}
+class CreateBannerLoaded extends CreateBannerState {
+  final CreateBannerModel result;
 
-final class CreateBannerError extends CreateBannerState {}
+  CreateBannerLoaded({required this.result});
+}
+
+class CreateBannerError extends CreateBannerState {
+  final String message;
+
+  CreateBannerError({required this.message});
+}

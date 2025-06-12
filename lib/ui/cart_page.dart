@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modern_grocery/bloc/GetAllUserCart/bloc/get_all_user_cart_bloc.dart';
+import 'package:modern_grocery/repositery/api/getAllUserCart_api.dart';
+import 'package:modern_grocery/repositery/model/getAllUserCart_model.dart';
 import 'package:modern_grocery/ui/delivery_address.dart';
 
 class CartPage extends StatefulWidget {
@@ -9,17 +13,14 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  final List<Map<String, dynamic>> favourites = [
-    {'name': 'Banana', 'image': 'assets/Banana.png', 'price': 80, 'mrp': 100},
-    {'name': 'Carrot', 'image': 'assets/Carrot.png', 'price': 80, 'mrp': 100},
-    {'name': 'Onion', 'image': 'assets/Onion.png', 'price': 80, 'mrp': 100},
-    {'name': 'Papaya', 'image': 'assets/Pappaya.png', 'price': 80, 'mrp': 100},
-    {'name': 'Potato', 'image': 'assets/Potato.png', 'price': 80, 'mrp': 100},
-    {'name': 'Tomato', 'image': 'assets/Tomato.png', 'price': 80, 'mrp': 100},
-    {'name': 'Orange', 'image': 'assets/Orange.png', 'price': 80, 'mrp': 100},
-  ];
-
   String selectedPaymentMethod = 'Cash on Delivery';
+
+  @override
+  void initState() {
+    super.initState();
+    // Trigger the API call when the page loads
+    context.read<GetAllUserCartBloc>().add(fetchGetAllUserCartEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,6 @@ class _CartPageState extends State<CartPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // const SizedBox(height: 63),
             Row(
               children: const [
                 SizedBox(width: 40),
@@ -47,14 +47,51 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 120 * 7,
-              // MediaQuery.of(context).size.height - 250, // Adjust as needed
-              child: Column(
-                children: favourites.map((item) {
-                  return FavouriteItemCard(item: item);
-                }).toList(),
-              ),
+            BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
+              builder: (context, state) {
+                if (state is GetAllUserCartLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GetAllUserCartLoaded) {
+                  final cartModel =
+                      context.read<GetAllUserCartBloc>().getAllUserCartModel;
+
+                  // Check if cart model is null or cart items are empty
+                  if (cartModel == null ||
+                      cartModel.data == null ||
+                      cartModel.data?.allCartItems == null ||
+                      cartModel.data!.allCartItems!.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'Your cart is empty',
+                        style: TextStyle(color: Colors.white70, fontSize: 18),
+                      ),
+                    );
+                  }
+
+                  final cartItems = cartModel.data?.allCartItems!;
+                  return SizedBox(
+                    height: 120 * cartItems!.length.toDouble(),
+                    child: Column(
+                      children: cartItems.map((item) {
+                        return FavouriteItemCard(item: {
+                          'name': item.productId ?? 'Unknown Item',
+                          'image': item.quantity ?? 'assets/placeholder.png',
+                          'price': item.unit ?? 0.0,
+                          'mrp': item.quantity ?? item.totalAmount ?? 0.0,
+                        });
+                      }).toList(),
+                    ),
+                  );
+                } else if (state is GetAllUserCartError) {
+                  return const Center(
+                    child: Text(
+                      'Error loading cart items',
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
             ),
             _buildCheckoutSection(),
           ],
@@ -73,7 +110,6 @@ class _CartPageState extends State<CartPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Promo Code Section
           Row(
             children: [
               Expanded(
@@ -102,24 +138,36 @@ class _CartPageState extends State<CartPage> {
             ],
           ),
           const SizedBox(height: 30),
-
-          // Price Details
-          _buildPriceRow('Price', '₹630.00'),
-          _buildPriceRow('Discount', '₹5.00'),
-          _buildPriceRow('Delivery Charge', '₹20.00'),
-          const Divider(color: Colors.white70),
-          _buildPriceRow('Grand Total', '₹725', isBold: true),
+          BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
+            builder: (context, state) {
+              double totalPrice = 0;
+              if (state is GetAllUserCartLoaded) {
+                final cartModel =
+                    context.read<GetAllUserCartBloc>().getAllUserCartModel;
+                if (cartModel != null &&
+                    cartModel.data != null &&
+                    cartModel.data?.allCartItems != null) {}
+              }
+              return Column(
+                children: [
+                  _buildPriceRow('Price', '₹${totalPrice.toStringAsFixed(2)}'),
+                  _buildPriceRow('Discount', '₹5.00'),
+                  _buildPriceRow('Delivery Charge', '₹20.00'),
+                  const Divider(color: Colors.white70),
+                  _buildPriceRow(
+                      'Grand Total', '₹${(totalPrice + 15).toStringAsFixed(2)}',
+                      isBold: true),
+                ],
+              );
+            },
+          ),
           const SizedBox(height: 30),
-
-          // Payment Method
           const Text('Payment Method',
               style: TextStyle(color: Colors.white, fontSize: 18)),
           const SizedBox(height: 10),
           _buildPaymentOption('Cash on Delivery'),
           _buildPaymentOption('Payfort'),
           const SizedBox(height: 20),
-
-          // Place Order Button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -174,8 +222,8 @@ class _CartPageState extends State<CartPage> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: selectedPaymentMethod == method
-                ? Color(0xFFF5E9B5)!
-                : Colors.transparent,    
+                ? Color(0xFFF5E9B5)
+                : Colors.transparent,
           ),
         ),
         child: Row(
@@ -206,10 +254,24 @@ class FavouriteItemCard extends StatefulWidget {
 }
 
 class _FavouriteItemCardState extends State<FavouriteItemCard> {
-  int count = 1;
+  late int count;
+
+  @override
+  void initState() {
+    super.initState();
+    count =
+        (widget.item['quantity'] as int?) ?? 1; // Initialize with item quantity
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Parse price and mrp, handling String or null cases
+    final price = _parseDouble(widget.item['price']) ?? 0.0;
+    final mrp =
+        _parseDouble(widget.item['mrp']) ?? 1.0; // Avoid division by zero
+    final discountPercentage =
+        mrp > 0 ? ((1 - price / mrp) * 100).toStringAsFixed(0) : '0';
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(8),
@@ -227,7 +289,15 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               color: const Color(0xF4CCC9BC),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Image.asset(widget.item['image'], fit: BoxFit.contain),
+            child: widget.item['image'] != null
+                ? Image.asset(
+                    widget.item['image'] as String,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => Image.asset(
+                        'assets/placeholder.png',
+                        fit: BoxFit.contain),
+                  )
+                : Image.asset('assets/placeholder.png', fit: BoxFit.contain),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -235,7 +305,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.item['name'],
+                  widget.item['name'] as String? ?? 'Unknown Item',
                   style: const TextStyle(
                     color: Color(0xFFFCF8E8),
                     fontSize: 18,
@@ -243,7 +313,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ),
                 ),
                 Text(
-                  'MRP ₹${widget.item['mrp']}',
+                  'MRP ₹${mrp.toStringAsFixed(2)}',
                   style: const TextStyle(
                     color: Color(0xCEB4B2A9),
                     fontSize: 12,
@@ -251,7 +321,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ),
                 ),
                 Text(
-                  '${((1 - widget.item['price'] / widget.item['mrp']) * 100).toStringAsFixed(0)}% OFF',
+                  '$discountPercentage% OFF',
                   style: const TextStyle(
                     color: Color(0xCE7FFC83),
                     fontSize: 12,
@@ -259,7 +329,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ),
                 ),
                 Text(
-                  '₹${widget.item['price']}',
+                  '₹${price.toStringAsFixed(2)}',
                   style: const TextStyle(
                     color: Color(0xFFFCF8E8),
                     fontSize: 14,
@@ -272,9 +342,10 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
           Row(
             children: [
               _quantityButton('-', () {
-                setState(() {
-                  if (count > 1) count--;
-                });
+                if (count > 1) {
+                  setState(() => count--);
+                  // _updateQuantity(context);
+                }
               }),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -291,9 +362,8 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                 ),
               ),
               _quantityButton('+', () {
-                setState(() {
-                  count++;
-                });
+                setState(() => count++);
+                // _updateQuantity(context);
               }),
             ],
           ),
@@ -313,5 +383,21 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
         onPressed: onPressed,
       ),
     );
+  }
+
+  // void _updateQuantity(BuildContext context) {
+  //   context.read<GetAllUserCartBloc>().add(
+  //         UpdateCartItemQuantityEvent(
+  //           productId: widget.item['name'] as String,
+  //           quantity: count,
+  //         ),
+  //       );
+  // }
+
+  double? _parseDouble(dynamic value) {
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
   }
 }

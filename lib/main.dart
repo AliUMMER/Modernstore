@@ -6,7 +6,9 @@ import 'package:modern_grocery/bloc/CreateBanner_bloc/bloc/create_banner_bloc.da
 import 'package:modern_grocery/bloc/CreateCategory/bloc/create_category_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllBannerBloc/bloc/get_all_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/GetAllUserCart/bloc/get_all_user_cart_bloc.dart';
 import 'package:modern_grocery/bloc/GetById/bloc/getbyid_bloc.dart';
+import 'package:modern_grocery/bloc/GetCategoryProducts/bloc/get_category_products_bloc.dart';
 import 'package:modern_grocery/bloc/GetToWishlist_bloc/bloc/get_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/addCart_bloc/bloc/add_cart_bloc.dart';
 import 'package:modern_grocery/bloc/addDeliveryAddress/bloc/add_delivery_address_bloc.dart';
@@ -16,8 +18,11 @@ import 'package:modern_grocery/bloc/login/bloc/login_bloc.dart';
 import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
+import 'package:modern_grocery/repositery/api/addCart_api.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/api/createCategory_api.dart';
+import 'package:modern_grocery/repositery/api/createbanner_api.dart';
+import 'package:modern_grocery/repositery/api/getbyidproduct_api.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
 // String basePath = "http://192.168.223.203:4055/api";
@@ -49,10 +54,13 @@ class MyApp extends StatelessWidget {
               create: (context) => AddDeliveryAddressBloc(),
             ),
             BlocProvider(
-              create: (context) => AddCartBloc(),
+              create: (context) => AddCartBloc(
+                addCartApi: AddcartApi(apiClient: ApiClient()),
+              ),
             ),
             BlocProvider(
-              create: (context) => GetbyidBloc(),
+              create: (context) =>
+                  GetbyidBloc(getbyidproductApi: GetbyidproductApi()),
             ),
             BlocProvider(
               create: (context) => GetAllBannerBloc(),
@@ -82,7 +90,13 @@ class MyApp extends StatelessWidget {
               create: (context) => GetToWishlistBloc(),
             ),
             BlocProvider(
-              create: (context) => CreateBannerBloc(),
+              create: (context) => CreateBannerBloc(api: CreatebannerApi()),
+            ),
+            BlocProvider(
+              create: (context) => GetCategoryProductsBloc(),
+            ),
+            BlocProvider(
+              create: (context) => GetAllUserCartBloc(),
             ),
           ],
           child: MaterialApp(

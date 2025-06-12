@@ -1,25 +1,32 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/CreateBanner_api.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
+import 'package:modern_grocery/repositery/api/createbanner_api.dart';
 import 'package:modern_grocery/repositery/model/CreateBanner_model.dart';
+import 'package:meta/meta.dart';
 
 part 'create_banner_event.dart';
 part 'create_banner_state.dart';
 
 class CreateBannerBloc extends Bloc<CreateBannerEvent, CreateBannerState> {
-  CreatebannerApi createbannerApi = CreatebannerApi();
+  final CreatebannerApi api;
 
-  late CreateBannerModel createBannerModel;
-  CreateBannerBloc() : super(CreateBannerInitial()) {
-    on<fetchCreateBannerEvent>((event, emit) async {
+  CreateBannerBloc({required this.api}) : super(CreateBannerInitial()) {
+    on<FetchCreateBannerEvent>((event, emit) async {
       emit(CreateBannerLoading());
       try {
-        createBannerModel = await createbannerApi.getCreateBannerModel();
+        final result = await api.uploadBanner(
+          title: event.title,
+          category: event.category,
+          type: event.type,
+          categoryId: event.categoryId,
+          link: event.link,
+          imagePath: event.imagePath,
+          onSendProgress: event.onSendProgress,
+        );
+        emit(CreateBannerLoaded(result: result));
       } catch (e) {
-        print(e);
-        emit(CreateBannerError());
+        emit(CreateBannerError(message: e.toString()));
       }
-      // TODO: implement event handler
     });
   }
 }

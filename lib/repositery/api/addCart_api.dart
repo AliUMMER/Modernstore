@@ -1,23 +1,33 @@
 import 'dart:convert';
-
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/addCart_model.dart';
 
 class AddcartApi {
-  ApiClient apiClient = ApiClient();
+  final ApiClient apiClient;
 
-  Future<AddCartModel> getAddCartModel() async {
-    String trendingpath = '/cart/user/addToCart';
+  AddcartApi({required this.apiClient});
 
-    var body = {"productId": "6804e14c411ef49d675abd15", "qnt": 1};
+  Future<void> addToCart(String productId, int quantity) async {
+    const String path = '/cart/user/addToCart'; // Use the correct endpoint from the error log
+    if (productId.isEmpty || productId.length != 24) {
+      throw Exception('Invalid product ID');
+    }
 
-    Response response = await apiClient.invokeAPI(
-      trendingpath,
-      'POST',
-      jsonEncode(body) as Map<String, dynamic>?,
-    );
+    final Map<String, dynamic> body = {
+      'productId': productId, // Ensure this matches the API's expected field name
+      'quantity': quantity,
+    };
 
-    return AddCartModel.fromJson(jsonDecode(response.body));
+    try {
+      Response response = await apiClient.invokeAPI(path, 'POST', body);
+      if (response.statusCode != 200) {
+        final errorResponse = json.decode(response.body);
+        throw Exception(errorResponse['message'] ?? 'Failed to add to cart');
+      }
+    } catch (e) {
+      throw Exception('API call failed: $e');
+    }
   }
+
+  getAddCartModel(String productId, int quantity) {}
 }

@@ -1,132 +1,136 @@
 class GetByIdProduct {
-  bool? success;
+  bool success;
   Data? data;
 
-  GetByIdProduct({this.success, this.data});
+  GetByIdProduct({required this.success, this.data});
 
-  GetByIdProduct.fromJson(Map<String, dynamic> json) {
-    if (json["success"] is bool) {
-      success = json["success"];
-    }
-    if (json["data"] is Map) {
-      data = json["data"] == null ? null : Data.fromJson(json["data"]);
-    }
-  }
-
-  static List<GetByIdProduct> fromList(List<Map<String, dynamic>> list) {
-    return list.map(GetByIdProduct.fromJson).toList();
+  factory GetByIdProduct.fromJson(Map<String, dynamic> json) {
+    return GetByIdProduct(
+      success: json['success'] ?? false,
+      data: json['data'] != null ? Data.fromJson(json['data']) : null,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["success"] = success;
-    if (data != null) {
-      _data["data"] = data?.toJson();
-    }
-    return _data;
+    return {
+      'success': success,
+      'data': data?.toJson(),
+    };
   }
 }
 
 class Data {
-  String? id;
-  String? name;
-  String? description;
-  String? details;
-  List<String>? images;
-  String? category;
-  int? basePrice;
-  int? discountPercentage;
-  String? unit;
-  String? sku;
-  String? slug;
-  String? createdAt;
-  String? updatedAt;
-  int? v;
+  String id;
+  String name;
+  String description;
+  String details;
+  List<String> images;
+  Category category;
+  double basePrice;
+  double discountPercentage;
+  String unit;
+  String sku;
+  String slug;
+  String createdAt;
+  String updatedAt;
+  int v;
+  bool inWishlist;
 
-  Data(
-      {this.id,
-      this.name,
-      this.description,
-      this.details,
-      this.images,
-      this.category,
-      this.basePrice,
-      this.discountPercentage,
-      this.unit,
-      this.sku,
-      this.slug,
-      this.createdAt,
-      this.updatedAt,
-      this.v});
+  Data({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.details,
+    required this.images,
+    required this.category,
+    required this.basePrice,
+    required this.discountPercentage,
+    required this.unit,
+    required this.sku,
+    required this.slug,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.v,
+    required this.inWishlist,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    if (json["_id"] is String) {
-      id = json["_id"];
-    }
-    if (json["name"] is String) {
-      name = json["name"];
-    }
-    if (json["description"] is String) {
-      description = json["description"];
-    }
-    if (json["details"] is String) {
-      details = json["details"];
-    }
-    if (json["images"] is List) {
-      images =
-          json["images"] == null ? null : List<String>.from(json["images"]);
-    }
-    if (json["category"] is String) {
-      category = json["category"];
-    }
-    if (json["basePrice"] is int) {
-      basePrice = json["basePrice"];
-    }
-    if (json["discountPercentage"] is int) {
-      discountPercentage = json["discountPercentage"];
-    }
-    if (json["unit"] is String) {
-      unit = json["unit"];
-    }
-    if (json["sku"] is String) {
-      sku = json["sku"];
-    }
-    if (json["slug"] is String) {
-      slug = json["slug"];
-    }
-    if (json["createdAt"] is String) {
-      createdAt = json["createdAt"];
-    }
-    if (json["updatedAt"] is String) {
-      updatedAt = json["updatedAt"];
-    }
-    if (json["__v"] is int) {
-      v = json["__v"];
-    }
-  }
+  factory Data.fromJson(Map<String, dynamic> json) {
+    final List<String> imageUrls = (json['images'] as List<dynamic>? ?? [])
+        .map((url) => url.toString().replaceFirst('http://localhost:4055', 'http://192.168.15.66:4055'))
+        .toList();
 
-  static List<Data> fromList(List<Map<String, dynamic>> list) {
-    return list.map(Data.fromJson).toList();
+    return Data(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      details: json['details'] ?? '',
+      images: imageUrls,
+      category: Category.fromJson(json['category'] ?? {}),
+      basePrice: (json['basePrice']?.toDouble() ?? 0.0),
+      discountPercentage: (json['discountPercentage']?.toDouble() ?? 0.0),
+      unit: json['unit'] ?? '',
+      sku: json['sku'] ?? '',
+      slug: json['slug'] ?? '',
+      createdAt: json['createdAt'] ?? '',
+      updatedAt: json['updatedAt'] ?? '',
+      v: json['__v'] ?? 0,
+      inWishlist: json['inWishlist'] ?? false,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["_id"] = id;
-    _data["name"] = name;
-    _data["description"] = description;
-    _data["details"] = details;
-    if (images != null) {
-      _data["images"] = images;
-    }
-    _data["category"] = category;
-    _data["basePrice"] = basePrice;
-    _data["discountPercentage"] = discountPercentage;
-    _data["unit"] = unit;
-    _data["sku"] = sku;
-    _data["slug"] = slug;
-    _data["createdAt"] = createdAt;
-    _data["updatedAt"] = updatedAt;
-    _data["__v"] = v;
-    return _data;
+    return {
+      '_id': id,
+      'name': name,
+      'description': description,
+      'details': details,
+      'images': images,
+      'category': category.toJson(),
+      'basePrice': basePrice,
+      'discountPercentage': discountPercentage,
+      'unit': unit,
+      'sku': sku,
+      'slug': slug,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      '__v': v,
+      'inWishlist': inWishlist,
+    };
+  }
+}
+
+class Category {
+  String id;
+  String name;
+  String description;
+  String image;
+  int v;
+
+  Category({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.image,
+    required this.v,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      image: json['image'] ?? '',
+      v: json['__v'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'description': description,
+      'image': image,
+      '__v': v,
+    };
   }
 }
