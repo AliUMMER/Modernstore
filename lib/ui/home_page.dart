@@ -11,8 +11,8 @@ import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
 import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 import 'package:modern_grocery/repositery/model/offerproduct%20model.dart';
-import 'package:modern_grocery/ui/fruites_page.dart';
-import 'package:modern_grocery/ui/product_details.dart';
+import 'package:modern_grocery/ui/products/fruites_page.dart';
+import 'package:modern_grocery/ui/products/product_details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

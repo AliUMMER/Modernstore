@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:modern_grocery/ui/enter_screen.dart';
+import 'package:modern_grocery/ui/auth_/enter_screen.dart';
 import 'package:modern_grocery/ui/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

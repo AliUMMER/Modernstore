@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:modern_grocery/ui/manual_location.dart';
+import 'package:modern_grocery/ui/delivery/manual_location.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key});

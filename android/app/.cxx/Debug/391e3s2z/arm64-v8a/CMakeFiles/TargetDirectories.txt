@@ -1,0 +1,2 @@
+C:/Users/Rootsys-12/Desktop/SALiM/flutter basic/work/Modernstore/android/app/.cxx/Debug/391e3s2z/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Rootsys-12/Desktop/SALiM/flutter basic/work/Modernstore/android/app/.cxx/Debug/391e3s2z/arm64-v8a/CMakeFiles/rebuild_cache.dir

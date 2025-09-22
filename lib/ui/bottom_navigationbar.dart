@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:modern_grocery/ui/cart_page.dart';
+import 'package:modern_grocery/ui/cart_/cart_page.dart';
 import 'package:modern_grocery/ui/favourite_page.dart';
 import 'package:modern_grocery/ui/home_page.dart';
 import 'package:modern_grocery/ui/profile_page.dart';
-import 'package:modern_grocery/ui/search_page.dart';
+import 'package:modern_grocery/ui/products/search_page.dart';
 
 class NavigationBarWidget extends StatefulWidget {
   const NavigationBarWidget({super.key});
