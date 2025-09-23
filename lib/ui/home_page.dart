@@ -10,6 +10,8 @@ import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/ui/products/product_details.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -260,10 +262,9 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Location',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xADFCF8E8),
                               fontSize: 15.sp,
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -276,10 +277,10 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(width: 5.w),
                           Text(
                             'Tirur ITC road',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: const Color(0xFFFCF8E8),
                               fontSize: 16.sp,
-                              fontFamily: 'Poppins',
+                          
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -333,9 +334,9 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
                 if (state is GetAllBannerError) {
-                  return const Center(
+                  return Center(
                       child: Text('Failed to load banners',
-                          style: TextStyle(color: Colors.white)));
+                          style: GoogleFonts.poppins(color: Colors.white)));
                 }
                 if (state is GetAllBannerLoaded) {
                   final banner = BlocProvider.of<GetAllBannerBloc>(context)
@@ -383,9 +384,9 @@ class _HomePageState extends State<HomePage> {
                       : Container(
                           height: 200.h,
                           color: Colors.grey[800],
-                          child: const Center(
+                          child:  Center(
                               child: Text('No banners available',
-                                  style: TextStyle(color: Colors.white))),
+                                  style: GoogleFonts.poppins(color: Colors.white))),
                         );
                 }
                 return const SizedBox.shrink();
@@ -400,17 +401,17 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     'Categories',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFFFCF8E8),
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child:  Text(
                       'See All',
-                      style: TextStyle(color: Color(0xFFDDD2A3)),
+                      style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
                   ),
                 ],
@@ -460,9 +461,9 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                   if (state is GetAllCategoriesError) {
-                    return const Center(
+                    return  Center(
                         child: Text('Failed to load categories',
-                            style: TextStyle(color: Colors.white)));
+                            style: GoogleFonts.poppins(color: Colors.white)));
                   }
                   if (state is GetAllCategoriesLoaded) {
                     final data = BlocProvider.of<GetAllCategoriesBloc>(context)
@@ -511,7 +512,7 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   categoryName,
                                   style:
-                                      const TextStyle(color: Color(0xFFFCF8E8)),
+                                       GoogleFonts.poppins(color: Color(0xFFFCF8E8)),
                                 ),
                               ],
                             ),
@@ -545,17 +546,17 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text(
                               'Best Deals',
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 color: const Color(0xFFFCF8E8),
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             TextButton(
                               onPressed: () {},
-                              child: const Text(
+                              child:  Text(
                                 'See All',
-                                style: TextStyle(color: Color(0xFFDDD2A3)),
+                                style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                               ),
                             ),
                           ],
@@ -619,9 +620,9 @@ class _HomePageState extends State<HomePage> {
                     ],
                   );
                 } else if (state is OfferproductError) {
-                  return const Center(
+                  return  Center(
                       child: Text('Failed to load best deals',
-                          style: TextStyle(color: Colors.white)));
+                          style: GoogleFonts.poppins(color: Colors.white)));
                 } else {
                   return const SizedBox.shrink();
                 }
@@ -635,7 +636,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     'Beverages',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFFFCF8E8),
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
@@ -643,9 +644,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child:  Text(
                       'See All',
-                      style: TextStyle(color: Color(0xFFDDD2A3)),
+                      style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
                   ),
                 ],
@@ -711,7 +712,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     'Vegetables',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: const Color(0xFFFCF8E8),
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
@@ -719,9 +720,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child:  Text(
                       'See All',
-                      style: TextStyle(color: Color(0xFFDDD2A3)),
+                      style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
                   ),
                 ],
@@ -743,10 +744,10 @@ class _HomePageState extends State<HomePage> {
                   if (vegetables.data == null || vegetables.data!.isEmpty) {
                     return SizedBox(
                       height: 200.h,
-                      child: const Center(
+                      child:  Center(
                         child: Text(
                           "No vegetables available",
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             color: Colors.grey,
                             fontSize: 16,
                           ),
@@ -789,10 +790,10 @@ class _HomePageState extends State<HomePage> {
                 } else if (state is GetCategoryProductsError) {
                   return SizedBox(
                     height: 200.h,
-                    child: const Center(
+                    child:  Center(
                       child: Text(
                         "Failed to load vegetables",
-                        style: TextStyle(color: Colors.red),
+                        style: GoogleFonts.poppins(color: Colors.red),
                       ),
                     ),
                   );
@@ -874,7 +875,7 @@ class ProductCard extends StatelessWidget {
           SizedBox(height: 10.h),
           Text(
             product['name'] ?? 'Unknown',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: const Color(0xFFFCF8E8),
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
@@ -899,7 +900,7 @@ class ProductCard extends StatelessWidget {
           SizedBox(height: 5.h),
           Text(
             product['price'] ?? '₹0',
-            style: TextStyle(color: const Color(0xFFFFFFFF), fontSize: 13.sp),
+            style: GoogleFonts.poppins(color: const Color(0xFFFFFFFF), fontSize: 13.sp),
           ),
         ],
       ),

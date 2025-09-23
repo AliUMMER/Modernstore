@@ -1,0 +1,2 @@
+C:/Users/hii/Documents/new projects/freelance_work/Modernstore/android/app/.cxx/Debug/2a6145r2/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/hii/Documents/new projects/freelance_work/Modernstore/android/app/.cxx/Debug/2a6145r2/x86_64/CMakeFiles/rebuild_cache.dir
