@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modern_grocery/bloc/createProduct/bloc/create_product_bloc.dart';
+
+import 'package:modern_grocery/bloc/createProduct/create_product_bloc.dart';
 import 'package:modern_grocery/bloc/get_all_product/get_all_product_bloc.dart';
 import 'package:modern_grocery/repositery/model/getAllProduct.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:badges/badges.dart' as badges;
 
-import 'package:modern_grocery/bloc/createProduct/bloc/create_product_bloc.dart';
+
 
 // Constants for reusability
 class _AppConstants {

@@ -1,18 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:modern_grocery/bloc/GetAllBannerBloc/bloc/get_all_banner_bloc.dart';
+import 'package:modern_grocery/bloc/GetAllBannerBloc/get_all_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/GetCategoryProducts/bloc/get_category_products_bloc.dart';
+import 'package:modern_grocery/bloc/GetCategoryProducts/get_category_products_bloc.dart';
 import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
-import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
-import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
-import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
-import 'package:modern_grocery/repositery/model/offerproduct%20model.dart';
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/ui/products/product_details.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -261,9 +258,6 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.location_on_sharp,
-                              color: Color(0xFFF5E9B5)),
-                          SizedBox(width: 5.w),
                           Text(
                             'Location',
                             style: TextStyle(
@@ -277,6 +271,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Row(
                         children: [
+                          Icon(Icons.location_on_sharp,
+                              color: Color(0xFFF5E9B5)),
+                          SizedBox(width: 5.w),
                           Text(
                             'Tirur ITC road',
                             style: TextStyle(
@@ -301,7 +298,39 @@ class _HomePageState extends State<HomePage> {
             BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
               builder: (context, state) {
                 if (state is GetAllBannerLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[900]!,
+                    highlightColor: Colors.grey[800]!,
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: 200.h,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: false,
+                        enlargeCenterPage: true,
+                        enlargeFactor: 0.3,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      items: [1, 2, 3].map((i) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0.r),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  );
                 }
                 if (state is GetAllBannerError) {
                   return const Center(
@@ -319,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                       ? CarouselSlider(
                           items: bannerImages.map((imageUrl) {
                             return ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(8.0.r),
                               child: CachedNetworkImage(
                                 imageUrl: imageUrl,
                                 fit: BoxFit.cover,
@@ -398,7 +427,37 @@ class _HomePageState extends State<HomePage> {
               child: BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
                 builder: (context, state) {
                   if (state is GetAllCategoriesLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey[900]!,
+                      highlightColor: Colors.grey[800]!,
+                      child: SizedBox(
+                        height: 120.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  left: index == 0 ? 20.w : 10.w, right: 10.w),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 40.r,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  Container(
+                                    width: 60.w,
+                                    height: 10.h,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
                   }
                   if (state is GetAllCategoriesError) {
                     return const Center(
@@ -439,10 +498,6 @@ class _HomePageState extends State<HomePage> {
                                         : CachedNetworkImage(
                                             imageUrl: imageUrl,
                                             fit: BoxFit.cover,
-                                            placeholder: (context, url) =>
-                                                const Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
                                             errorWidget:
                                                 (context, url, error) =>
                                                     Image.asset(

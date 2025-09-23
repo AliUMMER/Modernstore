@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:modern_grocery/bloc/addDeliveryAddress/bloc/add_delivery_address_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:modern_grocery/bloc/addDeliveryAddress/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/ui/admin/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/your_location.dart';
@@ -16,7 +16,7 @@ class ManualLocation extends StatefulWidget {
 }
 
 class _ManualLocationState extends State<ManualLocation> {
-  bool isAdmin = true; // Default is user
+  bool isAdmin =  true; // Default is user   // false for  Admin
   String currentLocation = "Use My Current Location";
   String? apiAddress;
   String selectedAddressType = 'current'; // 'current' or 'api'

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
-import 'package:modern_grocery/bloc/GetById/bloc/getbyid_bloc.dart';
-import 'package:modern_grocery/bloc/addCart_bloc/bloc/add_cart_bloc.dart';
+
+import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
+import 'package:modern_grocery/bloc/addCart_bloc/add_cart_bloc.dart';
+
 import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 import 'package:modern_grocery/ui/cart_/success_cart.dart';
 

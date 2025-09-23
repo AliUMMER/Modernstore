@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+
+import 'package:modern_grocery/bloc/createCategory/create_category_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as p;
-import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/CreateCategory/bloc/create_category_bloc.dart';
+
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 
 // Assuming Category is a class within GetAllCategoriesModel

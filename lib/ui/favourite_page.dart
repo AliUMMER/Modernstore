@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/GetToWishlist_bloc/bloc/get_to_wishlist_bloc.dart';
+import 'package:modern_grocery/bloc/GetToWishlist_bloc/get_to_wishlist_bloc.dart';
+
 import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
 
 class FavouritePage extends StatefulWidget {

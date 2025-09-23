@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:modern_grocery/bloc/CreateBanner_bloc/bloc/create_banner_bloc.dart';
+
+import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
 
 class _AppConstants {
   static const primaryColor = Color(0xFFF5E9B5);
