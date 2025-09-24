@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:fl_chart/fl_chart.dart';
-import 'package:modern_grocery/ui/cart_/upload_recentpage.dart';
+import 'package:modern_grocery/ui/admin/upload_recentpage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Dashboard extends StatefulWidget {
@@ -64,7 +64,7 @@ class _DashboardState extends State<Dashboard> {
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: TextField(
               style: TextStyle(color: const Color(0x91FCF8E8)),
@@ -88,8 +88,8 @@ class _DashboardState extends State<Dashboard> {
                   width: 383.w,
                   height: 222.h,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3C3C3C), // dark grey background
-                    borderRadius: BorderRadius.circular(20),
+                    color: const Color(0xFF3C3C3C), 
+                    borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Stack(
                     children: [

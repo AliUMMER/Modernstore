@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modern_grocery/ui/admin/admin_category.dart';
 import 'package:modern_grocery/ui/admin/admin_product.dart';
 import 'package:modern_grocery/ui/admin/admin_stock.dart';
-import 'package:modern_grocery/ui/dashboard.dart';
-import 'package:modern_grocery/ui/order_history.dart';
+import 'package:modern_grocery/ui/admin/dashboard.dart';
+import 'package:modern_grocery/ui/admin/order_history.dart';
 
 class AdminNavibar extends StatefulWidget {
   const AdminNavibar({super.key});

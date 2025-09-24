@@ -18,11 +18,11 @@ import 'package:modern_grocery/bloc/login/login_bloc.dart';
 import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
-import 'package:modern_grocery/repositery/api/addCart_api.dart';
+import 'package:modern_grocery/repositery/api/Cart/addCart_api.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/api/createCategory_api.dart';
+import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart';
 import 'package:modern_grocery/repositery/api/createbanner_api.dart';
-import 'package:modern_grocery/repositery/api/getbyidproduct_api.dart';
+import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
 import 'package:modern_grocery/ui/home_page.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
@@ -107,8 +107,8 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: HomePage(),
-            // SplashScreen(),
+            //home: HomePage(),
+             home: SplashScreen(),
           ),
         );
       },

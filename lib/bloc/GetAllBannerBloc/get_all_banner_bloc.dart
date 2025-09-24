@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/getAllBanner_api.dart';
+import 'package:modern_grocery/repositery/api/banner/getAllBanner_api.dart';
 import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
 
 part 'get_all_banner_event.dart';

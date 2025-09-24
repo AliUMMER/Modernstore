@@ -5,18 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
-
-class _AppConstants {
-  static const primaryColor = Color(0xFFF5E9B5);
-  static const backgroundColor = Color(0xFF0A0909);
-  static const textColor = Color(0xFFFCF8E8);
-  static const accentColor = Colors.green;
-  static const buttonColor = Color(0xFFFFF1C5);
-  static const dialogRadius = 12.0;
-  static const cardShadowColor = Colors.black54;
-  static const cardHeight = 270.0;
-  static const cardWidth = 190.0;
-}
+import 'package:modern_grocery/repositery/api/createbanner_api.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
 
 class RecentPage extends StatefulWidget {
   final String imagePath;
@@ -34,6 +24,12 @@ class _RecentPageState extends State<RecentPage> {
   final _categoryIdController = TextEditingController();
   final _linkController = TextEditingController();
   double _uploadProgress = 0.0;
+  late CreateBannerBloc _createBannerBloc;
+  @override
+  void initState() {
+    super.initState();
+    _createBannerBloc = CreateBannerBloc(api: CreatebannerApi());
+  }
 
   @override
   void dispose() {
@@ -42,6 +38,7 @@ class _RecentPageState extends State<RecentPage> {
     _typeController.dispose();
     _categoryIdController.dispose();
     _linkController.dispose();
+    _createBannerBloc.close();
     super.dispose();
   }
 
@@ -63,11 +60,13 @@ class _RecentPageState extends State<RecentPage> {
     try {
       final fileName = widget.imagePath.split('/').last;
       final extension = fileName.split('.').last.toLowerCase();
-      final contentType = MediaType('image', extension == 'png' ? 'png' : 'jpeg');
+      final contentType =
+          MediaType('image', extension == 'png' ? 'png' : 'jpeg');
 
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://modern-store-backend.onrender.com/api/banner/create'),
+        Uri.parse(
+            'https://modern-store-backend.onrender.com/api/banner/create'),
       )
         ..fields['title'] = _titleController.text
         ..fields['category'] = _categoryController.text
@@ -81,17 +80,24 @@ class _RecentPageState extends State<RecentPage> {
           contentType: contentType,
         ));
 
-      print('Multipart request prepared: fields=${request.fields}, files=${request.files.map((f) => f.filename).toList()}');
+      print(
+          'Multipart request prepared: fields=${request.fields}, files=${request.files.map((f) => f.filename).toList()}');
 
       context.read<CreateBannerBloc>().add(FetchCreateBannerEvent(
-        // formData: request,
-        onSendProgress: (sent, total) {
-          setState(() {
-            _uploadProgress = sent / total;
-            print('Upload progress: ${(_uploadProgress * 100).toStringAsFixed(2)}%');
-          });
-        }, title: '', category: '', type: '', categoryId: '', link: '', imagePath: '',
-      ));
+            // formData: request,
+
+            title: _titleController.text,
+            category: _categoryController.text,
+            type: _typeController.text,
+            categoryId: _categoryIdController.text,
+            link: _linkController.text,
+            imagePath: widget.imagePath,
+            onSendProgress: (sent, total) {
+              setState(() {
+                _uploadProgress = sent / total;
+              });
+            },
+          ));
     } catch (e) {
       print('Error preparing request: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -111,10 +117,10 @@ class _RecentPageState extends State<RecentPage> {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-        style: const TextStyle(color: _AppConstants.textColor),
+        style: const TextStyle(color: AppConstants.textColor),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: _AppConstants.textColor),
+          labelStyle: const TextStyle(color: AppConstants.textColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: const BorderSide(color: Colors.grey),
@@ -125,10 +131,10 @@ class _RecentPageState extends State<RecentPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: _AppConstants.accentColor),
+            borderSide: const BorderSide(color: AppConstants.accentColor),
           ),
           filled: true,
-          fillColor: _AppConstants.backgroundColor,
+          fillColor: AppConstants.backgroundColor,
         ),
         validator: isRequired
             ? (value) {
@@ -156,7 +162,7 @@ class _RecentPageState extends State<RecentPage> {
       return const Center(
         child: Text(
           'Image not found',
-          style: TextStyle(color: _AppConstants.textColor, fontSize: 16),
+          style: TextStyle(color: AppConstants.textColor, fontSize: 16),
         ),
       );
     }
@@ -165,10 +171,10 @@ class _RecentPageState extends State<RecentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _AppConstants.backgroundColor,
+      backgroundColor: AppConstants.backgroundColor,
       appBar: AppBar(
-        backgroundColor: _AppConstants.backgroundColor,
-        foregroundColor: _AppConstants.textColor,
+        backgroundColor: AppConstants.backgroundColor,
+        foregroundColor: AppConstants.textColor,
         title: const Text('Banner Management'),
         elevation: 0,
       ),
@@ -214,12 +220,13 @@ class _RecentPageState extends State<RecentPage> {
                       LinearProgressIndicator(
                         value: _uploadProgress,
                         backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(_AppConstants.accentColor),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppConstants.accentColor),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
-                        style: const TextStyle(color: _AppConstants.textColor),
+                        style: const TextStyle(color: AppConstants.textColor),
                       ),
                     ],
                   ),
@@ -227,7 +234,7 @@ class _RecentPageState extends State<RecentPage> {
                 const Text(
                   'Banner Details',
                   style: TextStyle(
-                    color: _AppConstants.textColor,
+                    color: AppConstants.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -275,7 +282,7 @@ class _RecentPageState extends State<RecentPage> {
                           ? 'Uploading...'
                           : 'Save Banner'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _AppConstants.buttonColor,
+                        backgroundColor: AppConstants.buttonColor,
                         foregroundColor: Colors.black,
                         minimumSize: const Size(double.infinity, 50),
                         textStyle: const TextStyle(fontSize: 18),

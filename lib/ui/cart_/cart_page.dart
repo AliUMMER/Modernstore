@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:modern_grocery/bloc/GetAllUserCart/get_all_user_cart_bloc.dart';
-import 'package:modern_grocery/repositery/api/getAllUserCart_api.dart';
+import 'package:modern_grocery/repositery/api/Cart/getAllUserCart_api.dart';
 import 'package:modern_grocery/repositery/model/getAllUserCart_model.dart';
 import 'package:modern_grocery/ui/delivery/delivery_address.dart';
 

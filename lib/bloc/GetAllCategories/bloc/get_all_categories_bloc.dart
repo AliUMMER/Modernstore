@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/GetAllCategories_api.dart';
+import 'package:modern_grocery/repositery/api/Categories/GetAllCategories_api.dart';
 import 'package:modern_grocery/repositery/api/getallinventory_api.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 

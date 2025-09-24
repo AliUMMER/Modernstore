@@ -3,15 +3,15 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/GetAllBannerBloc/get_all_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
 import 'package:modern_grocery/bloc/GetCategoryProducts/get_category_products_bloc.dart';
 import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/ui/products/product_details.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +21,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currrentBanner = 0;
+
   @override
   void initState() {
     super.initState();
@@ -251,14 +253,14 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 55.h),
             // Location and Search Bar
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              padding: EdgeInsets.symmetric(horizontal: 33.w),
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Location',
@@ -268,134 +270,239 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.w400,
                             ),
                           ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_sharp,
+                                color: Color(0xFFF5E9B5),
+                                size: 22.sp,
+                              ),
+                              SizedBox(width: 3.w),
+                              Text(
+                                'Tirur ITC road',
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFFFCF8E8),
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Icon(Icons.keyboard_arrow_down,
+                                  color: Color(0xFFF5E9B5)),
+                            ],
+                          ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Icon(Icons.location_on_sharp,
-                              color: Color(0xFFF5E9B5)),
-                          SizedBox(width: 5.w),
-                          Text(
-                            'Tirur ITC road',
-                            style: GoogleFonts.poppins(
-                              color: const Color(0xFFFCF8E8),
-                              fontSize: 16.sp,
-                          
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Icon(Icons.keyboard_arrow_down,
-                              color: Color(0xFFF5E9B5)),
-                        ],
+                      Icon(
+                        Icons.favorite_outline,
+                        color: Color(0xFFF5E9B5),
+                        size: 22.sp,
                       ),
                     ],
                   ),
-                  const Icon(Icons.favorite_outline, color: Color(0xFFF5E9B5)),
+
+                  SizedBox(height: 18.h),
+                  // Search Bar
+                  SizedBox(
+                    height: 48.h,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search something',
+                        hintStyle: GoogleFonts.poppins(
+                            color: AppConstants.primaryText,
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400),
+                        prefixIcon:
+                            Icon(Icons.search, color: Color(0x91FCF8E8)),
+                        filled: true,
+                        fillColor: Color(0xFF0A0909),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                              color: AppConstants.secondaryText, width: 2.w),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                              color: AppConstants.secondaryText, width: 2.w),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                              color: AppConstants.secondaryText, width: 2.w),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.h, horizontal: 13.w),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: 40.h),
+            SizedBox(height: 63.h),
             // Banner Carousel
-            BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
-              builder: (context, state) {
-                if (state is GetAllBannerLoading) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey[900]!,
-                    highlightColor: Colors.grey[800]!,
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: 200.h,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 0.8,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        autoPlay: false,
-                        enlargeCenterPage: true,
-                        enlargeFactor: 0.3,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      items: [1, 2, 3].map((i) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8.0.r),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  );
-                }
-                if (state is GetAllBannerError) {
-                  return Center(
-                      child: Text('Failed to load banners',
-                          style: GoogleFonts.poppins(color: Colors.white)));
-                }
-                if (state is GetAllBannerLoaded) {
-                  final banner = BlocProvider.of<GetAllBannerBloc>(context)
-                      .getAllBannerModel;
-                  final bannerImages = banner.banners
-                          ?.expand((banner) => banner.images ?? [])
-                          .toList() ??
-                      [];
-                  return bannerImages.isNotEmpty
-                      ? CarouselSlider(
-                          items: bannerImages.map((imageUrl) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0.r),
-                              child: CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                  'assets/placeholder.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            height: 200.h,
-                            aspectRatio: 16 / 9,
-                            viewportFraction: 0.8,
-                            initialPage: 0,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                const Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            enlargeCenterPage: true,
-                            enlargeFactor: 0.3,
-                            scrollDirection: Axis.horizontal,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 23.w),
+              child: Column(
+                children: [
+                  BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
+                    builder: (context, state) {
+                      if (state is GetAllBannerLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[900]!,
+                          highlightColor: Colors.grey[800]!,
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              height: 200.h,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 0.8,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: false,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.3,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            items: [1, 2, 3].map((i) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.circular(8.0.r),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
                           ),
-                        )
-                      : Container(
+                        );
+                      }
+                      if (state is GetAllBannerError) {
+                        return Container(
                           height: 200.h,
                           color: Colors.grey[800],
-                          child:  Center(
+                          child: Center(
                               child: Text('No banners available',
-                                  style: GoogleFonts.poppins(color: Colors.white))),
+                                  style: GoogleFonts.poppins(
+                                      color: Colors.white))),
                         );
-                }
-                return const SizedBox.shrink();
-              },
+                      }
+                      if (state is GetAllBannerLoaded) {
+                        final banner =
+                            BlocProvider.of<GetAllBannerBloc>(context)
+                                .getAllBannerModel;
+                        final bannerImages = banner.banners
+                                ?.expand((banner) => banner.images ?? [])
+                                .toList() ??
+                            [];
+                        return Column(
+                          children: [
+                            bannerImages.isNotEmpty
+                                ? Column(
+                                    children: [
+                                      CarouselSlider(
+                                        items: bannerImages.map((imageUrl) {
+                                          return ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0.r),
+                                            child: CachedNetworkImage(
+                                              imageUrl: imageUrl,
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Image.asset(
+                                                'assets/placeholder.png',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        options: CarouselOptions(
+                                          height: 222.h,
+                                          aspectRatio: 16 / 9,
+                                          viewportFraction: 0.8,
+                                          initialPage: 0,
+                                          enableInfiniteScroll: true,
+                                          reverse: false,
+                                          autoPlay: true,
+                                          autoPlayInterval:
+                                              const Duration(seconds: 3),
+                                          autoPlayAnimationDuration:
+                                              const Duration(milliseconds: 800),
+                                          autoPlayCurve: Curves.fastOutSlowIn,
+                                          enlargeCenterPage: true,
+                                          enlargeFactor: 0.3,
+                                          scrollDirection: Axis.horizontal,
+                                          onPageChanged: (index, reason) {
+                                            setState(() {
+                                              _currrentBanner = index;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 22.h),
+
+                                      // --- Indicator Dots ---
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: bannerImages
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          return GestureDetector(
+                                            onTap: () => setState(() {
+                                              _currrentBanner = entry.key;
+                                            }),
+                                            child: Container(
+                                              width:
+                                                  _currrentBanner == entry.key
+                                                      ? 10.w
+                                                      : 6.w,
+                                              height: 6.h,
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 8.h,
+                                                  horizontal: 3.w),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    _currrentBanner == entry.key
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: 200.h,
+                                    color: Colors.grey[800],
+                                    child: Center(
+                                        child: Text('No banners available',
+                                            style: GoogleFonts.poppins(
+                                                color: Colors.white))),
+                                  ),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 40.h),
+            SizedBox(height: 32.h),
             // Categories Section
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 34.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -409,7 +516,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child:  Text(
+                    child: Text(
                       'See All',
                       style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
@@ -417,7 +524,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 36.h),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -461,7 +568,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                   if (state is GetAllCategoriesError) {
-                    return  Center(
+                    return Center(
                         child: Text('Failed to load categories',
                             style: GoogleFonts.poppins(color: Colors.white)));
                   }
@@ -508,11 +615,13 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                   ),
                                 ),
-                                SizedBox(height: 10.h),
+                                SizedBox(height: 11.h),
                                 Text(
                                   categoryName,
-                                  style:
-                                       GoogleFonts.poppins(color: Color(0xFFFCF8E8)),
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFFFCF8E8)),
                                 ),
                               ],
                             ),
@@ -526,10 +635,91 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Best Deals Section
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 34.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Best Deals',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFFFCF8E8),
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'See All',
+                      style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 26.h),
+
             BlocBuilder<OfferproductBloc, OfferproductState>(
               builder: (context, state) {
                 if (state is OfferproductLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return SizedBox(
+                    height: 200.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5, // show 5 shimmer items
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 10.w,
+                            right: 10.w,
+                          ),
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[900]!,
+                            highlightColor: Colors.grey[700]!,
+                            child: Container(
+                              width: 140.w,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[850],
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Image placeholder
+                                  Container(
+                                    height: 120.h,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[800],
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(12.r),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  // Name placeholder
+                                  Container(
+                                    height: 14.h,
+                                    width: 90.w,
+                                    color: Colors.grey[800],
+                                  ),
+                                  SizedBox(height: 6.h),
+                                  // Price placeholder
+                                  Container(
+                                    height: 14.h,
+                                    width: 50.w,
+                                    color: Colors.grey[800],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 }
 
                 if (state is OfferproductLoaded) {
@@ -539,29 +729,6 @@ class _HomePageState extends State<HomePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Best Deals',
-                              style: GoogleFonts.poppins(
-                                color: const Color(0xFFFCF8E8),
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child:  Text(
-                                'See All',
-                                style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       SizedBox(
                         height: 200.h,
                         child: ListView.builder(
@@ -620,7 +787,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   );
                 } else if (state is OfferproductError) {
-                  return  Center(
+                  return Center(
                       child: Text('Failed to load best deals',
                           style: GoogleFonts.poppins(color: Colors.white)));
                 } else {
@@ -630,7 +797,7 @@ class _HomePageState extends State<HomePage> {
             ),
             // Beverages Section
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 34.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -638,13 +805,13 @@ class _HomePageState extends State<HomePage> {
                     'Beverages',
                     style: GoogleFonts.poppins(
                       color: const Color(0xFFFCF8E8),
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child:  Text(
+                    child: Text(
                       'See All',
                       style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
@@ -652,10 +819,35 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+            SizedBox(height: 26.h),
+
             BlocBuilder<GetCategoryProductsBloc, GetCategoryProductsState>(
               builder: (context, state) {
                 if (state is GetCategoryProductsLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  final beverages = context
+                      .read<GetCategoryProductsBloc>()
+                      .getCategoryProductsModel;
+                  return SizedBox(
+                    height: 200.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: beverages.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 10.w,
+                            right: 10.w,
+                          ),
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[900]!,
+                            highlightColor: Colors.grey[700]!,
+                            child: ProductCard(
+                                product: beverages.data![index].toJson()),
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 } else if (state is GetCategoryProductsLoaded) {
                   final beverages = context
                       .read<GetCategoryProductsBloc>()
@@ -697,7 +889,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (state is GetCategoryProductsError) {
-                  return const Text("Failed to load beverages");
+                  return Center(
+                      child: Text("Failed to load beverages",
+                          style: GoogleFonts.poppins(color: Colors.white)));
                 } else {
                   return const SizedBox.shrink();
                 }
@@ -706,7 +900,7 @@ class _HomePageState extends State<HomePage> {
 
             // Vegetables Section
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 34.w),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -714,13 +908,13 @@ class _HomePageState extends State<HomePage> {
                     'Vegetables',
                     style: GoogleFonts.poppins(
                       color: const Color(0xFFFCF8E8),
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   TextButton(
                     onPressed: () {},
-                    child:  Text(
+                    child: Text(
                       'See All',
                       style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
                     ),
@@ -728,12 +922,33 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+            SizedBox(height: 26.h),
             BlocBuilder<GetCategoryProductsBloc, GetCategoryProductsState>(
               builder: (context, state) {
                 if (state is GetCategoryProductsLoading) {
+                  /// loading state
+                  final vegetables = context
+                      .read<GetCategoryProductsBloc>()
+                      .getCategoryProductsModel;
                   return SizedBox(
                     height: 200.h,
-                    child: const Center(child: CircularProgressIndicator()),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: vegetables.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index == 0 ? 20.w : 10.w,
+                            right: 10.w,
+                          ),
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[900]!,
+                            highlightColor: Colors.grey[700]!,
+                            child: Card(),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 } else if (state is GetCategoryProductsLoaded) {
                   final vegetables = context
@@ -741,16 +956,12 @@ class _HomePageState extends State<HomePage> {
                       .getCategoryProductsModel;
 
                   // Check if data exists and is not empty
-                  if (vegetables.data == null || vegetables.data!.isEmpty) {
-                    return SizedBox(
-                      height: 200.h,
-                      child:  Center(
-                        child: Text(
-                          "No vegetables available",
-                          style: GoogleFonts.poppins(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
+                  if (vegetables.data!.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No vegetables available",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
                         ),
                       ),
                     );
@@ -788,20 +999,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else if (state is GetCategoryProductsError) {
-                  return SizedBox(
-                    height: 200.h,
-                    child:  Center(
-                      child: Text(
-                        "Failed to load vegetables",
-                        style: GoogleFonts.poppins(color: Colors.red),
-                      ),
+                  return Center(
+                    child: Text(
+                      "Failed to load vegetables",
+                      style: GoogleFonts.poppins(color: Colors.white),
                     ),
                   );
                 } else {
-                  return SizedBox(
-                    height: 200.h,
-                    child: const SizedBox.shrink(),
-                  );
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -900,7 +1105,8 @@ class ProductCard extends StatelessWidget {
           SizedBox(height: 5.h),
           Text(
             product['price'] ?? '₹0',
-            style: GoogleFonts.poppins(color: const Color(0xFFFFFFFF), fontSize: 13.sp),
+            style: GoogleFonts.poppins(
+                color: const Color(0xFFFFFFFF), fontSize: 13.sp),
           ),
         ],
       ),

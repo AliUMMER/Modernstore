@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/offerproduct_api.dart';
+import 'package:modern_grocery/repositery/api/product/offerproduct_api.dart';
 import 'package:modern_grocery/repositery/model/offerproduct%20model.dart';
 
 part 'offerproduct_event.dart';

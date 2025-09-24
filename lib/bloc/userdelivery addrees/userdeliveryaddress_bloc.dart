@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/GetUserDlvAddresses_api.dart';
+import 'package:modern_grocery/repositery/api/Delivery/GetUserDlvAddresses_api.dart';
 import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
 
 part 'userdeliveryaddress_event.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/createProduct_api.dart';
+import 'package:modern_grocery/repositery/api/product/createProduct_api.dart';
 import 'package:modern_grocery/repositery/model/createProduct_model.dart';
 
 part 'create_product_event.dart';

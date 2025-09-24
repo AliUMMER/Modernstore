@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/getbyidproduct_api.dart';
+import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
 import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 
 part 'getbyid_event.dart';
