@@ -6,7 +6,7 @@ class AppConstants {
   static const Color primaryText = Color(0xFCF8E8AD); // #FCF8E8AD
   static const Color secondaryText = Color(0xFFDDD2A3); // #DDD2A3
   static const backgroundColor = Color(0xFF0A0909);
-  static const textColor = Color(0xFFFCF8E8);
+  static const textColor = Color(0xFFF5E9B5); //F5E9B5 light yellow
   static const accentColor = Colors.green;
   static const buttonColor = Color(0xFFFFF1C5);
   static const dialogRadius = 12.0;

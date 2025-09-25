@@ -187,7 +187,7 @@ class _RecentPageState extends State<RecentPage> {
                   const SizedBox(height: 16),
                 ],
 
-                const Text(
+                 Text(
                   'Banner Details',
                   style: TextStyle(
                     color: AppConstants.textColor,

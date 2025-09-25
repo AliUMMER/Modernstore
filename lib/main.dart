@@ -24,7 +24,7 @@ import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart
 import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
 
 import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
-import 'package:modern_grocery/ui/home_page.dart';
+import 'package:modern_grocery/ui/Home_/home_page.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 
 // String basePath = "http://192.168.223.203:4055/api";

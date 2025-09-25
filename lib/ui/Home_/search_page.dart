@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
+
 import 'package:modern_grocery/ui/products/fruites_page.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final VoidCallback? onFavTap;
+  const SearchPage({super.key, this.onFavTap});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -13,6 +19,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late GetAllCategoriesModel data;
+  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -42,46 +49,79 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0909),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: 30.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 60),
-            const Center(
+            SizedBox(height: 72.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    if (widget.onFavTap != null) {
+                      widget.onFavTap!();
+                    }
+                  },
+                  icon: Icon(
+                    Icons.favorite_outline,
+                    color: Color(0xFFF5E9B5),
+                    size: 22.sp,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 1.h),
+            Center(
               child: Text(
                 'Find Products',
-                style: TextStyle(
-                  fontSize: 28,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                style: GoogleFonts.poppins(
+                  fontSize: 24.sp,
+                  color: AppConstants.textColor,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Color(0xFFFCF8E8), width: 2),
-                borderRadius: BorderRadius.circular(10),
+                border:
+                    Border.all(color: AppConstants.secondaryText, width: 2.w),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: TextField(
-                style: TextStyle(color: Color(0x91FCF8E8)),
+                style: GoogleFonts.poppins(color: Color(0x91FCF8E8)),
                 decoration: InputDecoration(
                   hintText: "Search somthing...",
-                  hintStyle: TextStyle(color: Color(0x91FCF8E8), fontSize: 12),
+                  hintStyle: GoogleFonts.poppins(
+                      color: AppConstants.primaryText, fontSize: 14.sp),
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.search, color: Color(0x91FCF8E8)),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 13.w, vertical: 14.h),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 36.h),
             BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
                 builder: (context, state) {
               if (state is GetAllCategoriesLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[900]!,
+                  highlightColor: Colors.grey[800]!,
+                  child: Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                    ),
+                  ),
+                );
               }
               if (state is GetAllCategoriesError) {
-                return Center(child: Text('Catogeries not Recogainised'));
+                return Center(
+                    child: Text('Catogeries not Recogainised',
+                        style: GoogleFonts.poppins(color: Colors.white)));
               }
               if (state is GetAllCategoriesLoaded) {
                 data = BlocProvider.of<GetAllCategoriesBloc>(context)
@@ -100,7 +140,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 );
               } else {
-                return const SizedBox();
+                return SizedBox();
               }
             })
           ],
@@ -119,29 +159,29 @@ class _SearchPageState extends State<SearchPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFDDD9CB),
-          borderRadius: BorderRadius.circular(20),
+          color: AppConstants.primaryText,
+          borderRadius: BorderRadius.circular(22.r),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.network(
               imageUrl ?? 'https://via.placeholder.com/80',
-              height: 80,
-              width: 80,
+              height: 74.h,
+              width: 104.w,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Icon(Icons.broken_image);
               },
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 13.h),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: EdgeInsets.symmetric(horizontal: 27.w),
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                style: GoogleFonts.poppins(
+                    fontSize: 14.sp, fontWeight: FontWeight.w500),
               ),
             ),
           ],

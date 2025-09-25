@@ -14,7 +14,9 @@ import 'package:modern_grocery/widgets/app_color.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final VoidCallback? onFavTap;
+
+  const HomePage({super.key, this.onFavTap});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -292,11 +294,18 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      Icon(
-                        Icons.favorite_outline,
-                        color: Color(0xFFF5E9B5),
-                        size: 22.sp,
-                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (widget.onFavTap != null) {
+                            widget.onFavTap!();
+                          }
+                        },
+                        icon: Icon(
+                          Icons.favorite_outline,
+                          color: Color(0xFFF5E9B5),
+                          size: 22.sp,
+                        ),
+                      )
                     ],
                   ),
 
@@ -344,196 +353,213 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(horizontal: 23.w),
               child: Column(
                 children: [
-                 // Updated Banner section in HomePage widget
-BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
-  builder: (context, state) {
-    if (state is GetAllBannerLoading) {
-      return Shimmer.fromColors(
-        baseColor: Colors.grey[900]!,
-        highlightColor: Colors.grey[800]!,
-        child: CarouselSlider(
-          options: CarouselOptions(
-            height: 200.h,
-            aspectRatio: 16 / 9,
-            viewportFraction: 0.8,
-            initialPage: 0,
-            enableInfiniteScroll: true,
-            reverse: false,
-            autoPlay: false,
-            enlargeCenterPage: true,
-            enlargeFactor: 0.3,
-            scrollDirection: Axis.horizontal,
-          ),
-          items: [1, 2, 3].map((i) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0.r),
-                  ),
-                );
-              },
-            );
-          }).toList(),
-        ),
-      );
-    }
-    
-    if (state is GetAllBannerError) {
-      return Container(
-        height: 200.h,
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(8.0.r),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 40.sp,
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                'Failed to load banners',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 14.sp,
-                ),
-              ),
-              SizedBox(height: 5.h),
-              Text(
-                state.errorMessage.contains('Authentication')
-                    ? 'Please login to continue'
-                    : 'Please try again later',
-                style: GoogleFonts.poppins(
-                  color: Colors.grey[400],
-                  fontSize: 12.sp,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    
-    if (state is GetAllBannerLoaded) {
-      final banner = state.banner;
-      final bannerImages = banner.banners
-              ?.expand((b) => b.images ?? [])
-              .toList() ??
-          [];
+                  // Updated Banner section in HomePage widget
+                  BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
+                    builder: (context, state) {
+                      if (state is GetAllBannerLoading) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[900]!,
+                          highlightColor: Colors.grey[800]!,
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              height: 200.h,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 0.8,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: false,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.3,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            items: [1, 2, 3].map((i) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.circular(8.0.r),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      }
 
-      return Column(
-        children: [
-          bannerImages.isNotEmpty
-              ? Column(
-                  children: [
-                    CarouselSlider(
-                      items: bannerImages.map((imageUrl) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0.r),
-                          child: CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorWidget: (context, url, error) => Container(
-                              color: Colors.grey[800],
-                              child: Center(
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey[400],
-                                  size: 50.sp,
+                      if (state is GetAllBannerError) {
+                        return Container(
+                          height: 200.h,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8.0.r),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red,
+                                  size: 40.sp,
                                 ),
-                              ),
-                            ),
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[900]!,
-                              highlightColor: Colors.grey[800]!,
-                              child: Container(
-                                color: Colors.grey[800],
-                              ),
+                                SizedBox(height: 10.h),
+                                Text(
+                                  'Failed to load banners',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                                SizedBox(height: 5.h),
+                                Text(
+                                  state.errorMessage.contains('Authentication')
+                                      ? 'Please login to continue'
+                                      : 'Please try again later',
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.grey[400],
+                                    fontSize: 12.sp,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
                             ),
                           ),
                         );
-                      }).toList(),
-                      options: CarouselOptions(
-                        height: 222.h,
-                        aspectRatio: 16 / 9,
-                        viewportFraction: 0.8,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 3),
-                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enlargeCenterPage: true,
-                        enlargeFactor: 0.3,
-                        scrollDirection: Axis.horizontal,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currrentBanner = index;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 22.h),
+                      }
 
-                    // Indicator Dots
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: bannerImages
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        return GestureDetector(
-                          onTap: () => setState(() {
-                            _currrentBanner = entry.key;
-                          }),
-                          child: Container(
-                            width: _currrentBanner == entry.key ? 10.w : 6.w,
-                            height: 6.h,
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8.h, horizontal: 3.w),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currrentBanner == entry.key
-                                  ? Colors.white
-                                  : Colors.grey,
-                            ),
-                          ),
+                      if (state is GetAllBannerLoaded) {
+                        final banner = state.banner;
+                        final bannerImages = banner.banners
+                                ?.expand((b) => b.images ?? [])
+                                .toList() ??
+                            [];
+
+                        return Column(
+                          children: [
+                            bannerImages.isNotEmpty
+                                ? Column(
+                                    children: [
+                                      CarouselSlider(
+                                        items: bannerImages.map((imageUrl) {
+                                          return ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0.r),
+                                            child: CachedNetworkImage(
+                                              imageUrl: imageUrl,
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Container(
+                                                color: Colors.grey[800],
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.image_not_supported,
+                                                    color: Colors.grey[400],
+                                                    size: 50.sp,
+                                                  ),
+                                                ),
+                                              ),
+                                              placeholder: (context, url) =>
+                                                  Shimmer.fromColors(
+                                                baseColor: Colors.grey[900]!,
+                                                highlightColor:
+                                                    Colors.grey[800]!,
+                                                child: Container(
+                                                  color: Colors.grey[800],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        options: CarouselOptions(
+                                          height: 222.h,
+                                          aspectRatio: 16 / 9,
+                                          viewportFraction: 0.8,
+                                          initialPage: 0,
+                                          enableInfiniteScroll: true,
+                                          reverse: false,
+                                          autoPlay: true,
+                                          autoPlayInterval:
+                                              const Duration(seconds: 3),
+                                          autoPlayAnimationDuration:
+                                              const Duration(milliseconds: 800),
+                                          autoPlayCurve: Curves.fastOutSlowIn,
+                                          enlargeCenterPage: true,
+                                          enlargeFactor: 0.3,
+                                          scrollDirection: Axis.horizontal,
+                                          onPageChanged: (index, reason) {
+                                            setState(() {
+                                              _currrentBanner = index;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 22.h),
+
+                                      // Indicator Dots
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: bannerImages
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          return GestureDetector(
+                                            onTap: () => setState(() {
+                                              _currrentBanner = entry.key;
+                                            }),
+                                            child: Container(
+                                              width:
+                                                  _currrentBanner == entry.key
+                                                      ? 10.w
+                                                      : 6.w,
+                                              height: 6.h,
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 8.h,
+                                                  horizontal: 3.w),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    _currrentBanner == entry.key
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: 200.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[800],
+                                      borderRadius:
+                                          BorderRadius.circular(8.0.r),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'No banners available',
+                                        style: GoogleFonts.poppins(
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                          ],
                         );
-                      }).toList(),
-                    ),
-                  ],
-                )
-              : Container(
-                  height: 200.h,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.circular(8.0.r),
+                      }
+
+                      return const SizedBox.shrink();
+                    },
                   ),
-                  child: Center(
-                    child: Text(
-                      'No banners available',
-                      style: GoogleFonts.poppins(color: Colors.white),
-                    ),
-                  ),
-                ),
-        ],
-      );
-    }
-    
-    return const SizedBox.shrink();
-  },
-),
                 ],
               ),
             ),
@@ -702,62 +728,7 @@ BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
             BlocBuilder<OfferproductBloc, OfferproductState>(
               builder: (context, state) {
                 if (state is OfferproductLoading) {
-                  return SizedBox(
-                    height: 200.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5, // show 5 shimmer items
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 20.w : 10.w,
-                            right: 10.w,
-                          ),
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey[900]!,
-                            highlightColor: Colors.grey[700]!,
-                            child: Container(
-                              width: 140.w,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[850],
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Image placeholder
-                                  Container(
-                                    height: 120.h,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[800],
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(12.r),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  // Name placeholder
-                                  Container(
-                                    height: 14.h,
-                                    width: 90.w,
-                                    color: Colors.grey[800],
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  // Price placeholder
-                                  Container(
-                                    height: 14.h,
-                                    width: 50.w,
-                                    color: Colors.grey[800],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  return _buildshimmer();
                 }
 
                 if (state is OfferproductLoaded) {
@@ -862,30 +833,7 @@ BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
             BlocBuilder<GetCategoryProductsBloc, GetCategoryProductsState>(
               builder: (context, state) {
                 if (state is GetCategoryProductsLoading) {
-                  final beverages = context
-                      .read<GetCategoryProductsBloc>()
-                      .getCategoryProductsModel;
-                  return SizedBox(
-                    height: 200.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: beverages.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 20.w : 10.w,
-                            right: 10.w,
-                          ),
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey[900]!,
-                            highlightColor: Colors.grey[700]!,
-                            child: ProductCard(
-                                product: beverages.data![index].toJson()),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  return _buildshimmer();
                 } else if (state is GetCategoryProductsLoaded) {
                   final beverages = context
                       .read<GetCategoryProductsBloc>()
@@ -965,29 +913,8 @@ BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
               builder: (context, state) {
                 if (state is GetCategoryProductsLoading) {
                   /// loading state
-                  final vegetables = context
-                      .read<GetCategoryProductsBloc>()
-                      .getCategoryProductsModel;
-                  return SizedBox(
-                    height: 200.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: vegetables.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 20.w : 10.w,
-                            right: 10.w,
-                          ),
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey[900]!,
-                            highlightColor: Colors.grey[700]!,
-                            child: Card(),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+
+                  return _buildshimmer();
                 } else if (state is GetCategoryProductsLoaded) {
                   final vegetables = context
                       .read<GetCategoryProductsBloc>()
@@ -1150,4 +1077,50 @@ class ProductCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildshimmer() {
+  /// loading
+  return SizedBox(
+    height: 200.h,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 5, // show 5 shimmer items
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: index == 0 ? 20.w : 10.w,
+            right: 10.w,
+          ),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[900]!,
+            highlightColor: Colors.grey[700]!,
+            child: Container(
+              width: 140.w,
+              decoration: BoxDecoration(
+                color: Colors.grey[850],
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image placeholder
+                  Container(
+                    height: 120.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(12.r),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }

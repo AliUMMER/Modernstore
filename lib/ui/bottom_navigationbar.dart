@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:modern_grocery/ui/cart_/cart_page.dart';
-import 'package:modern_grocery/ui/favourite_page.dart';
-import 'package:modern_grocery/ui/home_page.dart';
-import 'package:modern_grocery/ui/profile_page.dart';
-import 'package:modern_grocery/ui/search_page.dart';
+import 'package:modern_grocery/ui/Home_/favourite_page.dart';
+import 'package:modern_grocery/ui/Home_/home_page.dart';
+import 'package:modern_grocery/ui/Home_/profile_page.dart';
+import 'package:modern_grocery/ui/Home_/search_page.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
 
 class NavigationBarWidget extends StatefulWidget {
   const NavigationBarWidget({super.key});
@@ -14,57 +15,82 @@ class NavigationBarWidget extends StatefulWidget {
 
 class _NavigationBarWidgetState extends State<NavigationBarWidget> {
   int _selectedIndex = 0;
+  late PageController _pageController;
+  int _lastvisitedpageIndex = 0;
+  int _currentpageIndex = 0;
 
-  final List<Widget> _listOfWidgets = <Widget>[
-    HomePage(),
-    SearchPage(),
-    FavouritePage(),
-    CartPage(),
-    ProfilePage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+  }
+
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    _pageController.jumpToPage(index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF5E9B5),
-      body: _listOfWidgets[_selectedIndex],
+      backgroundColor: AppConstants.textColor,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            if (_currentpageIndex != index) {
+              _lastvisitedpageIndex = _currentpageIndex;
+            }
+            _currentpageIndex = index;
+          });
+        },
+        physics: NeverScrollableScrollPhysics(), // disable swipe
+        children: [
+          HomePage(
+            onFavTap: () {
+              _onItemTapped(2);
+            },
+          ),
+          SearchPage(
+            onFavTap: () {
+              _onItemTapped(2);
+            },
+          ),
+          FavouritePage(
+            onFavTap: () {
+              _onItemTapped(3);
+            },
+          ),
+          CartPage(),
+          ProfilePage(),
+        ],
+      ),
       bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Color(0xFFF5E9B5), // Sets the background to transparent
-        ),
+        data: Theme.of(context).copyWith(canvasColor: AppConstants.textColor),
         child: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
+                icon: Icon(Icons.favorite), label: 'Favorites'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
+                icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined),
-              label: 'Cart',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outlined),
-              label: 'Profile',
-            ),
+                icon: Icon(Icons.person_outlined), label: 'Profile'),
           ],
-          currentIndex: _selectedIndex,
           selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
+          unselectedItemColor: Color(0x80000000),
+          currentIndex: _currentpageIndex,
+          onTap: (index) {
+            _pageController.jumpToPage(index);
+          },
           elevation: 8,
         ),
       ),

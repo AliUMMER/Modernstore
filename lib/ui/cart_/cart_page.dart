@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:modern_grocery/bloc/GetAllUserCart/get_all_user_cart_bloc.dart';
 import 'package:modern_grocery/repositery/api/Cart/getAllUserCart_api.dart';
 import 'package:modern_grocery/repositery/model/getAllUserCart_model.dart';
+import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/delivery/delivery_address.dart';
 
 class CartPage extends StatefulWidget {
@@ -20,82 +23,118 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     // Trigger the API call when the page loads
-    context.read<GetAllUserCartBloc>().add(fetchGetAllUserCartEvent());
+    // context.read<GetAllUserCartBloc>().add(fetchGetAllUserCartEvent());
   }
+
+  final List<Map<String, dynamic>> favourites = [
+    {
+      'name': 'Banana',
+      'image': 'assets/Banana.png',
+      'price': 80,
+      'mrp': 100,
+    },
+    {
+      'name': 'Carrot',
+      'image': 'assets/Carrot.png',
+      'price': 80,
+      'mrp': 100,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0XFF0A0909),
+        leading: BackButton(
+            color: const Color(0xffFCF8E8),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NavigationBarWidget(),
+                ),
+              );
+            }),
+      ),
       backgroundColor: const Color(0XFF0A0909),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: const [
-                SizedBox(width: 40),
-                BackButton(color: Color(0xffFCF8E8)),
-              ],
-            ),
-            const SizedBox(height: 40),
-            const Center(
-              child: Text(
-                'Cart',
-                style: TextStyle(
-                  color: Color(0xFFFCF8E8),
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.24,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Column(
+            children: [
+              SizedBox(height: 18.h),
+              Center(
+                child: Text(
+                  'Cart',
+                  style: GoogleFonts.poppins(
+                    color: Color(0xFFFCF8E8),
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.24,
+                  ),
                 ),
               ),
-            ),
-            BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
-              builder: (context, state) {
-                if (state is GetAllUserCartLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is GetAllUserCartLoaded) {
-                  final cartModel =
-                      context.read<GetAllUserCartBloc>().getAllUserCartModel;
+              SizedBox(height: 63.h),
 
-                  // Check if cart model is null or cart items are empty
-                  if (cartModel == null ||
-                      cartModel.data == null ||
-                      cartModel.data?.allCartItems == null ||
-                      cartModel.data!.allCartItems!.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'Your cart is empty',
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
-                      ),
-                    );
-                  }
+              // BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
+              //   builder: (context, state) {
+              //     if (state is GetAllUserCartLoading) {
+              //       return const Center(child: CircularProgressIndicator());
+              //     } else if (state is GetAllUserCartLoaded) {
+              //       final cartModel =
+              //           context.read<GetAllUserCartBloc>().getAllUserCartModel;
 
-                  final cartItems = cartModel.data?.allCartItems!;
-                  return SizedBox(
-                    height: 120 * cartItems!.length.toDouble(),
-                    child: Column(
-                      children: cartItems.map((item) {
-                        return FavouriteItemCard(item: {
-                          'name': item.productId ?? 'Unknown Item',
-                          'image': item.quantity ?? 'assets/placeholder.png',
-                          'price': item.unit ?? 0.0,
-                          'mrp': item.quantity ?? item.totalAmount ?? 0.0,
-                        });
-                      }).toList(),
-                    ),
-                  );
-                } else if (state is GetAllUserCartError) {
-                  return const Center(
-                    child: Text(
-                      'Error loading cart items',
-                      style: TextStyle(color: Colors.red, fontSize: 18),
-                    ),
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-            _buildCheckoutSection(),
-          ],
+              //       // Check if cart model is null or cart items are empty
+              //       if (cartModel == null ||
+              //           cartModel.data == null ||
+              //           cartModel.data?.allCartItems == null ||
+              //           cartModel.data!.allCartItems!.isEmpty) {
+              //         return const Center(
+              //           child: Text(
+              //             'Your cart is empty',
+              //             style: TextStyle(color: Colors.white70, fontSize: 18),
+              //           ),
+              //         );
+              //       }
+
+              //       final cartItems = cartModel.data?.allCartItems!;
+              //       return SizedBox(
+              //         height: 120 * cartItems!.length.toDouble(),
+              //         child: Column(
+              //           children: cartItems.map((item) {
+              //             return FavouriteItemCard(item: {
+              //               'name': item.productId ?? 'Unknown Item',
+              //               'image': item.quantity ?? 'assets/placeholder.png',
+              //               'price': item.unit ?? 0.0,
+              //               'mrp': item.quantity ?? item.totalAmount ?? 0.0,
+              //             });
+              //           }).toList(),
+              //         ),
+              //       );
+              //     } else if (state is GetAllUserCartError) {
+              //       return const Center(
+              //         child: Text(
+              //           'Error loading cart items',
+              //           style: TextStyle(color: Colors.red, fontSize: 18),
+              //         ),
+              //       );
+              //     }
+              //     return const SizedBox();
+              //   },
+              // ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: favourites.length,
+                itemBuilder: (context, index) {
+                  final item = favourites[index];
+                  return FavouriteItemCard(item: item);
+                },
+              ),
+              _buildCheckoutSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -103,10 +142,10 @@ class _CartPageState extends State<CartPage> {
 
   Widget _buildCheckoutSection() {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,25 +159,40 @@ class _CartPageState extends State<CartPage> {
                     filled: true,
                     fillColor: Colors.grey[800],
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide.none,
                     ),
-                    hintStyle: const TextStyle(color: Colors.white70),
+                    hintStyle: GoogleFonts.poppins(
+                      color: Colors.white70,
+                      fontSize: 14.sp,
+                    ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                  ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF5E9B5),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 ),
-                child: const Text('Apply'),
+                child: Text(
+                  'Apply',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
           BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
             builder: (context, state) {
               double totalPrice = 0;
@@ -154,7 +208,7 @@ class _CartPageState extends State<CartPage> {
                   _buildPriceRow('Price', '₹${totalPrice.toStringAsFixed(2)}'),
                   _buildPriceRow('Discount', '₹5.00'),
                   _buildPriceRow('Delivery Charge', '₹20.00'),
-                  const Divider(color: Colors.white70),
+                  Divider(color: Colors.white70, thickness: 1.h),
                   _buildPriceRow(
                       'Grand Total', '₹${(totalPrice + 15).toStringAsFixed(2)}',
                       isBold: true),
@@ -162,13 +216,19 @@ class _CartPageState extends State<CartPage> {
               );
             },
           ),
-          const SizedBox(height: 30),
-          const Text('Payment Method',
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          const SizedBox(height: 10),
+          SizedBox(height: 30.h),
+          Text(
+            'Payment Method',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 10.h),
           _buildPaymentOption('Cash on Delivery'),
           _buildPaymentOption('Payfort'),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -180,10 +240,19 @@ class _CartPageState extends State<CartPage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFF5E9B5),
-                padding: const EdgeInsets.symmetric(vertical: 15),
+                padding: EdgeInsets.symmetric(vertical: 15.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
               ),
-              child: const Text('Place Order',
-                  style: TextStyle(color: Colors.black, fontSize: 16)),
+              child: Text(
+                'Place Order',
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
         ],
@@ -193,20 +262,26 @@ class _CartPageState extends State<CartPage> {
 
   Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: TextStyle(
-                  color: Colors.white70,
-                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                  fontSize: isBold ? 18 : 16)),
-          Text(price,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                  fontSize: isBold ? 18 : 16)),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: Colors.white70,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontSize: isBold ? 18.sp : 16.sp,
+            ),
+          ),
+          Text(
+            price,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontSize: isBold ? 18.sp : 16.sp,
+            ),
+          ),
         ],
       ),
     );
@@ -216,27 +291,35 @@ class _CartPageState extends State<CartPage> {
     return GestureDetector(
       onTap: () => setState(() => selectedPaymentMethod = method),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.all(15),
+        margin: EdgeInsets.symmetric(vertical: 8.h),
+        padding: EdgeInsets.all(15.w),
         decoration: BoxDecoration(
           color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             color: selectedPaymentMethod == method
                 ? Color(0xFFF5E9B5)
                 : Colors.transparent,
+            width: 1.w,
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(method,
-                style: const TextStyle(color: Colors.white, fontSize: 16)),
+            Text(
+              method,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
             Icon(
               selectedPaymentMethod == method
                   ? Icons.radio_button_checked
                   : Icons.radio_button_off,
               color: Color(0xFFF5E9B5),
+              size: 20.w,
             ),
           ],
         ),
@@ -264,31 +347,31 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
         (widget.item['quantity'] as int?) ?? 1; // Initialize with item quantity
   }
 
+  bool isSelected = false; // For selection circle
+
   @override
   Widget build(BuildContext context) {
-    // Parse price and mrp, handling String or null cases
     final price = _parseDouble(widget.item['price']) ?? 0.0;
-    final mrp =
-        _parseDouble(widget.item['mrp']) ?? 1.0; // Avoid division by zero
+    final mrp = _parseDouble(widget.item['mrp']) ?? 1.0;
     final discountPercentage =
         mrp > 0 ? ((1 - price / mrp) * 100).toStringAsFixed(0) : '0';
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: const EdgeInsets.all(8),
+      height: 113.h,
+      margin: EdgeInsets.symmetric(vertical: 8.h),
       decoration: BoxDecoration(
         color: const Color(0xFF0A0808),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xDBFCF8E8)),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: const Color(0xDBFCF8E8), width: 1.w),
       ),
       child: Row(
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: 121.w,
+            height: 113.h,
             decoration: BoxDecoration(
-              color: const Color(0xF4CCC9BC),
-              borderRadius: BorderRadius.circular(8),
+              color: Color(0xF4CCC9BC),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: widget.item['image'] != null
                 ? Image.asset(
@@ -300,100 +383,108 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   )
                 : Image.asset('assets/placeholder.png', fit: BoxFit.contain),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 18.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 9.h),
                 Text(
                   widget.item['name'] as String? ?? 'Unknown Item',
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Color(0xFFFCF8E8),
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Text(
-                  'MRP ₹${mrp.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Color(0xCEB4B2A9),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+                SizedBox(height: 10.h),
+                Row(
+                  children: [
+                    Text(
+                      'MRP ₹${mrp.toStringAsFixed(2)}',
+                      style: GoogleFonts.poppins(
+                        color: Color(0xCEB4B2A9),
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                    SizedBox(width: 44.w),
+                    Text(
+                      '₹${price.toStringAsFixed(2)}',
+                      style: GoogleFonts.poppins(
+                        color: Color(0xFFFCF8E8),
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
                   '$discountPercentage% OFF',
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Color(0xCE7FFC83),
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  '₹${price.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    color: Color(0xFFFCF8E8),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
           ),
-          Row(
-            children: [
-              _quantityButton('-', () {
-                if (count > 1) {
-                  setState(() => count--);
-                  // _updateQuantity(context);
-                }
-              }),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: Text(
-                    '$count',
-                    style: const TextStyle(
-                      color: Color(0xffFFFFFF),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
+          Container(
+            height: 38.h,
+            width: 90.w,
+            decoration: BoxDecoration(
+              color: Color(0xFFEFECE1),
+              borderRadius: BorderRadius.circular(40.r),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    if (count > 1) {
+                      setState(() => count--);
+                      // _updateQuantity(context);
+                    }
+                  },
+                  child: Icon(
+                    Icons.remove,
+                    color: Colors.black,
+                    size: 20.w,
                   ),
                 ),
-              ),
-              _quantityButton('+', () {
-                setState(() => count++);
-                // _updateQuantity(context);
-              }),
-            ],
+                Spacer(),
+                Text(
+                  '$count',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    setState(() => count++);
+                    // _updateQuantity(context);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                    size: 20.w,
+                  ),
+                ),
+                Spacer(),
+              ],
+            ),
           ),
+          SizedBox(width: 10.w),
         ],
       ),
     );
   }
-
-  Widget _quantityButton(String text, VoidCallback onPressed) {
-    return CircleAvatar(
-      backgroundColor: Colors.black,
-      child: IconButton(
-        icon: Text(
-          text,
-          style: const TextStyle(fontSize: 20, color: Colors.white),
-        ),
-        onPressed: onPressed,
-      ),
-    );
-  }
-
-  // void _updateQuantity(BuildContext context) {
-  //   context.read<GetAllUserCartBloc>().add(
-  //         UpdateCartItemQuantityEvent(
-  //           productId: widget.item['name'] as String,
-  //           quantity: count,
-  //         ),
-  //       );
-  // }
 
   double? _parseDouble(dynamic value) {
     if (value is double) return value;
