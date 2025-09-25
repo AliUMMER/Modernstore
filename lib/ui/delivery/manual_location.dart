@@ -16,7 +16,7 @@ class ManualLocation extends StatefulWidget {
 }
 
 class _ManualLocationState extends State<ManualLocation> {
-  bool isAdmin =  false; // Default is user   // false for  Admin
+  bool isAdmin =   false; // Default is user   // false for  Admin
   String currentLocation = "Use My Current Location";
   String? apiAddress;
   String selectedAddressType = 'current'; // 'current' or 'api'

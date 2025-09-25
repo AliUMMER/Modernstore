@@ -344,158 +344,196 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(horizontal: 23.w),
               child: Column(
                 children: [
-                  BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
-                    builder: (context, state) {
-                      if (state is GetAllBannerLoading) {
-                        return Shimmer.fromColors(
-                          baseColor: Colors.grey[900]!,
-                          highlightColor: Colors.grey[800]!,
-                          child: CarouselSlider(
-                            options: CarouselOptions(
-                              height: 200.h,
-                              aspectRatio: 16 / 9,
-                              viewportFraction: 0.8,
-                              initialPage: 0,
-                              enableInfiniteScroll: true,
-                              reverse: false,
-                              autoPlay: false,
-                              enlargeCenterPage: true,
-                              enlargeFactor: 0.3,
-                              scrollDirection: Axis.horizontal,
+                 // Updated Banner section in HomePage widget
+BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
+  builder: (context, state) {
+    if (state is GetAllBannerLoading) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey[900]!,
+        highlightColor: Colors.grey[800]!,
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: 200.h,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            initialPage: 0,
+            enableInfiniteScroll: true,
+            reverse: false,
+            autoPlay: false,
+            enlargeCenterPage: true,
+            enlargeFactor: 0.3,
+            scrollDirection: Axis.horizontal,
+          ),
+          items: [1, 2, 3].map((i) {
+            return Builder(
+              builder: (BuildContext context) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0.r),
+                  ),
+                );
+              },
+            );
+          }).toList(),
+        ),
+      );
+    }
+    
+    if (state is GetAllBannerError) {
+      return Container(
+        height: 200.h,
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(8.0.r),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 40.sp,
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                'Failed to load banners',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                ),
+              ),
+              SizedBox(height: 5.h),
+              Text(
+                state.errorMessage.contains('Authentication')
+                    ? 'Please login to continue'
+                    : 'Please try again later',
+                style: GoogleFonts.poppins(
+                  color: Colors.grey[400],
+                  fontSize: 12.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    if (state is GetAllBannerLoaded) {
+      final banner = state.banner;
+      final bannerImages = banner.banners
+              ?.expand((b) => b.images ?? [])
+              .toList() ??
+          [];
+
+      return Column(
+        children: [
+          bannerImages.isNotEmpty
+              ? Column(
+                  children: [
+                    CarouselSlider(
+                      items: bannerImages.map((imageUrl) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0.r),
+                          child: CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey[800],
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey[400],
+                                  size: 50.sp,
+                                ),
+                              ),
                             ),
-                            items: [1, 2, 3].map((i) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 5.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius:
-                                          BorderRadius.circular(8.0.r),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[900]!,
+                              highlightColor: Colors.grey[800]!,
+                              child: Container(
+                                color: Colors.grey[800],
+                              ),
+                            ),
                           ),
                         );
-                      }
-                      if (state is GetAllBannerError) {
-                        return Container(
-                          height: 200.h,
-                          color: Colors.grey[800],
-                          child: Center(
-                              child: Text('No banners available',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.white))),
-                        );
-                      }
-                      if (state is GetAllBannerLoaded) {
-                        final banner =
-                            BlocProvider.of<GetAllBannerBloc>(context)
-                                .getAllBannerModel;
-                        final bannerImages = banner.banners
-                                ?.expand((banner) => banner.images ?? [])
-                                .toList() ??
-                            [];
-                        return Column(
-                          children: [
-                            bannerImages.isNotEmpty
-                                ? Column(
-                                    children: [
-                                      CarouselSlider(
-                                        items: bannerImages.map((imageUrl) {
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0.r),
-                                            child: CachedNetworkImage(
-                                              imageUrl: imageUrl,
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Image.asset(
-                                                'assets/placeholder.png',
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        options: CarouselOptions(
-                                          height: 222.h,
-                                          aspectRatio: 16 / 9,
-                                          viewportFraction: 0.8,
-                                          initialPage: 0,
-                                          enableInfiniteScroll: true,
-                                          reverse: false,
-                                          autoPlay: true,
-                                          autoPlayInterval:
-                                              const Duration(seconds: 3),
-                                          autoPlayAnimationDuration:
-                                              const Duration(milliseconds: 800),
-                                          autoPlayCurve: Curves.fastOutSlowIn,
-                                          enlargeCenterPage: true,
-                                          enlargeFactor: 0.3,
-                                          scrollDirection: Axis.horizontal,
-                                          onPageChanged: (index, reason) {
-                                            setState(() {
-                                              _currrentBanner = index;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(height: 22.h),
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 222.h,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 0.8,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        enlargeFactor: 0.3,
+                        scrollDirection: Axis.horizontal,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currrentBanner = index;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 22.h),
 
-                                      // --- Indicator Dots ---
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: bannerImages
-                                            .asMap()
-                                            .entries
-                                            .map((entry) {
-                                          return GestureDetector(
-                                            onTap: () => setState(() {
-                                              _currrentBanner = entry.key;
-                                            }),
-                                            child: Container(
-                                              width:
-                                                  _currrentBanner == entry.key
-                                                      ? 10.w
-                                                      : 6.w,
-                                              height: 6.h,
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 8.h,
-                                                  horizontal: 3.w),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    _currrentBanner == entry.key
-                                                        ? Colors.white
-                                                        : Colors.grey,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  )
-                                : Container(
-                                    height: 200.h,
-                                    color: Colors.grey[800],
-                                    child: Center(
-                                        child: Text('No banners available',
-                                            style: GoogleFonts.poppins(
-                                                color: Colors.white))),
-                                  ),
-                          ],
+                    // Indicator Dots
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: bannerImages
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                        return GestureDetector(
+                          onTap: () => setState(() {
+                            _currrentBanner = entry.key;
+                          }),
+                          child: Container(
+                            width: _currrentBanner == entry.key ? 10.w : 6.w,
+                            height: 6.h,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 3.w),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _currrentBanner == entry.key
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
+                          ),
                         );
-                      }
-                      return const SizedBox.shrink();
-                    },
+                      }).toList(),
+                    ),
+                  ],
+                )
+              : Container(
+                  height: 200.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8.0.r),
                   ),
+                  child: Center(
+                    child: Text(
+                      'No banners available',
+                      style: GoogleFonts.poppins(color: Colors.white),
+                    ),
+                  ),
+                ),
+        ],
+      );
+    }
+    
+    return const SizedBox.shrink();
+  },
+),
                 ],
               ),
             ),

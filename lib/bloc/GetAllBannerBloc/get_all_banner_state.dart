@@ -7,6 +7,14 @@ final class GetAllBannerInitial extends GetAllBannerState {}
 
 final class GetAllBannerLoading extends GetAllBannerState {}
 
-final class GetAllBannerLoaded extends GetAllBannerState {}
+final class GetAllBannerLoaded extends GetAllBannerState {
+  final GetAllBannerModel banner;
+  
+  GetAllBannerLoaded(this.banner);
+}
 
-final class GetAllBannerError extends GetAllBannerState {}
+final class GetAllBannerError extends GetAllBannerState {
+  final String errorMessage;
+  
+  GetAllBannerError({required this.errorMessage});
+}

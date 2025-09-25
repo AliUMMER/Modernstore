@@ -21,7 +21,8 @@ import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
 import 'package:modern_grocery/repositery/api/Cart/addCart_api.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart';
-import 'package:modern_grocery/repositery/api/createbanner_api.dart';
+import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
+
 import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
 import 'package:modern_grocery/ui/home_page.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';

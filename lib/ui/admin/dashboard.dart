@@ -1,10 +1,11 @@
+import 'package:badges/badges.dart' as badges;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:badges/badges.dart' as badges;
-import 'package:fl_chart/fl_chart.dart';
-import 'package:modern_grocery/ui/admin/upload_recentpage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modern_grocery/ui/admin/upload_recentpage.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -44,9 +45,10 @@ class _DashboardState extends State<Dashboard> {
   Widget _buildAppBar() {
     return Row(
       children: [
-        SizedBox(width: 316.w),
+        Spacer(),
         badges.Badge(
-          badgeContent: const Text('3', style: TextStyle(color: Colors.white)),
+          badgeContent:
+              Text('3', style: GoogleFonts.poppins(color: Colors.white)),
           child: SvgPicture.asset('assets/Group.svg'),
         ),
         SizedBox(width: 24.w),
@@ -67,11 +69,11 @@ class _DashboardState extends State<Dashboard> {
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: TextField(
-              style: TextStyle(color: const Color(0x91FCF8E8)),
+              style: GoogleFonts.poppins(color: const Color(0x91FCF8E8)),
               decoration: InputDecoration(
                 hintText: "Search here",
-                hintStyle:
-                    TextStyle(color: const Color(0x91FCF8E8), fontSize: 12.sp),
+                hintStyle: GoogleFonts.poppins(
+                    color: const Color(0x91FCF8E8), fontSize: 12.sp),
                 border: InputBorder.none,
               ),
             ),
@@ -84,74 +86,95 @@ class _DashboardState extends State<Dashboard> {
               context: context,
               builder: (context) => Dialog(
                 backgroundColor: Colors.transparent,
-                child: Container(
-                  width: 383.w,
-                  height: 222.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF3C3C3C), 
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SvgPicture.asset('assets/upload.svg', height: 24.h),
-                            SizedBox(height: 12.h),
-                            Text(
-                              "Add A Banner Image",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                            SizedBox(height: 6.h),
-                            Text(
-                              "optimal dimensions 383*222",
-                              style: TextStyle(
-                                color: Colors.grey.shade300,
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 12,
-                        right: 12,
-                        child: GestureDetector(
-                          onTap: () async {
-                            final picker = ImagePicker();
-                            final pickedFile = await picker.pickImage(
-                                source: ImageSource.gallery);
+                child: InkWell(
+                  onTap: () async {
+                    final picker = ImagePicker();
+                    final pickedFile =
+                        await picker.pickImage(source: ImageSource.gallery);
 
-                            if (pickedFile != null) {
-                              print('Selected image: ${pickedFile.path}');
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      RecentPage(imagePath: pickedFile.path),
+                    if (pickedFile != null) {
+                      print('Selected image: ${pickedFile.path}');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RecentPage(imagePath: pickedFile.path),
+                        ),
+                      );
+                    } else {
+                      print('No image selected.');
+                    }
+                  },
+                  child: Container(
+                    width: 383.w,
+                    height: 222.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3C3C3C),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset('assets/upload.svg',
+                                  height: 24.h),
+                              SizedBox(height: 12.h),
+                              Text(
+                                "Add A Banner Image",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp,
                                 ),
-                              );
-                            } else {
-                              print('No image selected.');
-                            }
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
-                              shape: BoxShape.circle,
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.add,
-                                color: Colors.white, size: 20),
+                              ),
+                              SizedBox(height: 6.h),
+                              Text(
+                                "optimal dimensions 383*222",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.grey.shade300,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        Positioned(
+                          bottom: 12,
+                          right: 12,
+                          child: GestureDetector(
+                            // onTap: () async {
+                            //   final picker = ImagePicker();
+                            //   final pickedFile = await picker.pickImage(
+                            //       source: ImageSource.gallery);
+
+                            //   if (pickedFile != null) {
+                            //     print('Selected image: ${pickedFile.path}');
+                            //     Navigator.push(
+                            //       context,
+                            //       MaterialPageRoute(
+                            //         builder: (context) =>
+                            //             RecentPage(imagePath: pickedFile.path),
+                            //       ),
+                            //     );
+                            //   } else {
+                            //     print('No image selected.');
+                            //   }
+                            // },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              child: const Icon(Icons.add,
+                                  color: Colors.white, size: 20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -241,7 +264,7 @@ class _DashboardState extends State<Dashboard> {
       children: [
         Text(
           'Top Categories',
-          style: TextStyle(color: Colors.white, fontSize: 18.sp),
+          style: GoogleFonts.poppins(color: Colors.white, fontSize: 18.sp),
         ),
         SizedBox(height: 10.h),
         SizedBox(
@@ -258,7 +281,7 @@ class _DashboardState extends State<Dashboard> {
       children: [
         Text(
           'Orders Monthly',
-          style: TextStyle(color: Colors.white, fontSize: 18.sp),
+          style: GoogleFonts.poppins(color: Colors.white, fontSize: 18.sp),
         ),
         SizedBox(height: 10.h),
         SizedBox(
@@ -292,7 +315,8 @@ class _DashboardState extends State<Dashboard> {
                       }
                       return Text(
                         text,
-                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 12.sp),
                       );
                     },
                   ),
@@ -304,7 +328,8 @@ class _DashboardState extends State<Dashboard> {
                       // Customize y-axis labels
                       return Text(
                         value.toInt().toString(),
-                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontSize: 12.sp),
                       );
                     },
                   ),
@@ -373,7 +398,7 @@ class SummaryCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.black,
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
@@ -385,7 +410,7 @@ class SummaryCard extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -422,7 +447,7 @@ class StatCard extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -433,7 +458,7 @@ class StatCard extends StatelessWidget {
           children: [
             Text(
               value,
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 color: const Color(0xffF5E9B5),
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,

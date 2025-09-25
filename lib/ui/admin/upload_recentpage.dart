@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
-import 'package:modern_grocery/repositery/api/createbanner_api.dart';
+import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
 
 class RecentPage extends StatefulWidget {
@@ -25,6 +23,7 @@ class _RecentPageState extends State<RecentPage> {
   final _linkController = TextEditingController();
   double _uploadProgress = 0.0;
   late CreateBannerBloc _createBannerBloc;
+
   @override
   void initState() {
     super.initState();
@@ -46,10 +45,6 @@ class _RecentPageState extends State<RecentPage> {
     if (!_formKey.currentState!.validate()) return;
 
     final file = File(widget.imagePath);
-
-    print('Image path: ${widget.imagePath}');
-    print('File exists: ${file.existsSync()}');
-
     if (!file.existsSync()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error: Image file not found')),
@@ -57,35 +52,12 @@ class _RecentPageState extends State<RecentPage> {
       return;
     }
 
-    try {
-      final fileName = widget.imagePath.split('/').last;
-      final extension = fileName.split('.').last.toLowerCase();
-      final contentType =
-          MediaType('image', extension == 'png' ? 'png' : 'jpeg');
+    print('Image path: ${widget.imagePath}');
+    print('File exists: true');
 
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://modern-store-backend.onrender.com/api/banner/create'),
-      )
-        ..fields['title'] = _titleController.text
-        ..fields['category'] = _categoryController.text
-        ..fields['type'] = _typeController.text
-        ..fields['categoryId'] = _categoryIdController.text
-        ..fields['link'] = _linkController.text
-        ..files.add(await http.MultipartFile.fromPath(
-          'images',
-          widget.imagePath,
-          filename: fileName,
-          contentType: contentType,
-        ));
-
-      print(
-          'Multipart request prepared: fields=${request.fields}, files=${request.files.map((f) => f.filename).toList()}');
-
-      context.read<CreateBannerBloc>().add(FetchCreateBannerEvent(
-            // formData: request,
-
+    //
+    context.read<CreateBannerBloc>().add(
+          FetchCreateBannerEvent(
             title: _titleController.text,
             category: _categoryController.text,
             type: _typeController.text,
@@ -97,13 +69,8 @@ class _RecentPageState extends State<RecentPage> {
                 _uploadProgress = sent / total;
               });
             },
-          ));
-    } catch (e) {
-      print('Error preparing request: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error preparing request: $e')),
-      );
-    }
+          ),
+        );
   }
 
   Widget _buildTextField({
@@ -123,15 +90,9 @@ class _RecentPageState extends State<RecentPage> {
           labelStyle: const TextStyle(color: AppConstants.textColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.grey),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.grey),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppConstants.accentColor),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: AppConstants.accentColor),
           ),
           filled: true,
           fillColor: AppConstants.backgroundColor,
@@ -151,13 +112,7 @@ class _RecentPageState extends State<RecentPage> {
   Widget _buildImagePreview() {
     final file = File(widget.imagePath);
     if (file.existsSync()) {
-      return Image.file(
-        file,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => const Center(
-          child: Icon(Icons.error, color: Colors.red, size: 50),
-        ),
-      );
+      return Image.file(file, fit: BoxFit.cover);
     } else {
       return const Center(
         child: Text(
@@ -175,14 +130,13 @@ class _RecentPageState extends State<RecentPage> {
       appBar: AppBar(
         backgroundColor: AppConstants.backgroundColor,
         foregroundColor: AppConstants.textColor,
-        title: const Text('Banner Management'),
-        elevation: 0,
+        title: Text('Banner Management'),
       ),
       body: BlocListener<CreateBannerBloc, CreateBannerState>(
         listener: (context, state) {
           if (state is CreateBannerLoaded) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Banner saved successfully!')),
+              const SnackBar(content: Text('✅ Banner saved successfully!')),
             );
             _titleController.clear();
             _categoryController.clear();
@@ -190,9 +144,10 @@ class _RecentPageState extends State<RecentPage> {
             _categoryIdController.clear();
             _linkController.clear();
             setState(() => _uploadProgress = 0.0);
+            Navigator.of(context).pop();
           } else if (state is CreateBannerError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.message}')),
+              SnackBar(content: Text('❌ Error: ${state.message}')),
             );
           }
         },
@@ -203,8 +158,9 @@ class _RecentPageState extends State<RecentPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Image preview
                 Container(
-                  height: 200,
+                  height: 200.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -214,23 +170,23 @@ class _RecentPageState extends State<RecentPage> {
                   child: _buildImagePreview(),
                 ),
                 const SizedBox(height: 24),
-                if (_uploadProgress > 0 && _uploadProgress < 1)
-                  Column(
-                    children: [
-                      LinearProgressIndicator(
-                        value: _uploadProgress,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppConstants.accentColor),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
-                        style: const TextStyle(color: AppConstants.textColor),
-                      ),
-                    ],
+
+                // Upload progress
+                if (_uploadProgress > 0 && _uploadProgress < 1) ...[
+                  LinearProgressIndicator(
+                    value: _uploadProgress,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppConstants.accentColor),
                   ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
+                    style: const TextStyle(color: AppConstants.textColor),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 const Text(
                   'Banner Details',
                   style: TextStyle(
@@ -240,28 +196,21 @@ class _RecentPageState extends State<RecentPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                _buildTextField(label: 'Title', controller: _titleController),
                 _buildTextField(
-                  label: 'Title',
-                  controller: _titleController,
-                ),
+                    label: 'Category', controller: _categoryController),
+                _buildTextField(label: 'Type', controller: _typeController),
                 _buildTextField(
-                  label: 'Category',
-                  controller: _categoryController,
-                ),
-                _buildTextField(
-                  label: 'Type',
-                  controller: _typeController,
-                ),
-                _buildTextField(
-                  label: 'Category ID',
-                  controller: _categoryIdController,
-                ),
+                    label: 'Category ID', controller: _categoryIdController),
                 _buildTextField(
                   label: 'Link',
                   controller: _linkController,
                   isRequired: false,
                 ),
+
                 const SizedBox(height: 24),
+
                 BlocBuilder<CreateBannerBloc, CreateBannerState>(
                   builder: (context, state) {
                     return ElevatedButton.icon(
