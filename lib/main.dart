@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
 import 'package:modern_grocery/bloc/GetAllBannerBloc/get_all_banner_bloc.dart';
@@ -26,8 +28,10 @@ import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
 import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
 import 'package:modern_grocery/ui/Home_/home_page.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
+import 'package:modern_grocery/services/language_service.dart';
+import 'package:modern_grocery/localization/app_localizations_delegate.dart';
 
-// String basePath = "http://192.168.223.203:4055/api";
+//String basePath = "http://192.168.223.203:4055/api";
 // String basePath = "http://69.62.79.175:4735/api";
 String basePath = "https://modern-store-backend.onrender.com/api";
 
@@ -40,79 +44,100 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(430, 917),
-      minTextAdapt: true,
-      builder: (context, child) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => LoginBloc(),
-            ),
-            BlocProvider(
-              create: (context) => GetAllCategoriesBloc(),
-            ),
-            BlocProvider(
-              create: (context) => AddDeliveryAddressBloc(),
-            ),
-            BlocProvider(
-              create: (context) => AddCartBloc(
-                addCartApi: AddcartApi(apiClient: ApiClient()),
-              ),
-            ),
-            BlocProvider(
-              create: (context) =>
-                  GetbyidBloc(getbyidproductApi: GetbyidproductApi()),
-            ),
-            BlocProvider(
-              create: (context) => GetAllBannerBloc(),
-            ),
-            BlocProvider(
-              create: (context) => CreateCategoryBloc(
-                createcategoryApi: CreatecategoryApi(apiClient: ApiClient()),
-              ),
-            ),
-            BlocProvider(create: (context) => CreateProductBloc()),
-            BlocProvider(
-              create: (context) => GetAllProductBloc(),
-            ),
-            BlocProvider(
-              create: (context) => UserprofileBloc(),
-            ),
-            BlocProvider(
-              create: (context) => UserdeliveryaddressBloc(),
-            ),
-            BlocProvider(
-              create: (context) => OfferproductBloc(),
-            ),
-            BlocProvider(
-              create: (context) => AddToWishlistBloc(),
-            ),
-            BlocProvider(
-              create: (context) => GetToWishlistBloc(),
-            ),
-            BlocProvider(
-              create: (context) => CreateBannerBloc(api: CreatebannerApi()),
-            ),
-            BlocProvider(
-              create: (context) => GetCategoryProductsBloc(),
-            ),
-            BlocProvider(
-              create: (context) => GetAllUserCartBloc(),
-            ),
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            //home: HomePage(),
-             home: SplashScreen(),
-          ),
-        );
-      },
-    );
+    return ChangeNotifierProvider(
+        create: (context) => LanguageService(),
+        child: Consumer<LanguageService>(
+            builder: (context, languageService, child) {
+          return ScreenUtilInit(
+            designSize: const Size(430, 917),
+            minTextAdapt: true,
+            builder: (context, child) {
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => LoginBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetAllCategoriesBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => AddDeliveryAddressBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => AddCartBloc(
+                      addCartApi: AddcartApi(apiClient: ApiClient()),
+                    ),
+                  ),
+                  BlocProvider(
+                    create: (context) =>
+                        GetbyidBloc(getbyidproductApi: GetbyidproductApi()),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetAllBannerBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => CreateCategoryBloc(
+                      createcategoryApi:
+                          CreatecategoryApi(apiClient: ApiClient()),
+                    ),
+                  ),
+                  BlocProvider(create: (context) => CreateProductBloc()),
+                  BlocProvider(
+                    create: (context) => GetAllProductBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => UserprofileBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => UserdeliveryaddressBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => OfferproductBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => AddToWishlistBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetToWishlistBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) =>
+                        CreateBannerBloc(api: CreatebannerApi()),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetCategoryProductsBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => GetAllUserCartBloc(),
+                  ),
+                ],
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Modern Store',
+                  theme: ThemeData(
+                    colorScheme:
+                        ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                    useMaterial3: true,
+                  ),
+                  locale: languageService.locale,
+                  localizationsDelegates: const [
+                    AppLocalizationsDelegate(),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: const [
+                    Locale('en', 'US'),
+                    Locale('hi', 'IN'),
+                    Locale('ml', 'IN'),
+                    Locale('ar', 'SA'),
+                  ],
+                  //home: HomePage(),
+                  home: SplashScreen(),
+                ),
+              );
+            },
+          );
+        }));
   }
 }

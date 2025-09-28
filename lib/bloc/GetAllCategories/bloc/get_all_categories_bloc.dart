@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:modern_grocery/repositery/api/Categories/GetAllCategories_api.dart';
-import 'package:modern_grocery/repositery/api/getallinventory_api.dart';
+
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 
 part 'get_all_categories_event.dart';
@@ -15,7 +15,6 @@ class GetAllCategoriesBloc
 
   GetAllCategoriesBloc() : super(GetAllCategoriesInitial()) {
     on<fetchGetAllCategories>((event, emit) async {
-      // TODO: implement event handler
       emit(GetAllCategoriesLoading());
       try {
         getAllCategoriesModel = await getallcategoriesApi.getGetAllCategories();

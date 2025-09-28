@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/ui/auth_/enter_screen.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/Onboarding.png'),
             fit: BoxFit.cover,
@@ -27,11 +28,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
             SizedBox(height: 233.h),
             Text(
               'Modern Group',
-              style: TextStyle(
-                color: Color(0xffF5E9B5),
-                fontSize: 52,
+              style: GoogleFonts.poppins(
+                color: const Color(0xffF5E9B5),
+                fontSize: 52.sp,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Poppins',
               ),
               textAlign: TextAlign.center,
             ),
@@ -40,10 +40,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               padding: EdgeInsets.symmetric(horizontal: 53.w),
               child: Text(
                 'Fresh Groceries Just For You',
-                style: TextStyle(
-                  color: Color(0xFFFCF8E8),
-                  fontSize: 41,
-                  fontFamily: 'Poppins',
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFFFCF8E8),
+                  fontSize: 41.sp,
                   fontWeight: FontWeight.w600,
                   height: 1.41,
                   letterSpacing: -1.64,
@@ -54,10 +53,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             SizedBox(height: 30.h),
             Text(
               'All Time Have Real Freshness',
-              style: TextStyle(
-                color: Color(0xFFFCF8E8),
-                fontSize: 35,
-                fontFamily: 'Poppins',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFFFCF8E8),
+                fontSize: 35.sp,
                 fontWeight: FontWeight.w500,
                 height: 1.41,
                 letterSpacing: -0.80,
@@ -66,10 +64,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
             Text(
               'And Are Intended For Your Needs',
-              style: TextStyle(
-                color: Color(0xFFFCF8E8),
-                fontSize: 35,
-                fontFamily: 'Poppins',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFFFCF8E8),
+                fontSize: 35.sp,
                 fontWeight: FontWeight.w500,
                 height: 1.41,
                 letterSpacing: -0.80,
@@ -79,26 +76,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
             SizedBox(height: 52.h),
             Center(
               child: SizedBox(
-                width: 151,
-                height: 56,
+                width: 151.w,
+                height: 56.h,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF0A0808),
+                    backgroundColor: const Color(0xFF0A0808),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Color(0xFFFCF8E8)),
+                      borderRadius: BorderRadius.circular(10.r),
+                      side: const BorderSide(color: Color(0xFFFCF8E8)),
                     ),
                   ),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => EnterScreen()));
+                        builder: (BuildContext context) =>
+                            const EnterScreen()));
                   },
                   child: Text(
                     'Get started',
-                    style: TextStyle(
-                      color: Color(0xFFFCF8E8),
-                      fontSize: 20,
-                      fontFamily: 'Poppins',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFFFCF8E8),
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w400,
                       height: 1.41,
                       letterSpacing: -0.80,
@@ -114,10 +111,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   children: [
                     TextSpan(
                       text: 'By Joining You Agree To Our ',
-                      style: TextStyle(
-                        color: Color(0xFFFCF8E8),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFCF8E8),
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         height: 1.41,
                         letterSpacing: -0.60,
@@ -125,10 +121,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                     TextSpan(
                       text: 'Terms Of Service ',
-                      style: TextStyle(
-                        color: Color(0xFFFCF8E8),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFCF8E8),
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                         height: 1.41,
                         letterSpacing: -0.60,
@@ -136,10 +131,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                     TextSpan(
                       text: 'And ',
-                      style: TextStyle(
-                        color: Color(0xFFFCF8E8),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFCF8E8),
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w400,
                         height: 1.41,
                         letterSpacing: -0.60,
@@ -147,10 +141,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                     TextSpan(
                       text: 'Privacy Policy ',
-                      style: TextStyle(
-                        color: Color(0xFFFCF8E8),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFCF8E8),
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                         height: 1.41,
                         letterSpacing: -0.60,

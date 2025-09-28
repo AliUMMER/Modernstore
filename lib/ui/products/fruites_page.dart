@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/ui/products/product_details.dart';
 
 class FruitesPage extends StatefulWidget {
@@ -37,7 +39,15 @@ class _FruitesPageState extends State<FruitesPage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Center(
-            child: Text('Fruits', style: TextStyle(color: Color(0xffF5E9B5)))),
+          child: Text(
+            'Fruits',
+            style: GoogleFonts.inter(
+              color: const Color(0xffF5E9B5),
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -46,13 +56,13 @@ class _FruitesPageState extends State<FruitesPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10.w),
         child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.8,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            crossAxisSpacing: 10.w,
+            mainAxisSpacing: 10.h,
           ),
           itemCount: fruits.length,
           itemBuilder: (context, index) {
@@ -77,28 +87,28 @@ class FruitCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ProductDetails(productId: '')),
+              builder: (context) => const ProductDetails(productId: '')),
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
           color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             // **Fruit Image Container**
             Container(
-              width: 120,
-              height: 120,
+              width: 120.w,
+              height: 120.h,
               decoration: BoxDecoration(
-                color: Color(0xFFCCC9BC),
-                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFFCCC9BC),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 child: Image.asset(
                   fruit['image'],
                   fit: BoxFit.contain,
@@ -109,7 +119,11 @@ class FruitCard extends StatelessWidget {
             // **Fruit Name**
             Text(
               fruit['name'],
-              style: const TextStyle(color: Colors.white, fontSize: 18),
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
 
             // **Price & MRP**
@@ -118,28 +132,38 @@ class FruitCard extends StatelessWidget {
               children: [
                 Text(
                   'MRP: \u{20B9}${fruit['mrp']}',
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: Colors.grey,
+                    fontSize: 14.sp,
                     decoration: TextDecoration.lineThrough,
                   ),
                 ),
-                const SizedBox(width: 5),
+                SizedBox(width: 5.w),
                 Text(
                   '\u{20B9}${fruit['price']}',
-                  style: const TextStyle(color: Colors.white),
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
 
             // **Discount**
-            const Text(
+            Text(
               '20% OFF',
-              style: TextStyle(color: Colors.green),
+              style: GoogleFonts.inter(
+                color: Colors.green,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
             ),
 
             // **Add Button**
             IconButton(
               icon: const Icon(Icons.add_circle, color: Colors.white),
+              iconSize: 28.sp,
               onPressed: () {},
             ),
           ],

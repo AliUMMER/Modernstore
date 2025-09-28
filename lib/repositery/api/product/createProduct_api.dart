@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:modern_grocery/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateProductApi {
@@ -14,7 +15,7 @@ class CreateProductApi {
     required String unit,
     required File imageFile,
   }) async {
-    final url = Uri.parse('http://69.62.79.175:4735/api/product/create');
+    final url = Uri.parse('$basePath/product/create');
     final request = http.MultipartRequest('POST', url);
 
     // Load auth token

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
-
 import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
 import 'package:modern_grocery/bloc/addCart_bloc/add_cart_bloc.dart';
-
-import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
 import 'package:modern_grocery/ui/cart_/success_cart.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -25,7 +23,6 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   void initState() {
     super.initState();
-    print('Fetching product with ID: ${widget.productId}');
     context.read<GetbyidBloc>().add(FetchGetbyid(widget.productId));
   }
 
@@ -40,7 +37,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       ),
       child: Text(
         text,
-        style: TextStyle(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontSize: 20.sp,
           fontWeight: FontWeight.w600,
@@ -65,56 +62,21 @@ class _ProductDetailsState extends State<ProductDetails> {
               backgroundColor: Colors.red,
             ),
           );
-        } else if (state is AddCartLoading) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const CircularProgressIndicator(color: Colors.white),
-                  SizedBox(width: 20.w),
-                  const Text('Adding to cart...'),
-                ],
-              ),
-              duration: const Duration(seconds: 2),
-            ),
-          );
         }
       },
       child: BlocBuilder<GetbyidBloc, GetbyidState>(
         builder: (context, state) {
-          print('Current GetbyidBloc state: ${state.runtimeType}');
           if (state is GetbyidLoading) {
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
           }
-          if (state is GetbyidError) {
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Error: ${state.message}'),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<GetbyidBloc>()
-                            .add(FetchGetbyid(widget.productId));
-                      },
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
+
           if (state is GetbyidLoaded) {
             final product = state.getByIdProduct;
             if (product == null || product.data == null) {
-              print('Product or product.data is null: $product');
               return const Scaffold(
-                body: Center(child: Text('Product data is unavailable')),
+                body: Center(child: Text('Product data unavailable')),
               );
             }
 
@@ -126,11 +88,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? 0.45.sh
-                            : 0.35.sh,
+                        width: 1.sw,
+                        height: 0.45.sh,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(25),
@@ -146,8 +105,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(left: 16.w),
-                                  child: const BackButton(
-                                      color: Color(0xff000000)),
+                                  child: const BackButton(color: Colors.black),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(right: 16.w),
@@ -158,7 +116,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                             SizedBox(height: 20.h),
                             Center(
-                              child: Container(
+                              child: SizedBox(
                                 height: 0.25.sh,
                                 width: 0.65.sw,
                                 child: Image.network(
@@ -166,113 +124,67 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ? product.data!.images.first
                                       : 'https://modern-store-backend.onrender.com/image/uploads/products/placeholder.png',
                                   fit: BoxFit.contain,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    print('Image loading error: $error');
-                                    return Image.asset(
-                                      'assets/placeholder.png',
-                                      fit: BoxFit.contain,
-                                    );
-                                  },
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset('assets/placeholder.png'),
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
+
+                      // --- Product info ---
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 16.w, vertical: 16.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Title & Wishlist
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
                                   child: Text(
                                     product.data!.name,
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                       color: const Color(0xF2FCF8E8),
                                       fontSize: 28.sp,
-                                      fontFamily: 'Poppins Medium',
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
-                                BlocConsumer<AddToWishlistBloc,
+                                BlocBuilder<AddToWishlistBloc,
                                     AddToWishlistState>(
-                                  listener: (context, state) {
-                                    if (state is AddToWishlistLoaded) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Added to wishlist!"),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    } else if (state is AddToWishlistError) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text("Failed to add to wishlist"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  },
                                   builder: (context, state) {
                                     return IconButton(
                                       onPressed: () {
-                                        if (widget.productId.length == 24) {
-                                          context.read<AddToWishlistBloc>().add(
-                                                fetchAddToWishlistEvent(
-                                                    widget.productId),
-                                              );
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content:
-                                                  Text("Invalid Product ID"),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
+                                        context.read<AddToWishlistBloc>().add(
+                                            fetchAddToWishlistEvent(
+                                                widget.productId));
                                       },
-                                      icon: state is AddToWishlistLoading
-                                          ? const SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: CircularProgressIndicator(
-                                                  strokeWidth: 2),
-                                            )
-                                          : Icon(
-                                              product.data!.inWishlist
-                                                  ? Icons.favorite
-                                                  : Icons.favorite_outline,
-                                              color: const Color(0xF2FCF8E8),
-                                              size: 24,
-                                            ),
+                                      icon: Icon(
+                                        product.data!.inWishlist
+                                            ? Icons.favorite
+                                            : Icons.favorite_outline,
+                                        color: const Color(0xF2FCF8E8),
+                                        size: 24.sp,
+                                      ),
                                     );
                                   },
                                 ),
                               ],
                             ),
                             SizedBox(height: 12.h),
+
+                            // Price & Quantity
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   '₹${product.data!.basePrice.toStringAsFixed(2)}/${product.data!.unit.toLowerCase()}',
-                                  style: TextStyle(
-                                    color: const Color(0xFFFFFFFF),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -292,8 +204,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         backgroundColor: Colors.grey[800],
                                         child: Text(
                                           '$count',
-                                          style: TextStyle(
-                                            color: const Color(0xffFFFFFF),
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white,
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -301,41 +213,38 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ),
                                     ),
                                     _quantityButton('+', () {
-                                      setState(() {
-                                        count++;
-                                      });
+                                      setState(() => count++);
                                     }),
                                   ],
                                 ),
                               ],
                             ),
                             SizedBox(height: 24.h),
+
+                            // Details
                             Text(
                               'Product detail',
-                              style: TextStyle(
-                                color: const Color(0xF2FCF8E8),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
                                 fontSize: 18.sp,
-                                fontFamily: 'Poppins Medium',
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             SizedBox(height: 16.h),
                             Text(
                               'Category - ${product.data!.category.name}',
-                              style: TextStyle(
-                                color: const Color(0xF2FCF8E8),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
                                 fontSize: 14.sp,
-                                fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                             SizedBox(height: 12.h),
                             Text(
                               product.data!.description,
-                              style: TextStyle(
-                                color: const Color(0xF2FCF8E8),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
                                 fontSize: 12.sp,
-                                fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                                 height: 1.5,
                               ),
@@ -343,28 +252,27 @@ class _ProductDetailsState extends State<ProductDetails> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 24.h),
+
+                            // Review
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Review',
-                                  style: TextStyle(
-                                    color: const Color(0xF2FCF8E8),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                     fontSize: 18.sp,
-                                    fontFamily: 'Poppins Medium',
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 RatingBar.builder(
                                   itemSize: 20.sp,
-                                  unratedColor: const Color(0xF2FCF8E8),
+                                  unratedColor: Colors.white24,
                                   initialRating: _rating,
                                   minRating: 1,
                                   direction: Axis.horizontal,
                                   allowHalfRating: true,
                                   itemCount: 5,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: 4.w),
                                   itemBuilder: (context, _) => const Icon(
                                     Icons.star,
                                     color: Color(0xffFFD500),
@@ -376,25 +284,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ],
                             ),
                             SizedBox(height: 40.h),
+
+                            // Add to Cart Button
                             Center(
-                              child: BlocConsumer<AddCartBloc, AddCartState>(
-                                listener: (context, state) {
-                                  if (state is AddCartLoaded) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Added to cart!"),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } else if (state is AddCartError) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Failed to add to cart"),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
-                                },
+                              child: BlocBuilder<AddCartBloc, AddCartState>(
                                 builder: (context, state) {
                                   return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -418,10 +311,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                 );
                                           },
                                     child: state is AddCartLoading
-                                        ? const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
+                                        ? SizedBox(
+                                            width: 20.w,
+                                            height: 20.h,
+                                            child:
+                                                const CircularProgressIndicator(
                                               strokeWidth: 2,
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
@@ -430,7 +324,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           )
                                         : Text(
                                             'Add To Cart',
-                                            style: TextStyle(
+                                            style: GoogleFonts.poppins(
                                               fontSize: 16.sp,
                                               color: Colors.black,
                                               fontWeight: FontWeight.w600,
@@ -451,25 +345,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             );
           }
 
-          print('Unknown state: $state');
-          return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Unexpected state: ${state.runtimeType}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context
-                          .read<GetbyidBloc>()
-                          .add(FetchGetbyid(widget.productId));
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            ),
+          return const Scaffold(
+            body: Center(child: Text("Unexpected error")),
           );
         },
       ),

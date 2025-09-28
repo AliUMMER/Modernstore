@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/model/createCategory_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,9 +17,8 @@ class CreatecategoryApi {
     required String categoryName,
     required File imageFile,
   }) async {
-    // final url = Uri.parse('http://69.62.79.175:4735/api/category/create'
-    // );
-    final url = Uri.parse('http://192.168.1.81:4055/api/category/create');
+    final url = Uri.parse(
+        'https://modern-store-backend.onrender.com/api/category/create');
     final request = http.MultipartRequest('POST', url);
 
     final preferences = await SharedPreferences.getInstance();

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
-
 
 import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
 import 'package:modern_grocery/repositery/model/getUserProfile.dart';
@@ -65,10 +66,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return BlocBuilder<UserprofileBloc, UserprofileState>(
       builder: (context, profileState) {
         if (profileState is Userprofileloading) {
-          return const Center(child: CircularProgressIndicator());
+          return Scaffold(
+            backgroundColor: const Color(0xFF0A0909),
+            body: const Center(child: CircularProgressIndicator()),
+          );
         }
         if (profileState is UserprofileError) {
-          return const Center(child: Text('User profile unavailable'));
+          return Scaffold(
+            backgroundColor: const Color(0xFF0A0909),
+            body: Center(
+              child: Text(
+                'User profile unavailable',
+                style: GoogleFonts.inter(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
+          );
         }
         if (profileState is Userprofileloaded) {
           _profileData = BlocProvider.of<UserprofileBloc>(context).getUserProfile;
@@ -76,10 +91,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
           return BlocBuilder<UserdeliveryaddressBloc, UserdeliveryaddressState>(
             builder: (context, addressState) {
               if (addressState is UserdeliveryaddressLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Scaffold(
+                  backgroundColor: const Color(0xFF0A0909),
+                  body: const Center(child: CircularProgressIndicator()),
+                );
               }
               if (addressState is UserdeliveryaddressError) {
-                return const Center(child: Text('Delivery address unavailable'));
+                return Scaffold(
+                  backgroundColor: const Color(0xFF0A0909),
+                  body: Center(
+                    child: Text(
+                      'Delivery address unavailable',
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                  ),
+                );
               }
               if (addressState is UserdeliveryaddressLoaded) {
                 _addressData =
@@ -95,69 +124,116 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     backgroundColor: const Color(0xFF0A0909),
                     elevation: 0,
                     leading: const BackButton(color: Colors.white),
-                    title: const Text(
+                    title: Text(
                       'Edit Profile',
-                      style: TextStyle(color: Colors.white),
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     centerTitle: true,
                   ),
                   body: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                     child: Column(
                       children: [
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         Stack(
                           alignment: Alignment.bottomRight,
                           children: [
                             // Profile image widget if needed
                             Container(
-                              padding: const EdgeInsets.all(4),
+                              padding: EdgeInsets.all(4.w),
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.edit,
-                                  size: 16, color: Colors.black),
+                              child: Icon(
+                                Icons.edit,
+                                size: 16.sp,
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         Text(
                           _profileData?.user?.name ?? 'User Name',
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: GoogleFonts.inter(
+                            fontSize: 18.sp,
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        SizedBox(height: 30.h),
                         Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(16.w),
                           decoration: BoxDecoration(
                             border: Border.all(color: const Color(0xffC4C1B4)),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Name",
-                                  style: TextStyle(color: Colors.white)),
-                              const SizedBox(height: 5),
+                              Text(
+                                "Name",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              SizedBox(height: 5.h),
                               buildEditableField(controller: nameController),
-                              const SizedBox(height: 20),
-                              const Text("Phone number",
-                                  style: TextStyle(color: Colors.white)),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 20.h),
+                              Text(
+                                "Phone number",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              SizedBox(height: 5.h),
                               buildEditableField(controller: phoneController),
-                              const SizedBox(height: 20),
-                              const Text("Address",
-                                  style: TextStyle(color: Colors.white)),
-                              const SizedBox(height: 5),
+                              SizedBox(height: 20.h),
+                              Text(
+                                "Address",
+                                style: GoogleFonts.inter(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              SizedBox(height: 5.h),
                               buildEditableField(
                                   controller: addressController, maxLines: 3),
-                              const SizedBox(height: 30),
-                              // Add your Save button here if needed
+                              SizedBox(height: 30.h),
+                              // Save button
+                              SizedBox(
+                                width: double.infinity,
+                                height: 50.h,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Add save functionality here
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFFCF8E8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Save Changes',
+                                    style: GoogleFonts.inter(
+                                      color: const Color(0xFF0A0909),
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -180,10 +256,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     int maxLines = 1,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
         border: Border.all(color: const Color(0xffC4C1B4)),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
@@ -191,15 +267,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: TextField(
               controller: controller,
               maxLines: maxLines,
-              style: const TextStyle(color: Color(0xffC4C1B4)),
-              decoration: const InputDecoration(
+              style: GoogleFonts.inter(
+                color: const Color(0xffC4C1B4),
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+              ),
+              decoration: InputDecoration(
                 hintText: '',
-                hintStyle: TextStyle(color: Colors.white54),
+                hintStyle: GoogleFonts.inter(
+                  color: Colors.white54,
+                  fontSize: 14.sp,
+                ),
                 border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
               ),
             ),
           ),
-          const Icon(Icons.edit, color: Color(0xffC4C1B4), size: 18),
+          Icon(
+            Icons.edit,
+            color: const Color(0xffC4C1B4),
+            size: 18.sp,
+          ),
         ],
       ),
     );

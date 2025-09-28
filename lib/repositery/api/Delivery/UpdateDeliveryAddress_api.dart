@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:modern_grocery/repositery/model/updateDeliveryAddress.dart';
 
@@ -9,7 +10,7 @@ class UpdateDeliveryAddressapi {
 
   Future<UpdateDeliveryAddress> getUpdateAddress() async {
     String trendingpath =
-        'http://localhost:4055/api/user/update-delivery-address/68092f3a6649ccf83c38958b';
+        '$basePath/user/update-delivery-address/68092f3a6649ccf83c38958b';
 
     var body = {
       "address": "Root-sys, SkyMall, Edarikkode, Kottakkal",

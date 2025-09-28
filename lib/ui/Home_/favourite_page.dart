@@ -147,9 +147,7 @@ class _FavouritePageState extends State<FavouritePage> {
                       borderRadius: BorderRadius.circular(25.r),
                     ),
                   ),
-                  onPressed: () {
-                    
-                  },
+                  onPressed: () {},
                   child: Center(
                     child: Text('Add to Cart',
                         style: GoogleFonts.poppins(
@@ -304,13 +302,13 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
             Column(
               children: [
                 SizedBox(height: 18.h),
-                Container(
-                    height: 37.h,
-                    width: 37.w,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFEFECE1), shape: BoxShape.circle),
-                    child: SvgPicture.asset('assets/Icon/trash-2.svg',
-                        color: Colors.black)),
+                CircleAvatar(
+                    radius: 18.r,
+                    backgroundColor: Color(0xFFEFECE1),
+                    child: SvgPicture.asset(
+                      'assets/Icon/trash-2.svg',
+                      fit: BoxFit.contain,
+                    )),
               ],
             ),
             SizedBox(width: 9.w),

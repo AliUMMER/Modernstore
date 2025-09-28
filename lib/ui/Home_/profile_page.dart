@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:modern_grocery/ui/settings/Edit_profile.dart';
 import 'package:modern_grocery/ui/auth_/enter_screen.dart';
-import 'package:modern_grocery/ui/user_profile.dart';
+import 'package:modern_grocery/ui/settings/language_page.dart';
+import 'package:modern_grocery/ui/settings/help_desk_page.dart';
+import 'package:modern_grocery/ui/settings/about_us_page.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -17,53 +22,52 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: const Color(0XFF0A0909),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: Column(
           children: [
-            const SizedBox(height: 23),
-            const Row(
+            SizedBox(height: 23.h),
+            Row(
               children: [
-                SizedBox(width: 10),
-                BackButton(color: Color(0xffffffff)),
+                SizedBox(width: 10.w),
+                const BackButton(color: Color(0xffffffff)),
               ],
             ),
-            const Row(
+            Row(
               children: [
-                SizedBox(width: 150),
+                SizedBox(width: 150.w),
                 Text(
                   'My Account',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFFFCF8E8),
-                    fontSize: 24,
-                    fontFamily: 'Inter',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFFFCF8E8),
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.24,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 25),
+            SizedBox(height: 25.h),
             Center(
               child: Column(
-                children: const [
+                children: [
                   CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/image 91.png'),
+                    radius: 40.r,
+                    backgroundImage: const AssetImage('assets/image 91.png'),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Text(
                     'User Name',
-                    style: TextStyle(
-                      fontSize: 18,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFFCF8E8),
+                      color: const Color(0xFFFCF8E8),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 55),
+            SizedBox(height: 55.h),
             buildSection('General', [
               buildListTile(Icons.person, 'Profile', onTap: () {
                 Navigator.push(
@@ -71,12 +75,54 @@ class _ProfilePageState extends State<ProfilePage> {
                   MaterialPageRoute(builder: (context) => EditProfilePage()),
                 );
               }),
-              buildListTile(Icons.location_on, 'My Address'),
-              buildListTile(Icons.language, 'Language'),
+              buildListTile(Icons.location_on, 'My Address', onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Address management coming soon!',
+                      style: GoogleFonts.poppins(
+                        color: Color(0x80000000),
+                      ),
+                    ),
+                    backgroundColor: Color(0xFFF5E9B5),
+                  ),
+                );
+              }),
+              buildListTile(Icons.language, 'Language', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LanguagePage()),
+                );
+              }),
             ]),
             buildSection('Personal Activity', [
-              buildListTile(Icons.account_balance_wallet, 'Wallet Points'),
-              buildListTile(Icons.rate_review, 'Customer Review'),
+              buildListTile(Icons.account_balance_wallet, 'Wallet Points',
+                  onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Wallet feature coming soon!',
+                      style: GoogleFonts.poppins(
+                        color: Color(0x80000000),
+                      ),
+                    ),
+                    backgroundColor: const Color(0xFFF5E9B5),
+                  ),
+                );
+              }),
+              buildListTile(Icons.rate_review, 'Customer Review', onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Review feature coming soon!',
+                      style: GoogleFonts.poppins(
+                        color: Color(0x80000000),
+                      ),
+                    ),
+                    backgroundColor: Color(0xFFF5E9B5),
+                  ),
+                );
+              }),
             ]),
             buildSection('Logout', [
               buildListTile(
@@ -87,21 +133,23 @@ class _ProfilePageState extends State<ProfilePage> {
                     context: context,
                     builder: (context) => AlertDialog(
                       backgroundColor: Colors.black,
-                      title: const Text(
+                      title: Text(
                         'Logout',
-                        style: TextStyle(color: Colors.white),
+                        style: GoogleFonts.poppins(color: Colors.white),
                       ),
-                      content: const Text(
+                      content: Text(
                         'Are you sure you want to logout?',
-                        style: TextStyle(color: Colors.white70),
+                        style: GoogleFonts.poppins(color: Colors.white70),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close dialog
                           },
-                          child: const Text('Cancel',
-                              style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.poppins(color: Colors.white),
+                          ),
                         ),
                         TextButton(
                           onPressed: () async {
@@ -115,12 +163,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EnterScreen()),
+                                  builder: (context) => const EnterScreen()),
                               (route) => false,
                             );
                           },
-                          child: const Text('Logout',
-                              style: TextStyle(color: Colors.red)),
+                          child: Text(
+                            'Logout',
+                            style: GoogleFonts.poppins(color: Colors.red),
+                          ),
                         ),
                       ],
                     ),
@@ -129,59 +179,122 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ]),
             buildSection('Help Desk', [
-              buildListTile(Icons.support, 'Help & Support'),
-              buildListTile(Icons.info, 'About Us'),
-              buildListTile(Icons.description, 'Terms & Conditions'),
-              buildListTile(Icons.privacy_tip, 'Privacy Policy'),
+              buildListTile(Icons.support, 'Help & Support', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HelpDeskPage()),
+                );
+              }),
+              buildListTile(Icons.info, 'About Us', onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutUsPage()),
+                );
+              }),
+              buildListTile(Icons.description, 'Terms & Conditions', onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Terms & Conditions coming soon!',
+                      style: GoogleFonts.poppins(
+                        color: Color(0x80000000),
+                      ),
+                    ),
+                    backgroundColor: Color(0xFFF5E9B5),
+                  ),
+                );
+              }),
+              buildListTile(Icons.privacy_tip, 'Privacy Policy', onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Privacy Policy coming soon!',
+                      style: GoogleFonts.poppins(
+                        color: Color(0x80000000),
+                      ),
+                    ),
+                    backgroundColor: Color(0xFFF5E9B5),
+                  ),
+                );
+              }),
             ]),
           ],
         ),
       ),
     );
   }
-}
 
-Widget buildSection(String title, List<Widget> children) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFFFCF8E8),
-          fontSize: 16,
-          fontFamily: 'Inter',
+  Widget buildSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            color: const Color(0xFFFCF8E8),
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            border: Border.all(color: const Color(0xffC4C1B4)),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(children: children),
+        ),
+        SizedBox(height: 20.h),
+      ],
+    );
+  }
+
+  Widget buildListTile(IconData icon, String text, {VoidCallback? onTap}) {
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFFFCF8E8), size: 24.sp),
+      title: Text(
+        text,
+        style: GoogleFonts.poppins(
+          color: const Color(0xFFFCF8E8),
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
-      const SizedBox(height: 10),
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
-          border: Border.all(color: const Color(0xffC4C1B4)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(children: children),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.white,
+        size: 16.sp,
       ),
-      const SizedBox(height: 20),
-    ],
-  );
-}
+      onTap: onTap,
+    );
+      }
+    
+  }
 
-Widget buildListTile(IconData icon, String text, {VoidCallback? onTap}) {
-  return ListTile(
-    leading: Icon(icon, color: const Color(0xFFFCF8E8)),
-    title: Text(
-      text,
-      style: const TextStyle(
-        color: Color(0xFFFCF8E8),
-        fontSize: 16,
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w500,
-      ),
-    ),
-    trailing:
-        const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
-    onTap: onTap,
-  );
-}
+  Widget buildSection(String title, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            color: const Color(0xFFFCF8E8),
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black,
+            border: Border.all(color: const Color(0xffC4C1B4)),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(children: children),
+        ),
+        SizedBox(height: 20.h),
+      ],
+    );
+  }
+
