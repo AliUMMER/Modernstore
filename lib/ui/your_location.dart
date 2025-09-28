@@ -54,7 +54,7 @@ class _YourLocationState extends State<YourLocation> {
               style: TextStyle(
                 color: const Color(0xFFF5E9B5),
                 fontSize: 23.sp,
-                fontFamily: 'Poppins',
+             
                 fontWeight: FontWeight.w500,
               ),
             ),

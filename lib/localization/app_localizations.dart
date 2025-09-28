@@ -29,6 +29,15 @@ class AppLocalizations {
       'customer_review': 'Customer Review',
       'terms_conditions': 'Terms & Conditions',
       'privacy_policy': 'Privacy Policy',
+      'general': 'General',
+      'personal_activity': 'Personal Activity',
+      'address_coming': 'Address management coming soon!',
+      'wallet_coming': 'Wallet feature coming soon!',
+      'review_coming': 'Review feature coming soon!',
+      'logout_confirm': 'Are you sure you want to logout?',
+      'help_desk': 'Help Desk',
+      'terms_coming': 'Terms & Conditions coming soon!',
+      'privacy_coming': 'Privacy Policy coming soon!',
 
       // Language
       'select_language': 'Select your preferred language',
@@ -53,8 +62,37 @@ class AppLocalizations {
       'why_choose_us': 'Why Choose Us?',
       'contact_information': 'Contact Information',
 
+      // Search & Products
+      'find_products': 'Find Products',
+      'search_something': 'Search something...',
+      'categories_not_recognized': 'Categories not Recognized',
+      'no_name': 'No Name',
+      'fruits': 'Fruits',
+      'mrp': 'MRP',
+      'discount_20_off': '20% OFF',
+      'item_added_to_cart': 'Item added to cart',
+      'banana': 'Banana',
+      'orange': 'Orange',
+      'strawberry': 'Strawberry',
+      'lemon': 'Lemon',
+      'watermelon': 'Watermelon',
+      'apple': 'Apple',
+      'mango': 'Mango',
+      'grapes': 'Grapes',
+
+      // Product Details
+      'product_data_unavailable': 'Product data unavailable',
+      'failed_add_to_cart': 'Failed to add to cart. Try again.',
+      'product_detail': 'Product detail',
+      'category': 'Category',
+      'review': 'Review',
+      'add_to_cart': 'Add To Cart',
+      'added_to_wishlist': 'Added to wishlist',
+      'removed_from_wishlist': 'Removed from wishlist',
+      'rating_updated': 'Rating updated',
+      'unexpected_error': 'Unexpected error',
+
       // Messages
-      'logout_confirmation': 'Are you sure you want to logout?',
       'coming_soon': 'coming soon!',
       'address_management': 'Address management',
       'wallet_feature': 'Wallet feature',
@@ -89,6 +127,15 @@ class AppLocalizations {
       'customer_review': 'ग्राहक समीक्षा',
       'terms_conditions': 'नियम और शर्तें',
       'privacy_policy': 'गोपनीयता नीति',
+      'general': 'सामान्य',
+      'personal_activity': 'व्यक्तिगत गतिविधि',
+      'address_coming': 'पता प्रबंधन जल्द आ रहा है!',
+      'wallet_coming': 'वॉलेट सुविधा जल्द आ रहा है!',
+      'review_coming': 'समीक्षा सुविधा जल्द आ रहा है!',
+      'logout_confirm': 'क्या आप वाकई लॉग आउट करना चाहते हैं?',
+      'help_desk': 'सहायता डेस्क',
+      'terms_coming': 'नियम और शर्तें जल्द आ रहा है!',
+      'privacy_coming': 'गोपनीयता नीति जल्द आ रहा है!',
 
       // Language
       'select_language': 'अपनी पसंदीदा भाषा चुनें',
@@ -113,8 +160,37 @@ class AppLocalizations {
       'why_choose_us': 'हमें क्यों चुनें?',
       'contact_information': 'संपर्क जानकारी',
 
+      // Search & Products
+      'find_products': 'उत्पाद खोजें',
+      'search_something': 'कुछ खोजें...',
+      'categories_not_recognized': 'श्रेणियों को पहचाना नहीं गया',
+      'no_name': 'कोई नाम नहीं',
+      'fruits': 'फल',
+      'mrp': 'एम.आर.पी',
+      'discount_20_off': '20% छूट',
+      'item_added_to_cart': 'आइटम कार्ट में जोड़ा गया',
+      'banana': 'केला',
+      'orange': 'संतरा',
+      'strawberry': 'स्ट्रॉबेरी',
+      'lemon': 'नींबू',
+      'watermelon': 'तरबूज',
+      'apple': 'सेब',
+      'mango': 'आम',
+      'grapes': 'अंगूर',
+
+      // Product Details
+      'product_data_unavailable': 'उत्पाद डेटा उपलब्ध नहीं',
+      'failed_add_to_cart': 'कार्ट में जोड़ने में असफल। पुनः प्रयास करें।',
+      'product_detail': 'उत्पाद विवरण',
+      'category': 'श्रेणी',
+      'review': 'समीक्षा',
+      'add_to_cart': 'कार्ट में जोड़ें',
+      'added_to_wishlist': 'विशलिस्ट में जोड़ा गया',
+      'removed_from_wishlist': 'विशलिस्ट से हटाया गया',
+      'rating_updated': 'रेटिंग अपडेट की गई',
+      'unexpected_error': 'अप्रत्याशित त्रुटि',
+
       // Messages
-      'logout_confirmation': 'क्या आप वाकई लॉग आउट करना चाहते हैं?',
       'coming_soon': 'जल्द आ रहा है!',
       'address_management': 'पता प्रबंधन',
       'wallet_feature': 'वॉलेट सुविधा',
@@ -149,6 +225,15 @@ class AppLocalizations {
       'customer_review': 'ഉപഭോക്തൃ അവലോകനം',
       'terms_conditions': 'നിബന്ധനകളും വ്യവസ്ഥകളും',
       'privacy_policy': 'സ്വകാര്യതാ നയം',
+      'general': 'പൊതുവായ',
+      'personal_activity': 'വ്യക്തിഗത പ്രവർത്തനം',
+      'address_coming': 'വിലാസ മാനേജ്മെന്റ് ഉടൻ വരുന്നു!',
+      'wallet_coming': 'വാലറ്റ് സവിശേഷത ഉടൻ വരുന്നു!',
+      'review_coming': 'അവലോകന സവിശേഷത ഉടൻ വരുന്നു!',
+      'logout_confirm': 'നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?',
+      'help_desk': 'സഹായ ഡെസ്ക്',
+      'terms_coming': 'നിബന്ധനകളും വ്യവസ്ഥകളും ഉടൻ വരുന്നു!',
+      'privacy_coming': 'സ്വകാര്യതാ നയം ഉടൻ വരുന്നു!',
 
       // Language
       'select_language': 'നിങ്ങളുടെ പ്രിയങ്കര ഭാഷ തിരഞ്ഞെടുക്കുക',
@@ -173,132 +258,42 @@ class AppLocalizations {
       'why_choose_us': 'എന്തുകൊണ്ട് ഞങ്ങളെ തിരഞ്ഞെടുക്കണം?',
       'contact_information': 'ബന്ധപ്പെടൽ വിവരങ്ങൾ',
 
+      // Search & Products
+      'find_products': 'ഉത്പാദനങ്ങൾ കണ്ടെത്തുക',
+      'search_something': 'എന്തെങ്കിലും തിരയുക...',
+      'categories_not_recognized': 'വിഭാഗങ്ങൾ തിരിച്ചറിഞ്ഞില്ല',
+      'no_name': 'പേരില്ല',
+      'fruits': 'പഴങ്ങൾ',
+      'mrp': 'എം.ആർ.പി',
+      'discount_20_off': '20% ഇളവ്',
+      'item_added_to_cart': 'ഇനം കാർട്ടിൽ ചേർത്തു',
+      'banana': 'വാഴപ്പഴം',
+      'orange': 'നാരങ്ങ',
+      'strawberry': 'സ്ട്രോബെറി',
+      'lemon': 'നാരങ്ങ',
+      'watermelon': 'തണ്ണിമത്തൻ',
+      'apple': 'ആപ്പിൾ',
+      'mango': 'മാങ്ങ',
+      'grapes': 'മുന്തിരി',
+
+      // Product Details
+      'product_data_unavailable': 'ഉത്പാദന ഡാറ്റ ലഭ്യമല്ല',
+      'failed_add_to_cart':
+          'കാർട്ടിൽ ചേർക്കുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.',
+      'product_detail': 'ഉത്പാദന വിവരം',
+      'category': 'വിഭാഗം',
+      'review': 'അവലോകനം',
+      'add_to_cart': 'കാർട്ടിൽ ചേർക്കുക',
+      'added_to_wishlist': 'വിഷ്‌ലിസ്റ്റിൽ ചേർത്തു',
+      'removed_from_wishlist': 'വിഷ്‌ലിസ്റ്റിൽ നിന്ന് നീക്കം ചെയ്തു',
+      'rating_updated': 'റേറ്റിംഗ് അപ്ഡേറ്റ് ചെയ്തു',
+      'unexpected_error': 'അപ്രതീക്ഷിത പിശക്',
+
       // Messages
-      'logout_confirmation': 'നിങ്ങൾക്ക് ലോഗ് ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?',
       'coming_soon': 'ഉടൻ വരുന്നു!',
       'address_management': 'വിലാസ മാനേജ്മെന്റ്',
       'wallet_feature': 'വാലറ്റ് സവിശേഷത',
       'review_feature': 'അവലോകന സവിശേഷത',
-    },
-    'ar': {
-      // Common
-      'app_name': 'المتجر الحديث',
-      'home': 'الرئيسية',
-      'search': 'بحث',
-      'favorites': 'المفضلة',
-      'cart': 'السلة',
-      'profile': 'الملف الشخصي',
-      'language': 'اللغة',
-      'help_support': 'المساعدة والدعم',
-      'about_us': 'من نحن',
-      'logout': 'تسجيل الخروج',
-      'cancel': 'إلغاء',
-      'save': 'حفظ',
-      'edit': 'تعديل',
-      'delete': 'حذف',
-      'confirm': 'تأكيد',
-      'loading': 'جاري التحميل...',
-      'error': 'خطأ',
-      'success': 'نجح',
-
-      // Profile
-      'my_account': 'حسابي',
-      'user_name': 'اسم المستخدم',
-      'my_address': 'عنواني',
-      'wallet_points': 'نقاط المحفظة',
-      'customer_review': 'مراجعة العميل',
-      'terms_conditions': 'الشروط والأحكام',
-      'privacy_policy': 'سياسة الخصوصية',
-
-      // Language
-      'select_language': 'اختر لغتك المفضلة',
-      'language_changed': 'تم تغيير اللغة إلى',
-
-      // Help Desk
-      'contact_us': 'اتصل بنا',
-      'email_support': 'دعم البريد الإلكتروني',
-      'phone_support': 'دعم الهاتف',
-      'whatsapp': 'واتساب',
-      'faq': 'الأسئلة الشائعة',
-      'send_message': 'أرسل لنا رسالة',
-      'subject': 'الموضوع',
-      'your_email': 'بريدك الإلكتروني',
-      'message': 'الرسالة',
-      'send': 'إرسال الرسالة',
-
-      // About Us
-      'welcome_to_modern_store': 'مرحباً بك في المتجر الحديث',
-      'our_story': 'قصتنا',
-      'our_mission': 'مهمتنا',
-      'why_choose_us': 'لماذا تختارنا؟',
-      'contact_information': 'معلومات الاتصال',
-
-      // Messages
-      'logout_confirmation': 'هل أنت متأكد من أنك تريد تسجيل الخروج؟',
-      'coming_soon': 'قريباً!',
-      'address_management': 'إدارة العنوان',
-      'wallet_feature': 'ميزة المحفظة',
-      'review_feature': 'ميزة المراجعة',
-    },
-    'de': {
-      // Common
-      'app_name': 'Modern Store',
-      'home': 'Startseite',
-      'search': 'Suchen',
-      'favorites': 'Favoriten',
-      'cart': 'Warenkorb',
-      'profile': 'Profil',
-      'language': 'Sprache',
-      'help_support': 'Hilfe & Support',
-      'about_us': 'Über uns',
-      'logout': 'Abmelden',
-      'cancel': 'Abbrechen',
-      'save': 'Speichern',
-      'edit': 'Bearbeiten',
-      'delete': 'Löschen',
-      'confirm': 'Bestätigen',
-      'loading': 'Wird geladen...',
-      'error': 'Fehler',
-      'success': 'Erfolg',
-
-      // Profile
-      'my_account': 'Mein Konto',
-      'user_name': 'Benutzername',
-      'my_address': 'Meine Adresse',
-      'wallet_points': 'Wallet-Punkte',
-      'customer_review': 'Kundenbewertung',
-      'terms_conditions': 'Allgemeine Geschäftsbedingungen',
-      'privacy_policy': 'Datenschutzrichtlinie',
-
-      // Language
-      'select_language': 'Wählen Sie Ihre bevorzugte Sprache',
-      'language_changed': 'Sprache geändert zu',
-
-      // Help Desk
-      'contact_us': 'Kontaktieren Sie uns',
-      'email_support': 'E-Mail-Support',
-      'phone_support': 'Telefon-Support',
-      'whatsapp': 'WhatsApp',
-      'faq': 'Häufig gestellte Fragen',
-      'send_message': 'Senden Sie uns eine Nachricht',
-      'subject': 'Betreff',
-      'your_email': 'Ihre E-Mail',
-      'message': 'Nachricht',
-      'send': 'Nachricht senden',
-
-      // About Us
-      'welcome_to_modern_store': 'Willkommen im Modern Store',
-      'our_story': 'Unsere Geschichte',
-      'our_mission': 'Unsere Mission',
-      'why_choose_us': 'Warum uns wählen?',
-      'contact_information': 'Kontaktinformationen',
-
-      // Messages
-      'logout_confirmation': 'Sind Sie sicher, dass Sie sich abmelden möchten?',
-      'coming_soon': 'Demnächst verfügbar!',
-      'address_management': 'Adressverwaltung',
-      'wallet_feature': 'Wallet-Funktion',
-      'review_feature': 'Bewertungsfunktion',
     },
   };
 
@@ -312,4 +307,3 @@ class AppLocalizations {
     return _localizedValues.keys.toList();
   }
 }
-

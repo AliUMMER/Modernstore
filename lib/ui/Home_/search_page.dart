@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
-
+import 'package:modern_grocery/services/language_service.dart'; // Add this import
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,10 +20,12 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   late GetAllCategoriesModel data;
   int selectedIndex = 0;
+  late LanguageService languageService; // Add this line
 
   @override
   void initState() {
     super.initState();
+    languageService = LanguageService(); // Initialize the service
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
   }
 
@@ -74,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
             SizedBox(height: 1.h),
             Center(
               child: Text(
-                'Find Products',
+                languageService.getString('find_products'), // Localized text
                 style: GoogleFonts.poppins(
                   fontSize: 24.sp,
                   color: AppConstants.textColor,
@@ -92,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
               child: TextField(
                 style: GoogleFonts.poppins(color: Color(0x91FCF8E8)),
                 decoration: InputDecoration(
-                  hintText: "Search somthing...",
+                  hintText: languageService.getString('search_something'), // Localized text
                   hintStyle: GoogleFonts.poppins(
                       color: AppConstants.primaryText, fontSize: 14.sp),
                   border: InputBorder.none,
@@ -120,7 +122,8 @@ class _SearchPageState extends State<SearchPage> {
               }
               if (state is GetAllCategoriesError) {
                 return Center(
-                    child: Text('Catogeries not Recogainised',
+                    child: Text(
+                        languageService.getString('categories_not_recognized'), // Localized text
                         style: GoogleFonts.poppins(color: Colors.white)));
               }
               if (state is GetAllCategoriesLoaded) {
@@ -133,7 +136,7 @@ class _SearchPageState extends State<SearchPage> {
                     mainAxisSpacing: 20,
                     children: data.categories!.map((category) {
                       return _buildCategoryCard(
-                        category.name ?? 'No Name',
+                        category.name ?? languageService.getString('no_name'), // Localized text
                         category.image ?? 'no image',
                       );
                     }).toList(),

@@ -7,6 +7,7 @@ import 'package:modern_grocery/bloc/GetToWishlist_bloc/get_to_wishlist_bloc.dart
 import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
+import 'package:modern_grocery/services/language_service.dart'; // Add this import
 import 'package:shimmer/shimmer.dart';
 
 class FavouritePage extends StatefulWidget {
@@ -20,6 +21,7 @@ class FavouritePage extends StatefulWidget {
 
 class _FavouritePageState extends State<FavouritePage> {
   late GetToWishlistModel data;
+  final LanguageService languageService = LanguageService(); // Add this line
 
   @override
   void initState() {
@@ -85,7 +87,7 @@ class _FavouritePageState extends State<FavouritePage> {
             SizedBox(height: 9.h),
             Center(
               child: Text(
-                'Favourites',
+                languageService.getString('favourites'), // Updated
                 style: GoogleFonts.poppins(
                   color: AppConstants.primaryText,
                   fontSize: 24,
@@ -102,7 +104,7 @@ class _FavouritePageState extends State<FavouritePage> {
             //       );
             //     }
             //     if (state is GetToWishlistError) {
-            //       return const Center(child: Text('Favorites not found'));
+            //       return Center(child: Text(languageService.getString('favorites_not_found'))); // Updated
             //     }
 
             //     if (state is GetToWishlistLoaded) {
@@ -114,7 +116,7 @@ class _FavouritePageState extends State<FavouritePage> {
             //       if (wishlistItems.isEmpty) {
             //         return Center(
             //             child: Text(
-            //           'No favorites yet.',
+            //           languageService.getString('no_favorites_yet'), // Updated
             //           style: GoogleFonts.poppins(color: Colors.white),
             //         ));
             //       }
@@ -124,7 +126,10 @@ class _FavouritePageState extends State<FavouritePage> {
                 itemCount: favourites.length,
                 itemBuilder: (context, index) {
                   final item = favourites[index];
-                  return FavouriteItemCard(item: item);
+                  return FavouriteItemCard(
+                    item: item,
+                    languageService: languageService, // Pass languageService
+                  );
                 },
               ),
             ),
@@ -149,7 +154,8 @@ class _FavouritePageState extends State<FavouritePage> {
                   ),
                   onPressed: () {},
                   child: Center(
-                    child: Text('Add to Cart',
+                    child: Text(
+                        languageService.getString('add_to_cart'), // Updated
                         style: GoogleFonts.poppins(
                             color: Colors.black,
                             fontSize: 18.sp,
@@ -167,8 +173,13 @@ class _FavouritePageState extends State<FavouritePage> {
 
 class FavouriteItemCard extends StatefulWidget {
   final Map<String, dynamic> item;
+  final LanguageService languageService; // Add this parameter
 
-  const FavouriteItemCard({Key? key, required this.item}) : super(key: key);
+  const FavouriteItemCard({
+    Key? key, 
+    required this.item,
+    required this.languageService, // Add this parameter
+  }) : super(key: key);
 
   @override
   State<FavouriteItemCard> createState() => _FavouriteItemCardState();
@@ -180,7 +191,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
-    final String name = item['name'] ?? 'Unknown Product';
+    final String name = item['name'] ?? widget.languageService.getString('unknown_product'); // Updated
     final String image = item['image'] ?? '';
     final int basePrice = item['mrp'] ?? 0;
     final int price = item['price'] ?? 0;
@@ -267,7 +278,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   Row(
                     children: [
                       Text(
-                        'MRP ₹$basePrice',
+                        '${widget.languageService.getString('mrp')} ₹$basePrice', // Updated
                         style: GoogleFonts.poppins(
                             color: Color(0xCEB4B2A9),
                             fontSize: 12.sp,
@@ -289,7 +300,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ),
                   if (discountPercentage > 0)
                     Text(
-                      '$discountPercentage% OFF',
+                      '$discountPercentage% ${widget.languageService.getString('off')}', // Updated
                       style: GoogleFonts.poppins(
                         color: Color(0xCE7FFC83),
                         fontSize: 12,

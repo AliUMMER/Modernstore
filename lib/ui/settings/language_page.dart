@@ -16,8 +16,6 @@ class _LanguagePageState extends State<LanguagePage> {
   List<Map<String, String>> languages = [
     {'code': 'en', 'name': 'English', 'flag': '🇺🇸'},
     {'code': 'hi', 'name': 'हिन्दी (Hindi)', 'flag': '🇮🇳'},
-    {'code': 'de', 'name': 'Deutsch (German)', 'flag': '🇩🇪'},
-    {'code': 'ar', 'name': 'العربية (Arabic)', 'flag': '🇸🇦'},
     {'code': 'ml', 'name': 'മലയാളം (Malayalam)', 'flag': '🇮🇳'},
   ];
 

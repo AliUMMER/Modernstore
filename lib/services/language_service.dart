@@ -37,12 +37,8 @@ class LanguageService extends ChangeNotifier {
         return const Locale('hi', 'IN');
       case 'ml':
         return const Locale('ml', 'IN');
-      case 'ar':
-        return const Locale('ar', 'SA');
-
       default:
         return const Locale('en', 'US');
     }
   }
 }
-

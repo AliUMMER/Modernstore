@@ -130,7 +130,7 @@ class MyApp extends StatelessWidget {
                     Locale('en', 'US'),
                     Locale('hi', 'IN'),
                     Locale('ml', 'IN'),
-                    Locale('ar', 'SA'),
+                 
                   ],
                   //home: HomePage(),
                   home: SplashScreen(),

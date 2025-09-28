@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modern_grocery/services/language_service.dart'; // Add this import
 import 'package:modern_grocery/ui/products/product_details.dart';
 
 class FruitesPage extends StatefulWidget {
@@ -11,6 +12,14 @@ class FruitesPage extends StatefulWidget {
 }
 
 class _FruitesPageState extends State<FruitesPage> {
+  late LanguageService languageService; // Add this line
+
+  @override
+  void initState() {
+    super.initState();
+    languageService = LanguageService(); // Initialize the service
+  }
+
   final List<Map<String, dynamic>> fruits = [
     {'name': 'Banana', 'price': 80, 'mrp': 100, 'image': 'assets/Banana.png'},
     {'name': 'Orange', 'price': 80, 'mrp': 100, 'image': 'assets/Orange.png'},
@@ -40,8 +49,8 @@ class _FruitesPageState extends State<FruitesPage> {
         backgroundColor: Colors.black,
         title: Center(
           child: Text(
-            'Fruits',
-            style: GoogleFonts.inter(
+            languageService.getString('fruits'), // Localized text
+            style: GoogleFonts.poppins(
               color: const Color(0xffF5E9B5),
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
@@ -67,7 +76,10 @@ class _FruitesPageState extends State<FruitesPage> {
           itemCount: fruits.length,
           itemBuilder: (context, index) {
             final fruit = fruits[index];
-            return FruitCard(fruit: fruit);
+            return FruitCard(
+              fruit: fruit,
+              languageService: languageService, // Pass languageService to FruitCard
+            );
           },
         ),
       ),
@@ -77,8 +89,13 @@ class _FruitesPageState extends State<FruitesPage> {
 
 class FruitCard extends StatelessWidget {
   final Map<String, dynamic> fruit;
+  final LanguageService languageService; // Add this parameter
 
-  const FruitCard({super.key, required this.fruit});
+  const FruitCard({
+    super.key,
+    required this.fruit,
+    required this.languageService, // Add this parameter
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +135,8 @@ class FruitCard extends StatelessWidget {
 
             // **Fruit Name**
             Text(
-              fruit['name'],
-              style: GoogleFonts.inter(
+              languageService.getString(fruit['name'].toLowerCase()) ?? fruit['name'], // Localized fruit name
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
@@ -131,8 +148,8 @@ class FruitCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'MRP: \u{20B9}${fruit['mrp']}',
-                  style: GoogleFonts.inter(
+                  '${languageService.getString('mrp')}: \u{20B9}${fruit['mrp']}', // Localized MRP text
+                  style: GoogleFonts.poppins(
                     color: Colors.grey,
                     fontSize: 14.sp,
                     decoration: TextDecoration.lineThrough,
@@ -141,7 +158,7 @@ class FruitCard extends StatelessWidget {
                 SizedBox(width: 5.w),
                 Text(
                   '\u{20B9}${fruit['price']}',
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
@@ -152,8 +169,8 @@ class FruitCard extends StatelessWidget {
 
             // **Discount**
             Text(
-              '20% OFF',
-              style: GoogleFonts.inter(
+              languageService.getString('discount_20_off'), // Localized discount text
+              style: GoogleFonts.poppins(
                 color: Colors.green,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
@@ -164,7 +181,14 @@ class FruitCard extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle, color: Colors.white),
               iconSize: 28.sp,
-              onPressed: () {},
+              onPressed: () {
+                // You can add a localized toast message here if needed
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(languageService.getString('item_added_to_cart')),
+                  ),
+                );
+              },
             ),
           ],
         ),
