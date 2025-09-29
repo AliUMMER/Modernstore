@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:modern_grocery/bloc/GetAllUserCart/get_all_user_cart_bloc.dart';
-import 'package:modern_grocery/repositery/api/Cart/getAllUserCart_api.dart';
-import 'package:modern_grocery/repositery/model/getAllUserCart_model.dart';
+import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/delivery/delivery_address.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -43,104 +42,114 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0XFF0A0909),
-        leading: BackButton(
-            color: const Color(0xffFCF8E8),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NavigationBarWidget(),
-                ),
-              );
-            }),
-      ),
-      backgroundColor: const Color(0XFF0A0909),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          child: Column(
-            children: [
-              SizedBox(height: 18.h),
-              Center(
-                child: Text(
-                  'Cart',
-                  style: GoogleFonts.poppins(
-                    color: Color(0xFFFCF8E8),
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.24,
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0XFF0A0909),
+            leading: BackButton(
+              color: const Color(0xffFCF8E8),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NavigationBarWidget(),
                   ),
-                ),
-              ),
-              SizedBox(height: 63.h),
-
-              // BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
-              //   builder: (context, state) {
-              //     if (state is GetAllUserCartLoading) {
-              //       return const Center(child: CircularProgressIndicator());
-              //     } else if (state is GetAllUserCartLoaded) {
-              //       final cartModel =
-              //           context.read<GetAllUserCartBloc>().getAllUserCartModel;
-
-              //       // Check if cart model is null or cart items are empty
-              //       if (cartModel == null ||
-              //           cartModel.data == null ||
-              //           cartModel.data?.allCartItems == null ||
-              //           cartModel.data!.allCartItems!.isEmpty) {
-              //         return const Center(
-              //           child: Text(
-              //             'Your cart is empty',
-              //             style: TextStyle(color: Colors.white70, fontSize: 18),
-              //           ),
-              //         );
-              //       }
-
-              //       final cartItems = cartModel.data?.allCartItems!;
-              //       return SizedBox(
-              //         height: 120 * cartItems!.length.toDouble(),
-              //         child: Column(
-              //           children: cartItems.map((item) {
-              //             return FavouriteItemCard(item: {
-              //               'name': item.productId ?? 'Unknown Item',
-              //               'image': item.quantity ?? 'assets/placeholder.png',
-              //               'price': item.unit ?? 0.0,
-              //               'mrp': item.quantity ?? item.totalAmount ?? 0.0,
-              //             });
-              //           }).toList(),
-              //         ),
-              //       );
-              //     } else if (state is GetAllUserCartError) {
-              //       return const Center(
-              //         child: Text(
-              //           'Error loading cart items',
-              //           style: TextStyle(color: Colors.red, fontSize: 18),
-              //         ),
-              //       );
-              //     }
-              //     return const SizedBox();
-              //   },
-              // ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: favourites.length,
-                itemBuilder: (context, index) {
-                  final item = favourites[index];
-                  return FavouriteItemCard(item: item);
-                },
-              ),
-              _buildCheckoutSection(),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+          backgroundColor: const Color(0XFF0A0909),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 18.h),
+                  Center(
+                    child: Text(
+                      languageService.getString('cart'),
+                      style: GoogleFonts.poppins(
+                        color: Color(0xFFFCF8E8),
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.24,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 63.h),
+
+                  // BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
+                  //   builder: (context, state) {
+                  //     if (state is GetAllUserCartLoading) {
+                  //       return const Center(child: CircularProgressIndicator());
+                  //     } else if (state is GetAllUserCartLoaded) {
+                  //       final cartModel =
+                  //           context.read<GetAllUserCartBloc>().getAllUserCartModel;
+                  //
+                  //       if (cartModel == null ||
+                  //           cartModel.data == null ||
+                  //           cartModel.data?.allCartItems == null ||
+                  //           cartModel.data!.allCartItems!.isEmpty) {
+                  //         return Center(
+                  //           child: Text(
+                  //             languageService.getString('cart_empty'),
+                  //             style: TextStyle(color: Colors.white70, fontSize: 18),
+                  //           ),
+                  //         );
+                  //       }
+                  //
+                  //       final cartItems = cartModel.data?.allCartItems!;
+                  //       return SizedBox(
+                  //         height: 120 * cartItems!.length.toDouble(),
+                  //         child: Column(
+                  //           children: cartItems.map((item) {
+                  //             return FavouriteItemCard(
+                  //               item: {
+                  //                 'name': item.productId ?? 'Unknown Item',
+                  //                 'image': item.quantity ?? 'assets/placeholder.png',
+                  //                 'price': item.unit ?? 0.0,
+                  //                 'mrp': item.quantity ?? item.totalAmount ?? 0.0,
+                  //               },
+                  //               languageService: languageService,
+                  //             );
+                  //           }).toList(),
+                  //         ),
+                  //       );
+                  //     } else if (state is GetAllUserCartError) {
+                  //       return Center(
+                  //         child: Text(
+                  //           languageService.getString('error_loading_cart'),
+                  //           style: TextStyle(color: Colors.red, fontSize: 18),
+                  //         ),
+                  //       );
+                  //     }
+                  //     return const SizedBox();
+                  //   },
+                  // ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: favourites.length,
+                    itemBuilder: (context, index) {
+                      final item = favourites[index];
+                      return FavouriteItemCard(
+                        item: item,
+                        languageService: languageService,
+                      );
+                    },
+                  ),
+                  _buildCheckoutSection(languageService),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildCheckoutSection() {
+  Widget _buildCheckoutSection(LanguageService languageService) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -155,7 +164,7 @@ class _CartPageState extends State<CartPage> {
               Expanded(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Promo code',
+                    hintText: languageService.getString('promo_code'),
                     filled: true,
                     fillColor: Colors.grey[800],
                     border: OutlineInputBorder(
@@ -182,7 +191,7 @@ class _CartPageState extends State<CartPage> {
                       EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 ),
                 child: Text(
-                  'Apply',
+                  languageService.getString('apply'),
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -205,12 +214,17 @@ class _CartPageState extends State<CartPage> {
               }
               return Column(
                 children: [
-                  _buildPriceRow('Price', '₹${totalPrice.toStringAsFixed(2)}'),
-                  _buildPriceRow('Discount', '₹5.00'),
-                  _buildPriceRow('Delivery Charge', '₹20.00'),
+                  _buildPriceRow(languageService.getString('price'),
+                      '₹${totalPrice.toStringAsFixed(2)}', languageService),
+                  _buildPriceRow(
+                      languageService.getString('discount'), '₹5.00', languageService),
+                  _buildPriceRow(languageService.getString('delivery_charge'),
+                      '₹20.00', languageService),
                   Divider(color: Colors.white70, thickness: 1.h),
                   _buildPriceRow(
-                      'Grand Total', '₹${(totalPrice + 15).toStringAsFixed(2)}',
+                      languageService.getString('grand_total'),
+                      '₹${(totalPrice + 15).toStringAsFixed(2)}',
+                      languageService,
                       isBold: true),
                 ],
               );
@@ -218,7 +232,7 @@ class _CartPageState extends State<CartPage> {
           ),
           SizedBox(height: 30.h),
           Text(
-            'Payment Method',
+            languageService.getString('payment_method'),
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 18.sp,
@@ -226,8 +240,8 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           SizedBox(height: 10.h),
-          _buildPaymentOption('Cash on Delivery'),
-          _buildPaymentOption('Payfort'),
+          _buildPaymentOption(languageService.getString('cash_on_delivery')),
+          _buildPaymentOption(languageService.getString('payfort')),
           SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
@@ -246,7 +260,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               child: Text(
-                'Place Order',
+                languageService.getString('place_order'),
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 16.sp,
@@ -260,7 +274,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildPriceRow(String label, String price, {bool isBold = false}) {
+  Widget _buildPriceRow(String label, String price, LanguageService languageService,
+      {bool isBold = false}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
@@ -330,8 +345,13 @@ class _CartPageState extends State<CartPage> {
 
 class FavouriteItemCard extends StatefulWidget {
   final Map<String, dynamic> item;
+  final LanguageService languageService;
 
-  const FavouriteItemCard({Key? key, required this.item}) : super(key: key);
+  const FavouriteItemCard({
+    Key? key,
+    required this.item,
+    required this.languageService,
+  }) : super(key: key);
 
   @override
   State<FavouriteItemCard> createState() => _FavouriteItemCardState();
@@ -343,11 +363,10 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
   @override
   void initState() {
     super.initState();
-    count =
-        (widget.item['quantity'] as int?) ?? 1; // Initialize with item quantity
+    count = (widget.item['quantity'] as int?) ?? 1;
   }
 
-  bool isSelected = false; // For selection circle
+  bool isSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -390,7 +409,8 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               children: [
                 SizedBox(height: 9.h),
                 Text(
-                  widget.item['name'] as String? ?? 'Unknown Item',
+                  widget.item['name'] as String? ??
+                      widget.languageService.getString('no_name'),
                   style: GoogleFonts.poppins(
                     color: Color(0xFFFCF8E8),
                     fontSize: 18.sp,
@@ -401,7 +421,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                 Row(
                   children: [
                     Text(
-                      'MRP ₹${mrp.toStringAsFixed(2)}',
+                      '${widget.languageService.getString('mrp')} ₹${mrp.toStringAsFixed(2)}',
                       style: GoogleFonts.poppins(
                         color: Color(0xCEB4B2A9),
                         fontSize: 12.sp,
@@ -409,9 +429,9 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                         decoration: TextDecoration.lineThrough,
                       ),
                     ),
-                    SizedBox(width: 44.w),
+                    SizedBox(width: 40.w),
                     Text(
-                      '₹${price.toStringAsFixed(2)}',
+                      '₹${price.toStringAsFixed(0)}',
                       style: GoogleFonts.poppins(
                         color: Color(0xFFFCF8E8),
                         fontSize: 14.sp,
@@ -421,7 +441,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ],
                 ),
                 Text(
-                  '$discountPercentage% OFF',
+                  '$discountPercentage% ${widget.languageService.getString('discount_20_off').split(' ').last}',
                   style: GoogleFonts.poppins(
                     color: Color(0xCE7FFC83),
                     fontSize: 12.sp,

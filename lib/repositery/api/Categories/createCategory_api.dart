@@ -23,6 +23,7 @@ class CreatecategoryApi {
 
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('Token');
+    print('Stored token: $token');
 
     if (token == null) {
       throw Exception('Token is missing. User is not authenticated.');

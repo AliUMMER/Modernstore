@@ -10,7 +10,6 @@ import 'package:modern_grocery/repositery/model/CreateBanner_model.dart';
 class CreatebannerApi {
   ApiClient api = ApiClient();
 
-
   Future<CreateBannerModel> uploadBanner({
     required String title,
     required String category,
@@ -27,14 +26,13 @@ class CreatebannerApi {
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('Token');
+    print('Stored token: $token');
     if (token == null || token.isEmpty) {
       throw Exception('Access token not found. Please log in again.');
     }
- String trendingPath = 'banner/create';
-    var body = {};
-await api.invokeAPI(trendingPath, "POST", body);
+
     final uri = Uri.parse(
-        'https://modern-store-backend.onrender.com/api/');
+        'https://modern-store-backend.onrender.com/api//banner/create');
 
     final request = http.MultipartRequest('POST', uri);
 

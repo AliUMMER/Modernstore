@@ -21,6 +21,55 @@ class AppLocalizations {
       'error': 'Error',
       'success': 'Success',
 
+      // HelpDeskPage - Contact Section
+
+      'contact_us': 'Contact Us',
+      'email_support': 'Email Support',
+      'phone_support': 'Phone Support',
+      'chat_with_us': 'Chat with us instantly',
+      'whatsapp': 'WhatsApp',
+
+      // HelpDeskPage - FAQ Section
+      'faq_title': 'Frequently Asked Questions',
+      'faq_how_to_order': 'How do I place an order?',
+      'faq_how_to_order_answer':
+          'Simply browse our products, add items to cart, and proceed to checkout. You can pay using various methods including credit cards, digital wallets, or cash on delivery.',
+      'faq_delivery_times': 'What are your delivery times?',
+      'faq_delivery_times_answer':
+          'We offer same-day delivery for orders placed before 2 PM. Standard delivery takes 1-2 business days.',
+      'faq_track_order': 'How can I track my order?',
+      'faq_track_order_answer':
+          'You can track your order in real-time through the app. Go to "My Orders" section and click on your order to see its current status.',
+      'faq_return_policy': 'What is your return policy?',
+      'faq_return_policy_answer':
+          'We offer a 30-day return policy for most items. Items must be in original condition with tags attached.',
+
+      // HelpDeskPage - Send Message Section
+      'send_message': 'Send us a Message',
+      'subject': 'Subject',
+      'your_email': 'Your Email',
+      'message': 'Message',
+      'send_message_button': 'Send Message',
+
+      // HelpDeskPage - SnackBar/Launch Methods
+      'email': 'Email',
+      'phone': 'Phone',
+      'tap_to_call': 'Tap to call this number',
+      'tap_to_open_whatsapp': 'Tap to open WhatsApp chat',
+      // ManualLocation
+      'select_delivery_address': 'Select Delivery Address',
+      'choose_address': 'Choose Address',
+      'use_my_current_location': 'Use My Current Location',
+      'continue': 'Continue', // Already exists, but ensuring consistency
+      'location_services_disabled': 'Location services are disabled.',
+      'location_permissions_denied': 'Location permissions are denied.',
+      'location_permissions_permanently_denied':
+          'Location permissions are permanently denied.',
+      'settings': 'Settings',
+      'error_fetching_location': 'Error fetching location: ',
+      'failed_fetch_address_api': 'Failed to fetch address from API',
+      'loading_address_api': 'Loading address from API...',
+      'please_wait_fetch_addresses': 'Please wait while we fetch addresses.',
       // Profile
       'my_account': 'My Account',
       'user_name': 'User Name',
@@ -38,22 +87,58 @@ class AppLocalizations {
       'help_desk': 'Help Desk',
       'terms_coming': 'Terms & Conditions coming soon!',
       'privacy_coming': 'Privacy Policy coming soon!',
-
+// VerifyScreen
+      'enter_verification_code': 'Enter verification code',
+      'sent_on_whatsapp': 'sent on WhatsApp',
+      'sent_to': 'Sent to',
+      'didnt_receive_code': 'Didn\'t receive the code?',
+      'resend_code': 'Resend Code',
+      'verify': 'Verify',
       // Language
       'select_language': 'Select your preferred language',
       'language_changed': 'Language changed to',
 
-      // Help Desk
-      'contact_us': 'Contact Us',
-      'email_support': 'Email Support',
-      'phone_support': 'Phone Support',
-      'whatsapp': 'WhatsApp',
-      'faq': 'Frequently Asked Questions',
-      'send_message': 'Send us a Message',
-      'subject': 'Subject',
-      'your_email': 'Your Email',
-      'message': 'Message',
+// Login/Enter Screen
+      'skip': 'Skip',
+      'enter_your_number': 'Enter your number',
+      'mobile_number': 'Mobile Number',
+      'enter_mobile_hint': 'Enter your mobile number',
+      'continue_with_phone': 'Continue with Phone',
+      'login_error': 'Login error. Please try again.',
+      'processing': 'Processing...',
+      'please_enter_phone': 'Please enter your phone number',
       'send': 'Send Message',
+      'faq': 'Frequently Asked Questions',
+
+// LocationPage
+      'select_your_location': 'Select Your Location',
+      'location_description':
+          'We need to know your location in order to suggest nearby services',
+      'allow_location_access': 'Allow Location Access',
+      'enter_location_manually': 'Enter Location Manually',
+// HomePage
+      'location': 'Location',
+      'categories': 'Categories',
+      'see_all': 'See All',
+      'best_deals': 'Best Deals',
+      'beverages': 'Beverages',
+      'vegetables': 'Vegetables',
+      'failed_load_categories': 'Failed to load categories',
+      'failed_load_banners': 'Failed to load banners',
+      'please_login': 'Please login to continue',
+      'try_again_later': 'Please try again later',
+      'no_banners': 'No banners available',
+      'failed_load_deals': 'Failed to load best deals',
+      'no_beverages': 'No beverages available',
+      'failed_load_beverages': 'Failed to load beverages',
+      'no_vegetables': 'No vegetables available',
+      'failed_load_vegetables': 'Failed to load vegetables',
+      'unknown': 'Unknown',
+// YourLocation (Adding missing parts from previous step for completeness)
+      'enter_your_location': 'Enter Your Location',
+      'search_for_area': 'Search for area...',
+      'recent': 'Recent',
+      'tirur': 'Tirur',
 
       // About Us
       'welcome_to_modern_store': 'Welcome to Modern Store',
@@ -61,6 +146,21 @@ class AppLocalizations {
       'our_mission': 'Our Mission',
       'why_choose_us': 'Why Choose Us?',
       'contact_information': 'Contact Information',
+      'our_story_text':
+          'Modern Store was founded with a vision to revolutionize the way people shop for groceries and daily essentials. We believe in providing fresh, quality products delivered right to your doorstep with convenience and reliability.',
+      'our_mission_text':
+          'To make grocery shopping effortless, affordable, and accessible to everyone while maintaining the highest standards of quality and customer service.',
+      'fast_delivery': 'Fast Delivery',
+      'same_day_delivery': 'Same-day delivery available',
+      'quality_guarantee': 'Quality Guarantee',
+      'fresh_products': 'Fresh products every time',
+      'best_prices': 'Best Prices',
+      'competitive_pricing': 'Competitive pricing on all items',
+      'easy_ordering': 'Easy Ordering',
+      'simple_interface': 'Simple and intuitive app interface',
+      'customer_support': 'Customer Support',
+      'support_247': '24/7 support for all your needs',
+      'address': 'Address',
 
       // Search & Products
       'find_products': 'Find Products',
@@ -92,11 +192,44 @@ class AppLocalizations {
       'rating_updated': 'Rating updated',
       'unexpected_error': 'Unexpected error',
 
+      // Cart
+      'promo_code': 'Promo code',
+      'apply': 'Apply',
+      'price': 'Price',
+      'discount': 'Discount',
+      'delivery_charge': 'Delivery Charge',
+      'grand_total': 'Grand Total',
+      'payment_method': 'Payment Method',
+      'cash_on_delivery': 'Cash on Delivery',
+      'payfort': 'Payfort',
+      'place_order': 'Place Order',
+      'cart_empty': 'Your cart is empty',
+      'error_loading_cart': 'Error loading cart items',
+
+      // Edit Profile
+      'edit_profile': 'Edit Profile',
+      'profile_unavailable': 'User profile unavailable',
+      'address_unavailable': 'Delivery address unavailable',
+      'name': 'Name',
+      'phone_number': 'Phone number',
+      'save_changes': 'Save Changes',
+
       // Messages
       'coming_soon': 'coming soon!',
       'address_management': 'Address management',
       'wallet_feature': 'Wallet feature',
       'review_feature': 'Review feature',
+
+      // Onboarding
+      'brand_name': 'Modern Group',
+      'fresh_groceries': 'Fresh Groceries Just For You',
+      'real_freshness': 'All Time Have Real Freshness',
+      'for_your_needs': 'And Are Intended For Your Needs',
+      'get_started': 'Get started',
+      'by_joining': 'By Joining You Agree To Our ',
+      'terms_of_service': 'Terms Of Service ',
+      'and': 'And ',
+      'privacy_policy_text': 'Privacy Policy ',
     },
     'hi': {
       // Common
@@ -152,6 +285,25 @@ class AppLocalizations {
       'your_email': 'आपका ईमेल',
       'message': 'संदेश',
       'send': 'संदेश भेजें',
+      'chat_with_us': 'हमसे तुरंत चैट करें',
+      'faq_title': 'अक्सर पूछे जाने वाले प्रश्न',
+      'send_message_button': 'संदेश भेजें',
+      'email': 'ईमेल',
+      'phone': 'फ़ोन',
+      'tap_to_call': 'इस नंबर पर कॉल करने के लिए टैप करें',
+      'tap_to_open_whatsapp': 'व्हाट्सएप चैट खोलने के लिए टैप करें',
+      'faq_how_to_order': 'मैं ऑर्डर कैसे दूं?',
+      'faq_how_to_order_answer':
+          'बस हमारे उत्पादों को ब्राउज़ करें, कार्ट में आइटम जोड़ें, और चेकआउट पर जाएं। आप क्रेडिट कार्ड, डिजिटल वॉलेट या कैश ऑन डिलीवरी सहित विभिन्न तरीकों से भुगतान कर सकते हैं।',
+      'faq_delivery_times': 'आपके डिलीवरी समय क्या हैं?',
+      'faq_delivery_times_answer':
+          'दोपहर 2 बजे से पहले दिए गए ऑर्डर के लिए हम उसी दिन डिलीवरी प्रदान करते हैं। मानक डिलीवरी में 1-2 व्यावसायिक दिन लगते हैं।',
+      'faq_track_order': 'मैं अपने ऑर्डर को कैसे ट्रैक कर सकता हूं?',
+      'faq_track_order_answer':
+          'आप ऐप के माध्यम से रियल-टाइम में अपने ऑर्डर को ट्रैक कर सकते हैं। "मेरे ऑर्डर" सेक्शन में जाएं और अपनी वर्तमान स्थिति देखने के लिए अपने ऑर्डर पर क्लिक करें।',
+      'faq_return_policy': 'आपकी रिटर्न पॉलिसी क्या है?',
+      'faq_return_policy_answer':
+          'हम अधिकांश वस्तुओं के लिए 30-दिन की रिटर्न पॉलिसी प्रदान करते हैं। आइटम मूल स्थिति में टैग के साथ होना चाहिए।',
 
       // About Us
       'welcome_to_modern_store': 'मॉडर्न स्टोर में आपका स्वागत है',
@@ -159,7 +311,45 @@ class AppLocalizations {
       'our_mission': 'हमारा मिशन',
       'why_choose_us': 'हमें क्यों चुनें?',
       'contact_information': 'संपर्क जानकारी',
-
+      'our_story_text':
+          'मॉडर्न स्टोर की स्थापना किराने की खरीदारी में क्रांति लाने के दृष्टिकोण से की गई थी। हम सुविधा और विश्वसनीयता के साथ ताजा, गुणवत्ता वाले उत्पाद आपके दरवाजे तक पहुंचाने में विश्वास करते हैं।',
+      'our_mission_text':
+          'किराने की खरीदारी को सभी के लिए आसान, किफायती और सुलभ बनाना, जबकि गुणवत्ता और ग्राहक सेवा के उच्चतम मानकों को बनाए रखना।',
+      'fast_delivery': 'तेज़ डिलीवरी',
+      'same_day_delivery': 'उसी दिन डिलीवरी उपलब्ध',
+      'quality_guarantee': 'गुणवत्ता की गारंटी',
+      'fresh_products': 'हर बार ताज़े उत्पाद',
+      'best_prices': 'सर्वोत्तम कीमतें',
+      'competitive_pricing': 'सभी वस्तुओं पर प्रतिस्पर्धी मूल्य',
+      'easy_ordering': 'आसान ऑर्डरिंग',
+      'simple_interface': 'सरल और सहज ऐप इंटरफ़ेस',
+      'customer_support': 'ग्राहक सहायता',
+      'support_247': 'आपकी सभी जरूरतों के लिए 24/7 समर्थन',
+      'address': 'पता',
+// LocationPage
+      'select_your_location': 'अपना स्थान चुनें',
+      'location_description':
+          'निकटवर्ती सेवाओं का सुझाव देने के लिए हमें आपके स्थान की जानकारी चाहिए',
+      'allow_location_access': 'स्थान पहुंच की अनुमति दें',
+      'enter_location_manually': 'स्थान मैन्युअल रूप से दर्ज करें',
+// HomePage
+      'location': 'स्थान',
+      'categories': 'श्रेणियाँ',
+      'see_all': 'सभी देखें',
+      'best_deals': 'बेस्ट डील्स',
+      'beverages': 'पेय पदार्थ',
+      'vegetables': 'सब्जियाँ',
+      'failed_load_categories': 'श्रेणियां लोड करने में विफल',
+      'failed_load_banners': 'बैनर लोड करने में विफल',
+      'please_login': 'जारी रखने के लिए कृपया लॉगिन करें',
+      'try_again_later': 'कृपया बाद में पुन: प्रयास करें',
+      'no_banners': 'कोई बैनर उपलब्ध नहीं',
+      'failed_load_deals': 'बेस्ट डील्स लोड करने में विफल',
+      'no_beverages': 'कोई पेय पदार्थ उपलब्ध नहीं',
+      'failed_load_beverages': 'पेय पदार्थ लोड करने में विफल',
+      'no_vegetables': 'कोई सब्जियां उपलब्ध नहीं',
+      'failed_load_vegetables': 'सब्जियां लोड करने में विफल',
+      'unknown': 'अज्ञात',
       // Search & Products
       'find_products': 'उत्पाद खोजें',
       'search_something': 'कुछ खोजें...',
@@ -177,7 +367,25 @@ class AppLocalizations {
       'apple': 'सेब',
       'mango': 'आम',
       'grapes': 'अंगूर',
-
+// DeliveryAddress
+      'select_delivery_address': 'डिलीवरी पता चुनें',
+      'choose_address': 'पता चुनें',
+      'use_my_current_location': 'मेरा वर्तमान स्थान उपयोग करें',
+      'continue': 'जारी रखें', // Already exists
+      'location_services_disabled': 'स्थान सेवाएं अक्षम हैं।',
+      'location_permissions_denied': 'स्थान अनुमतियां अस्वीकृत हैं।',
+      'location_permissions_permanently_denied':
+          'स्थान अनुमतियां स्थायी रूप से अस्वीकृत हैं।',
+      'settings': 'सेटिंग्स',
+      'error_fetching_location': 'स्थान प्राप्त करने में त्रुटि: ',
+      'failed_fetch_address_api': 'API से पता प्राप्त करने में विफल',
+      'loading_address_api': 'API से पता लोड हो रहा है...',
+      'please_wait_fetch_addresses': 'पतों को प्राप्त करने का इंतजार करें।',
+// YourLocation (Adding missing parts from previous step for completeness)
+      'enter_your_location': 'अपना स्थान दर्ज करें',
+      'search_for_area': 'क्षेत्र खोजें...',
+      'recent': 'हाल का',
+      'tirur': 'तिरुूर',
       // Product Details
       'product_data_unavailable': 'उत्पाद डेटा उपलब्ध नहीं',
       'failed_add_to_cart': 'कार्ट में जोड़ने में असफल। पुनः प्रयास करें।',
@@ -190,11 +398,59 @@ class AppLocalizations {
       'rating_updated': 'रेटिंग अपडेट की गई',
       'unexpected_error': 'अप्रत्याशित त्रुटि',
 
+      // Cart
+      'promo_code': 'प्रोमो कोड',
+      'apply': 'लागू करें',
+      'price': 'कीमत',
+      'discount': 'छूट',
+      'delivery_charge': 'डिलीवरी शुल्क',
+      'grand_total': 'कुल योग',
+      'payment_method': 'भुगतान विधि',
+      'cash_on_delivery': 'कैश ऑन डिलीवरी',
+      'payfort': 'पेफोर्ट',
+      'place_order': 'ऑर्डर करें',
+      'cart_empty': 'आपकी कार्ट खाली है',
+      'error_loading_cart': 'कार्ट आइटम लोड करने में त्रुटि',
+
+      // Edit Profile
+      'edit_profile': 'प्रोफाइल संपादित करें',
+      'profile_unavailable': 'उपयोगकर्ता प्रोफ़ाइल उपलब्ध नहीं',
+      'address_unavailable': 'डिलीवरी पता उपलब्ध नहीं',
+      'name': 'नाम',
+      'phone_number': 'फ़ोन नंबर',
+      'save_changes': 'परिवर्तन सहेजें',
+// VerifyScreen
+      'enter_verification_code': 'सत्यापन कोड दर्ज करें',
+      'sent_on_whatsapp': 'व्हाट्सएप पर भेजा गया',
+      'sent_to': 'भेजा गया',
+      'didnt_receive_code': 'कोड प्राप्त नहीं हुआ?',
+      'resend_code': 'कोड पुनः भेजें',
+      'verify': 'सत्यापित करें',
       // Messages
       'coming_soon': 'जल्द आ रहा है!',
       'address_management': 'पता प्रबंधन',
       'wallet_feature': 'वॉलेट सुविधा',
       'review_feature': 'समीक्षा सुविधा',
+
+      // Onboarding
+      'brand_name': 'मॉडर्न ग्रुप',
+      'fresh_groceries': 'आपके लिए ताज़ी किराने की चीज़ें',
+      'real_freshness': 'हमेशा वास्तविक ताज़गी',
+      'for_your_needs': 'और आपकी ज़रूरतों के लिए हैं',
+      'get_started': 'शुरू करें',
+      'by_joining': 'शामिल होने से आप हमारी ',
+      'terms_of_service': 'सेवा की शर्तों ',
+      'and': 'और ',
+      'privacy_policy_text': 'गोपनीयता नीति ',
+      // Login/Enter Screen
+      'skip': 'Skip',
+      'enter_your_number': 'Enter your number',
+      'mobile_number': 'Mobile Number',
+      'enter_mobile_hint': 'Enter your mobile number',
+      'continue_with_phone': 'Continue with Phone',
+      'login_error': 'Login error. Please try again.',
+      'processing': 'Processing...',
+      'please_enter_phone': 'Please enter your phone number',
     },
     'ml': {
       // Common
@@ -216,6 +472,25 @@ class AppLocalizations {
       'loading': 'ലോഡ് ചെയ്യുന്നു...',
       'error': 'പിശക്',
       'success': 'വിജയം',
+
+// HomePage
+      'location': 'സ്ഥലം',
+      'categories': 'വിഭാഗങ്ങൾ',
+      'see_all': 'എല്ലാം കാണുക',
+      'best_deals': 'മികച്ച ഡീലുകൾ',
+      'beverages': 'പാനീയങ്ങൾ',
+      'vegetables': 'പച്ചക്കറികൾ',
+      'failed_load_categories': 'വിഭാഗങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു',
+      'failed_load_banners': 'ബാനറുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു',
+      'please_login': 'തുടരാൻ ദയവായി ലോഗിൻ ചെയ്യുക',
+      'try_again_later': 'പിന്നീട് വീണ്ടും ശ്രമിക്കുക',
+      'no_banners': 'ബാനറുകളൊന്നും ലഭ്യമല്ല',
+      'failed_load_deals': 'മികച്ച ഡീലുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു',
+      'no_beverages': 'പാനീയങ്ങളൊന്നും ലഭ്യമല്ല',
+      'failed_load_beverages': 'പാനീയങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു',
+      'no_vegetables': 'പച്ചക്കറികളൊന്നും ലഭ്യമല്ല',
+      'failed_load_vegetables': 'പച്ചക്കറികൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു',
+      'unknown': 'അജ്ഞാതം',
 
       // Profile
       'my_account': 'എന്റെ അക്കൗണ്ട്',
@@ -239,6 +514,29 @@ class AppLocalizations {
       'select_language': 'നിങ്ങളുടെ പ്രിയങ്കര ഭാഷ തിരഞ്ഞെടുക്കുക',
       'language_changed': 'ഭാഷ മാറി',
 
+// VerifyScreen
+      'enter_verification_code': 'സ്ഥിരീകരണ കോഡ് നൽകുക',
+      'sent_on_whatsapp': 'വാട്സ്ആപ്പിൽ അയച്ചു',
+      'sent_to': 'അയച്ചു',
+      'didnt_receive_code': 'കോഡ് ലഭിച്ചില്ല?',
+      'resend_code': 'കോഡ് വീണ്ടും അയയ്ക്കുക',
+      'verify': 'സ്ഥിരീകരിക്കുക',
+      // DeliveryAddress
+
+      'select_delivery_address': 'ഡെലിവറി വിലാസം തിരഞ്ഞെടുക്കുക',
+      'choose_address': 'വിലാസം തിരഞ്ഞെടുക്കുക',
+      'use_my_current_location': 'എന്റെ നിലവിലെ സ്ഥലം ഉപയോഗിക്കുക',
+      'continue': 'തുടരുക', // Already exists
+      'location_services_disabled': 'സ്ഥല സേവനങ്ങൾ പ്രവർത്തനരഹിതമാണ്.',
+      'location_permissions_denied': 'സ്ഥല അനുമതികൾ നിഷേധിക്കപ്പെട്ടു.',
+      'location_permissions_permanently_denied':
+          'സ്ഥല അനുമതികൾ സ്ഥിരമായി നിഷേധിക്കപ്പെട്ടു.',
+      'settings': 'അധികരണങ്ങൾ',
+      'error_fetching_location': 'സ്ഥലം ലഭിക്കുന്നതിൽ പിശക്: ',
+      'failed_fetch_address_api': 'API-ൽ നിന്ന് വിലാസം ലഭിക്കുന്നതിൽ പരാജയം',
+      'loading_address_api': 'API-ൽ നിന്ന് വിലാസം ലോഡ് ചെയ്യുന്നു...',
+      'please_wait_fetch_addresses':
+          'വിലാസങ്ങൾ ലഭിക്കുന്നതിനായി കാത്തിരിക്കുക.',
       // Help Desk
       'contact_us': 'ഞങ്ങളുമായി ബന്ധപ്പെടുക',
       'email_support': 'ഇമെയിൽ പിന്തുണ',
@@ -250,14 +548,66 @@ class AppLocalizations {
       'your_email': 'നിങ്ങളുടെ ഇമെയിൽ',
       'message': 'സന്ദേശം',
       'send': 'സന്ദേശം അയയ്ക്കുക',
-
+      'chat_with_us': 'ഞങ്ങളുമായി ഉടൻ ചാറ്റ് ചെയ്യുക',
+      'faq_title': 'പതിവായി ചോദിക്കുന്ന ചോദ്യങ്ങൾ',
+      'send_message_button': 'സന്ദേശം അയയ്ക്കുക',
+      'email': 'ഇമെയിൽ',
+      'phone': 'ഫോൺ',
+      'tap_to_call': 'ഈ നമ്പറിൽ വിളിക്കാൻ ടാപ്പ് ചെയ്യുക',
+      'tap_to_open_whatsapp': 'വാട്സ്ആപ്പ് ചാറ്റ് തുറക്കാൻ ടാപ്പ് ചെയ്യുക',
+      'faq_how_to_order': 'ഞാൻ എങ്ങനെ ഓർഡർ ചെയ്യും?',
+      'faq_how_to_order_answer':
+          'ഞങ്ങളുടെ ഉൽപ്പന്നങ്ങൾ ബ്രൗസ് ചെയ്യുക, കാർട്ടിൽ ഇനങ്ങൾ ചേർക്കുക, ചെക്കൗട്ടിലേക്ക് പോകുക. ക്രെഡിറ്റ് കാർഡുകൾ, ഡിജിറ്റൽ വാലറ്റുകൾ അല്ലെങ്കിൽ ക്യാഷ് ഓൺ ഡെലിവറി ഉൾപ്പെടെ വിവിധ രീതികൾ ഉപയോഗിച്ച് നിങ്ങൾക്ക് പണമടയ്ക്കാം.',
+      'faq_delivery_times': 'നിങ്ങളുടെ ഡെലിവറി സമയങ്ങൾ എന്തൊക്കെയാണ്?',
+      'faq_delivery_times_answer':
+          'ഉച്ചയ്ക്ക് 2 മണിക്ക് മുമ്പ് നൽകിയ ഓർഡറുകൾക്ക് ഞങ്ങൾ അതേ ദിവസം ഡെലിവറി വാഗ്ദാനം ചെയ്യുന്നു. സ്റ്റാൻഡേർഡ് ഡെലിവറി 1-2 ബിസിനസ് ദിവസങ്ങൾ എടുക്കും.',
+      'faq_track_order': 'എനിക്ക് എന്റെ ഓർഡർ എങ്ങനെ ട്രാക്ക് ചെയ്യാം?',
+      'faq_track_order_answer':
+          'ആപ്പിലൂടെ നിങ്ങൾക്ക് തത്സമയം നിങ്ങളുടെ ഓർഡർ ട്രാക്ക് ചെയ്യാൻ കഴിയും. "എന്റെ ഓർഡറുകൾ" വിഭാഗത്തിലേക്ക് പോയി നിലവിലെ സ്റ്റാറ്റസ് കാണാൻ നിങ്ങളുടെ ഓർഡറിൽ ക്ലിക്ക് ചെയ്യുക.',
+      'faq_return_policy': 'നിങ്ങളുടെ റിട്ടേൺ പോളിസി എന്താണ്?',
+      'faq_return_policy_answer':
+          'മിക്ക ഇനങ്ങൾക്കും ഞങ്ങൾ 30 ദിവസത്തെ റിട്ടേൺ പോളിസി വാഗ്ദാനം ചെയ്യുന്നു. ഇനങ്ങൾ ടാഗുകൾ ഘടിപ്പിച്ച യഥാർത്ഥ അവസ്ഥയിൽ ആയിരിക്കണം.',
+// YourLocation (Adding missing parts from previous step for completeness)
+      'enter_your_location': 'നിങ്ങളുടെ സ്ഥലം നൽകുക',
+      'search_for_area': 'പ്രദേശം തിരയുക...',
+      'recent': 'സമീപകാലം',
+      'tirur': 'തിരൂർ',
       // About Us
       'welcome_to_modern_store': 'മോഡേൺ സ്റ്റോറിലേക്ക് സ്വാഗതം',
       'our_story': 'ഞങ്ങളുടെ കഥ',
       'our_mission': 'ഞങ്ങളുടെ ദൗത്യം',
       'why_choose_us': 'എന്തുകൊണ്ട് ഞങ്ങളെ തിരഞ്ഞെടുക്കണം?',
       'contact_information': 'ബന്ധപ്പെടൽ വിവരങ്ങൾ',
+      'our_story_text':
+          'പലചരക്ക് സാധനങ്ങളുടെ ഷോപ്പിംഗിൽ വിപ്ലവം സൃഷ്ടിക്കുക എന്ന ലക്ഷ്യത്തോടെയാണ് മോഡേൺ സ്റ്റോർ സ്ഥാപിച്ചത്. സൗകര്യവും വിശ്വാസ്യതയും നൽകി നിങ്ങളുടെ വീട്ടുവാതിൽക്കൽ തന്നെ പുതിയതും ഗുണമേന്മയുള്ളതുമായ ഉൽപ്പന്നങ്ങൾ എത്തിക്കുന്നതിൽ ഞങ്ങൾ വിശ്വസിക്കുന്നു.',
+      'our_mission_text':
+          'ഗുണനിലവാരത്തിന്റെയും ഉപഭോക്തൃ സേവനത്തിന്റെയും ഉയർന്ന നിലവാരം നിലനിർത്തിക്കൊണ്ട് എല്ലാവർക്കും പലചരക്ക് ഷോപ്പിംഗ് എളുപ്പവും താങ്ങാനാവുന്നതും ആക്സസ് ചെയ്യാവുന്നതുമാക്കുക.',
+      'fast_delivery': 'വേഗത്തിലുള്ള ഡെലിവറി',
+      'same_day_delivery': 'അതേ ദിവസം ഡെലിവറി ലഭ്യമാണ്',
+      'quality_guarantee': 'ഗുണനിലവാര ഉറപ്പ്',
+      'fresh_products': 'എല്ലായ്‌പ്പോഴും പുതിയ ഉൽപ്പന്നങ്ങൾ',
+      'best_prices': 'മികച്ച വിലകൾ',
+      'competitive_pricing': 'എല്ലാ ഇനങ്ങൾക്കും മത്സരാധിഷ്ഠിത വില',
+      'easy_ordering': 'എളുപ്പത്തിലുള്ള ഓർഡറിംഗ്',
+      'simple_interface': 'ലളിതവും അവബോധജന്യവുമായ ആപ്പ് ഇന്റർഫേസ്',
+      'customer_support': 'ഉപഭോക്തൃ പിന്തുണ',
+      'support_247': 'നിങ്ങളുടെ എല്ലാ ആവശ്യങ്ങൾക്കും 24/7 പിന്തുണ',
+      'address': 'വിലാസം',
+// LocationPage
+      'select_your_location': 'നിങ്ങളുടെ സ്ഥലം തിരഞ്ഞെടുക്കുക',
+      'location_description':
+          'നിങ്ങളുടെ സ്ഥലം അറിയേണ്ടത് ആവശ്യമാണ് അടുത്തുള്ള സേവനങ്ങൾ നിർദ്ദേശിക്കാൻ',
+      'allow_location_access': 'സ്ഥല ആക്സസ് അനുവദിക്കുക',
+      'enter_location_manually': 'സ്ഥലം മാനുവലായി നൽകുക',
+// Login/Enter Screen
+      'skip': 'ഒഴിവാക്കുക',
+      'enter_your_number': 'നിങ്ങളുടെ നമ്പർ നൽകുക',
+      'mobile_number': 'മൊബൈൽ നമ്പർ',
+      'enter_mobile_hint': 'നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക',
 
+      'login_error': 'ലോഗിൻ പിശക്. വീണ്ടും ശ്രമിക്കുക.',
+      'processing': 'പ്രോസസ്സിംഗ്...',
+      'please_enter_phone': 'നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക',
       // Search & Products
       'find_products': 'ഉത്പാദനങ്ങൾ കണ്ടെത്തുക',
       'search_something': 'എന്തെങ്കിലും തിരയുക...',
@@ -289,11 +639,44 @@ class AppLocalizations {
       'rating_updated': 'റേറ്റിംഗ് അപ്ഡേറ്റ് ചെയ്തു',
       'unexpected_error': 'അപ്രതീക്ഷിത പിശക്',
 
+      // Cart
+      'promo_code': 'പ്രോമോ കോഡ്',
+      'apply': 'പ്രയോഗിക്കുക',
+      'price': 'വില',
+      'discount': 'ഇളവ്',
+      'delivery_charge': 'ഡെലിവറി ചാർജ്',
+      'grand_total': 'ആകെ തുക',
+      'payment_method': 'പേയ്‌മെന്റ് രീതി',
+      'cash_on_delivery': 'ക്യാഷ് ഓൺ ഡെലിവറി',
+      'payfort': 'പേഫോർട്ട്',
+      'place_order': 'ഓർഡർ ചെയ്യുക',
+      'cart_empty': 'നിങ്ങളുടെ കാർട്ട് ശൂന്യമാണ്',
+      'error_loading_cart': 'കാർട്ട് ഇനങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പിശക്',
+
+      // Edit Profile
+      'edit_profile': 'പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക',
+      'profile_unavailable': 'ഉപയോക്തൃ പ്രൊഫൈൽ ലഭ്യമല്ല',
+      'address_unavailable': 'ഡെലിവറി വിലാസം ലഭ്യമല്ല',
+      'name': 'പേര്',
+      'phone_number': 'ഫോൺ നമ്പർ',
+      'save_changes': 'മാറ്റങ്ങൾ സേവ് ചെയ്യുക',
+
       // Messages
       'coming_soon': 'ഉടൻ വരുന്നു!',
       'address_management': 'വിലാസ മാനേജ്മെന്റ്',
       'wallet_feature': 'വാലറ്റ് സവിശേഷത',
       'review_feature': 'അവലോകന സവിശേഷത',
+
+// Onboarding
+      'brand_name': 'മോഡേൺ ഗ്രൂപ്പ്',
+      'fresh_groceries': 'നിങ്ങൾക്കായി പുതിയ പലചരക്ക് സാധനങ്ങൾ',
+      'real_freshness': 'എല്ലായ്പ്പോഴും യഥാർത്ഥ പുതുമ',
+      'for_your_needs': 'നിങ്ങളുടെ ആവശ്യങ്ങൾക്കായി ഉദ്ദേശിച്ചിരിക്കുന്നു',
+      'get_started': 'ആരംഭിക്കുക',
+      'by_joining': 'ചേരുന്നതിലൂടെ നിങ്ങൾ ഞങ്ങളുടെ ',
+      'terms_of_service': 'സേവന നിബന്ധനകൾ ',
+      'and': 'ഒപ്പം ',
+      'privacy_policy_text': 'സ്വകാര്യതാ നയം ',
     },
   };
 

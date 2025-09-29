@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
-
 import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
 import 'package:modern_grocery/repositery/model/getUserProfile.dart';
+import 'package:modern_grocery/services/language_service.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -48,12 +49,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     phoneController =
         TextEditingController(text: _profileData?.user?.phoneNumber ?? '');
 
-    // Assuming delivery address is a string, adjust if you have a list or complex type
     String deliveryAddress = '';
     if (_addressData != null &&
         _addressData!.data != null &&
         _addressData!.data!.isNotEmpty) {
-      // For example, take first address line
       deliveryAddress = _addressData!.data![0].address ?? '';
     }
     addressController = TextEditingController(text: deliveryAddress);
@@ -63,190 +62,204 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserprofileBloc, UserprofileState>(
-      builder: (context, profileState) {
-        if (profileState is Userprofileloading) {
-          return Scaffold(
-            backgroundColor: const Color(0xFF0A0909),
-            body: const Center(child: CircularProgressIndicator()),
-          );
-        }
-        if (profileState is UserprofileError) {
-          return Scaffold(
-            backgroundColor: const Color(0xFF0A0909),
-            body: Center(
-              child: Text(
-                'User profile unavailable',
-                style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontSize: 16.sp,
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return BlocBuilder<UserprofileBloc, UserprofileState>(
+          builder: (context, profileState) {
+            if (profileState is Userprofileloading) {
+              return Scaffold(
+                backgroundColor: const Color(0xFF0A0909),
+                body: const Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (profileState is UserprofileError) {
+              return Scaffold(
+                backgroundColor: const Color(0xFF0A0909),
+                body: Center(
+                  child: Text(
+                    languageService.getString('profile_unavailable'),
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }
-        if (profileState is Userprofileloaded) {
-          _profileData = BlocProvider.of<UserprofileBloc>(context).getUserProfile;
+              );
+            }
+            if (profileState is Userprofileloaded) {
+              _profileData =
+                  BlocProvider.of<UserprofileBloc>(context).getUserProfile;
 
-          return BlocBuilder<UserdeliveryaddressBloc, UserdeliveryaddressState>(
-            builder: (context, addressState) {
-              if (addressState is UserdeliveryaddressLoading) {
-                return Scaffold(
-                  backgroundColor: const Color(0xFF0A0909),
-                  body: const Center(child: CircularProgressIndicator()),
-                );
-              }
-              if (addressState is UserdeliveryaddressError) {
-                return Scaffold(
-                  backgroundColor: const Color(0xFF0A0909),
-                  body: Center(
-                    child: Text(
-                      'Delivery address unavailable',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 16.sp,
+              return BlocBuilder<UserdeliveryaddressBloc,
+                  UserdeliveryaddressState>(
+                builder: (context, addressState) {
+                  if (addressState is UserdeliveryaddressLoading) {
+                    return Scaffold(
+                      backgroundColor: const Color(0xFF0A0909),
+                      body: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  if (addressState is UserdeliveryaddressError) {
+                    return Scaffold(
+                      backgroundColor: const Color(0xFF0A0909),
+                      body: Center(
+                        child: Text(
+                          languageService.getString('address_unavailable'),
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              }
-              if (addressState is UserdeliveryaddressLoaded) {
-                _addressData =
-                    BlocProvider.of<UserdeliveryaddressBloc>(context).getUserDlvAddresses;
+                    );
+                  }
+                  if (addressState is UserdeliveryaddressLoaded) {
+                    _addressData = BlocProvider.of<UserdeliveryaddressBloc>(
+                            context)
+                        .getUserDlvAddresses;
 
-                if (!_controllersInitialized) {
-                  _initializeControllers();
-                }
+                    if (!_controllersInitialized) {
+                      _initializeControllers();
+                    }
 
-                return Scaffold(
-                  backgroundColor: const Color(0xFF0A0909),
-                  appBar: AppBar(
-                    backgroundColor: const Color(0xFF0A0909),
-                    elevation: 0,
-                    leading: const BackButton(color: Colors.white),
-                    title: Text(
-                      'Edit Profile',
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500,
+                    return Scaffold(
+                      backgroundColor: const Color(0xFF0A0909),
+                      appBar: AppBar(
+                        backgroundColor: const Color(0xFF0A0909),
+                        elevation: 0,
+                        leading: const BackButton(color: Colors.white),
+                        title: Text(
+                          languageService.getString('edit_profile'),
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        centerTitle: true,
                       ),
-                    ),
-                    centerTitle: true,
-                  ),
-                  body: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20.h),
-                        Stack(
-                          alignment: Alignment.bottomRight,
+                      body: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 10.h),
+                        child: Column(
                           children: [
-                            // Profile image widget if needed
-                            Container(
-                              padding: EdgeInsets.all(4.w),
-                              decoration: const BoxDecoration(
+                            SizedBox(height: 20.h),
+                            Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(4.w),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 16.sp,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Text(
+                              _profileData?.user?.name ??
+                                  languageService.getString('user_name'),
+                              style: GoogleFonts.inter(
+                                fontSize: 18.sp,
                                 color: Colors.white,
-                                shape: BoxShape.circle,
+                                fontWeight: FontWeight.w500,
                               ),
-                              child: Icon(
-                                Icons.edit,
-                                size: 16.sp,
-                                color: Colors.black,
+                            ),
+                            SizedBox(height: 30.h),
+                            Container(
+                              padding: EdgeInsets.all(16.w),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0xffC4C1B4)),
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    languageService.getString('name'),
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  buildEditableField(
+                                      controller: nameController),
+                                  SizedBox(height: 20.h),
+                                  Text(
+                                    languageService.getString('phone_number'),
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  buildEditableField(
+                                      controller: phoneController),
+                                  SizedBox(height: 20.h),
+                                  Text(
+                                    languageService.getString('address'),
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5.h),
+                                  buildEditableField(
+                                      controller: addressController,
+                                      maxLines: 3),
+                                  SizedBox(height: 30.h),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 50.h,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Add save functionality here
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xFFFCF8E8),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        languageService
+                                            .getString('save_changes'),
+                                        style: GoogleFonts.inter(
+                                          color: const Color(0xFF0A0909),
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        Text(
-                          _profileData?.user?.name ?? 'User Name',
-                          style: GoogleFonts.inter(
-                            fontSize: 18.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 30.h),
-                        Container(
-                          padding: EdgeInsets.all(16.w),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xffC4C1B4)),
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Name",
-                                style: GoogleFonts.inter(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 5.h),
-                              buildEditableField(controller: nameController),
-                              SizedBox(height: 20.h),
-                              Text(
-                                "Phone number",
-                                style: GoogleFonts.inter(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 5.h),
-                              buildEditableField(controller: phoneController),
-                              SizedBox(height: 20.h),
-                              Text(
-                                "Address",
-                                style: GoogleFonts.inter(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 5.h),
-                              buildEditableField(
-                                  controller: addressController, maxLines: 3),
-                              SizedBox(height: 30.h),
-                              // Save button
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50.h,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Add save functionality here
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFCF8E8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.r),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Save Changes',
-                                    style: GoogleFonts.inter(
-                                      color: const Color(0xFF0A0909),
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-          );
-        }
-        return const SizedBox();
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
+              );
+            }
+            return const SizedBox();
+          },
+        );
       },
     );
   }

@@ -8,7 +8,8 @@ class GetcategoryproductsApi {
   ApiClient apiClient = ApiClient();
 
   Future<GetCategoryProductsModel> getCategoryProductsById(String catId) async {
-    String path = '/product/get/category/items/$catId';
+    String path =
+        '/product/get/category/items/$catId';
 
     Response response = await apiClient.invokeAPI(path, 'GET', null);
 
@@ -16,4 +17,3 @@ class GetcategoryproductsApi {
     return GetCategoryProductsModel.fromJson(jsonData);
   }
 }
-

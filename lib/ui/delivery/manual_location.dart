@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/addDeliveryAddress/add_delivery_address_bloc.dart';
+import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/admin/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/your_location.dart';
+import 'package:provider/provider.dart';
 
 class ManualLocation extends StatefulWidget {
   const ManualLocation({super.key});
@@ -17,9 +20,10 @@ class ManualLocation extends StatefulWidget {
 
 class _ManualLocationState extends State<ManualLocation> {
   bool isAdmin = true; // Default is user   // false for  Admin
-  String currentLocation = "Use My Current Location";
+  String currentLocation = "Use My Current Location"; // Will be localized
   String? apiAddress;
   String selectedAddressType = 'current'; // 'current' or 'api'
+  late LanguageService languageService;
 
   @override
   void initState() {
@@ -32,7 +36,7 @@ class _ManualLocationState extends State<ManualLocation> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        _showSnack('Location services are disabled.');
+        _showSnack(languageService.getString('location_services_disabled'));
         return;
       }
 
@@ -40,16 +44,19 @@ class _ManualLocationState extends State<ManualLocation> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          _showSnack('Location permissions are denied.');
+          _showSnack(languageService.getString('location_permissions_denied'));
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        _showSnack('Location permissions are permanently denied.',
-            actionLabel: 'Settings', action: () {
-          Geolocator.openAppSettings();
-        });
+        _showSnack(
+          languageService.getString('location_permissions_permanently_denied'),
+          actionLabel: languageService.getString('settings'),
+          action: () {
+            Geolocator.openAppSettings();
+          },
+        );
         return;
       }
 
@@ -69,7 +76,9 @@ class _ManualLocationState extends State<ManualLocation> {
         currentLocation = address;
       });
     } catch (e) {
-      _showSnack('Error fetching location: $e');
+      _showSnack(
+        '${languageService.getString('error_fetching_location')}$e',
+      );
     }
   }
 
@@ -86,62 +95,66 @@ class _ManualLocationState extends State<ManualLocation> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AddDeliveryAddressBloc, AddDeliveryAddressState>(
-      listener: (context, state) {
-        if (state is AddDeliveryAddressLoaded) {
-          setState(() {
-            apiAddress = state.addDeliveryAddress.data!.address;
-          });
-        } else if (state is AddDeliveryAddressError) {
-          _showSnack('Failed to fetch address from API');
-        } else if (state is AddDeliveryAddressLoading) {
-          _showSnack('Loading address from API...');
-        }
-      },
-      child: Scaffold(
-        backgroundColor: const Color(0xFF0A0909),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ListView(
-              children: [
-                SizedBox(height: 168.h),
-                Text(
-                  'Select Delivery Address',
-                  style: TextStyle(
-                    color: const Color(0xFFFCF8E8),
-                    fontSize: 18.sp,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return BlocListener<AddDeliveryAddressBloc, AddDeliveryAddressState>(
+          listener: (context, state) {
+            if (state is AddDeliveryAddressLoaded) {
+              setState(() {
+                apiAddress = state.addDeliveryAddress.data!.address;
+              });
+            } else if (state is AddDeliveryAddressError) {
+              _showSnack(languageService.getString('failed_fetch_address_api'));
+            } else if (state is AddDeliveryAddressLoading) {
+              _showSnack(languageService.getString('loading_address_api'));
+            }
+          },
+          child: Scaffold(
+            backgroundColor: const Color(0xFF0A0909),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ListView(
+                  children: [
+                    SizedBox(height: 168.h),
+                    Text(
+                      languageService.getString('select_delivery_address'),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFCF8E8),
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 23.h),
+                    _buildSearchBox(languageService),
+                    SizedBox(height: 46.h),
+                    _buildAddressRadioSelection(languageService),
+                    SizedBox(height: 46.h),
+                    _buildAddNewAddress(languageService),
+                    SizedBox(height: 200.h),
+                    _buildConfirmButton(languageService),
+                  ],
                 ),
-                SizedBox(height: 23.h),
-                _buildSearchBox(),
-                SizedBox(height: 46.h),
-                _buildAddressRadioSelection(),
-                SizedBox(height: 46.h),
-                _buildAddNewAddress(),
-                SizedBox(height: 200.h),
-                _buildConfirmButton(),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildSearchBox() {
+  Widget _buildSearchBox(LanguageService languageService) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFFCF8E8), width: 2),
+        border: Border.all(color: const Color(0xFFFCF8E8), width: 2.w),
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
-        style: const TextStyle(color: Color(0x91FCF8E8)),
+        style: GoogleFonts.poppins(color: Color(0x91FCF8E8)),
         decoration: InputDecoration(
-          hintText: "Search for area...",
-          hintStyle: const TextStyle(color: Color(0x91FCF8E8), fontSize: 12),
+          hintText: languageService.getString('search_for_area'),
+          hintStyle:
+              GoogleFonts.poppins(color: Color(0x91FCF8E8), fontSize: 12.sp),
           border: InputBorder.none,
           prefixIcon: const Icon(Icons.search, color: Color(0x91FCF8E8)),
           contentPadding: const EdgeInsets.symmetric(vertical: 15),
@@ -150,13 +163,13 @@ class _ManualLocationState extends State<ManualLocation> {
     );
   }
 
-  Widget _buildAddressRadioSelection() {
+  Widget _buildAddressRadioSelection(LanguageService languageService) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Choose Address",
-          style: TextStyle(
+          languageService.getString('choose_address'),
+          style: GoogleFonts.poppins(
             color: const Color(0xFFFCF8E8),
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
@@ -201,14 +214,15 @@ class _ManualLocationState extends State<ManualLocation> {
         activeColor: const Color(0xFFF5E9B5),
         title: Text(
           title,
-          style: TextStyle(color: const Color(0xFFFCF8E8), fontSize: 14.sp),
+          style: GoogleFonts.poppins(
+              color: const Color(0xFFFCF8E8), fontSize: 14.sp),
         ),
         contentPadding: EdgeInsets.zero,
       ),
     );
   }
 
-  Widget _buildAddNewAddress() {
+  Widget _buildAddNewAddress(LanguageService languageService) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -221,16 +235,17 @@ class _ManualLocationState extends State<ManualLocation> {
               MaterialPageRoute(builder: (context) => const YourLocation()),
             );
           },
-          child: const Text(
-            "Add new address",
-            style: TextStyle(color: Color(0xE8FCF8E8), fontSize: 15),
+          child: Text(
+            languageService.getString('add_new_address'),
+            style:
+                GoogleFonts.poppins(color: Color(0xE8FCF8E8), fontSize: 15.sp),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildConfirmButton() {
+  Widget _buildConfirmButton(LanguageService languageService) {
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -256,14 +271,14 @@ class _ManualLocationState extends State<ManualLocation> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFF5E9B5),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.r)),
+          padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
         ),
-        child: const Text(
-          "Confirm address",
-          style: TextStyle(
+        child: Text(
+          languageService.getString('confirm address'),
+          style: GoogleFonts.poppins(
             color: Color(0xFF0A0808),
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w500,
           ),
         ),

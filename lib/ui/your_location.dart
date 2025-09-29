@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:modern_grocery/localization/app_localizations.dart';
+import 'package:modern_grocery/services/language_service.dart';
+import 'package:provider/provider.dart';
 
 class YourLocation extends StatefulWidget {
   const YourLocation({super.key});
@@ -11,6 +15,8 @@ class YourLocation extends StatefulWidget {
 class _YourLocationState extends State<YourLocation> {
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageService>(context).currentLanguage;
+
     return Scaffold(
       backgroundColor: const Color(0XFF0A0909),
       body: Padding(
@@ -20,11 +26,10 @@ class _YourLocationState extends State<YourLocation> {
           children: [
             SizedBox(height: 168.h),
             Text(
-              'Enter Your Location',
-              style: TextStyle(
+              AppLocalizations.getString('enter_your_location', lang),
+              style: GoogleFonts.poppins(
                 color: const Color(0xFFF5E9B5),
                 fontSize: 23.sp,
-                fontFamily: 'Poppins',
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -32,10 +37,10 @@ class _YourLocationState extends State<YourLocation> {
             SizedBox(
               height: 50.h,
               child: TextField(
-                style: TextStyle(color: const Color(0x91FCF8E8)),
+                style: GoogleFonts.poppins(color: const Color(0x91FCF8E8)),
                 decoration: InputDecoration(
-                  hintText: "Search for area...",
-                  hintStyle: TextStyle(
+                  hintText: AppLocalizations.getString('search_for_area', lang),
+                  hintStyle: GoogleFonts.poppins(
                       color: const Color(0x91FCF8E8), fontSize: 12.sp),
                   border: OutlineInputBorder(
                     borderSide:
@@ -50,11 +55,10 @@ class _YourLocationState extends State<YourLocation> {
             ),
             SizedBox(height: 46.h),
             Text(
-              'Recent',
-              style: TextStyle(
+              AppLocalizations.getString('recent', lang),
+              style: GoogleFonts.poppins(
                 color: const Color(0xFFF5E9B5),
                 fontSize: 23.sp,
-             
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -64,11 +68,10 @@ class _YourLocationState extends State<YourLocation> {
                 const Icon(Icons.location_on, color: Color(0xFFF5E9B5)),
                 SizedBox(width: 16.w),
                 Text(
-                  'Tirur',
-                  style: TextStyle(
+                  AppLocalizations.getString('tirur', lang),
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFFF5E9B5),
                     fontSize: 23.sp,
-                    fontFamily: 'Poppins',
                     fontWeight: FontWeight.w500,
                   ),
                 )

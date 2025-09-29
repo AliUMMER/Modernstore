@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/bloc/GetToWishlist_bloc/get_to_wishlist_bloc.dart';
 import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
-import 'package:modern_grocery/services/language_service.dart'; // Add this import
+import 'package:modern_grocery/services/language_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FavouritePage extends StatefulWidget {
@@ -21,7 +20,6 @@ class FavouritePage extends StatefulWidget {
 
 class _FavouritePageState extends State<FavouritePage> {
   late GetToWishlistModel data;
-  final LanguageService languageService = LanguageService(); // Add this line
 
   @override
   void initState() {
@@ -47,138 +45,162 @@ class _FavouritePageState extends State<FavouritePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0XFF0A0909),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 11.w),
-        child: Column(
-          children: [
-            SizedBox(height: 64.h),
-            Row(
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return Scaffold(
+          backgroundColor: Color(0XFF0A0909),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 11.w),
+            child: Column(
               children: [
-                SizedBox(width: 40.w),
-                BackButton(
-                  color: AppConstants.primaryText,
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NavigationBarWidget(),
+                SizedBox(height: 64.h),
+                Row(
+                  children: [
+                    SizedBox(width: 40.w),
+                    BackButton(
+                      color: AppConstants.primaryText,
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NavigationBarWidget(),
+                          ),
+                        );
+                      },
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 22.sp,
+                        color: AppConstants.primaryText,
                       ),
-                    );
-                  },
+                      onPressed: () {
+                        if (widget.onFavTap != null) {
+                          widget.onFavTap!();
+                        }
+                      },
+                    ),
+                    SizedBox(width: 40.w),
+                  ],
                 ),
-                Spacer(),
-                IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 22.sp,
-                    color: AppConstants.primaryText,
-                  ),
-                  onPressed: () {
-                    if (widget.onFavTap != null) {
-                      widget.onFavTap!();
-                    }
-                  },
-                ),
-                SizedBox(width: 40.w),
-              ],
-            ),
-            SizedBox(height: 9.h),
-            Center(
-              child: Text(
-                languageService.getString('favourites'), // Updated
-                style: GoogleFonts.poppins(
-                  color: AppConstants.primaryText,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.24,
-                ),
-              ),
-            ),
-            // BlocBuilder<GetToWishlistBloc, GetToWishlistState>(
-            //   builder: (context, state) {
-            //     if (state is GetToWishlistLoading) {
-            //       return Column(
-            //         children: List.generate(5, (index) => buildShimmer()),
-            //       );
-            //     }
-            //     if (state is GetToWishlistError) {
-            //       return Center(child: Text(languageService.getString('favorites_not_found'))); // Updated
-            //     }
-
-            //     if (state is GetToWishlistLoaded) {
-            //       final favourites = BlocProvider.of<GetToWishlistBloc>(context)
-            //           .getToWishlistModel;
-
-            //       final wishlistItems = favourites.wishlists ?? [];
-
-            //       if (wishlistItems.isEmpty) {
-            //         return Center(
-            //             child: Text(
-            //           languageService.getString('no_favorites_yet'), // Updated
-            //           style: GoogleFonts.poppins(color: Colors.white),
-            //         ));
-            //       }
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: favourites.length,
-                itemBuilder: (context, index) {
-                  final item = favourites[index];
-                  return FavouriteItemCard(
-                    item: item,
-                    languageService: languageService, // Pass languageService
-                  );
-                },
-              ),
-            ),
-            //     }
-            //     // Fallback for unexpected states
-
-            //     return const SizedBox();
-            //   },
-            // )
-
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: SizedBox(
-                height: 40.h,
-                width: 204.w,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xffF5E9B5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.r),
+                SizedBox(height: 9.h),
+                Center(
+                  child: Text(
+                    languageService.getString('favorites'),
+                    style: GoogleFonts.poppins(
+                      color: AppConstants.primaryText,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.24,
                     ),
                   ),
-                  onPressed: () {},
-                  child: Center(
-                    child: Text(
-                        languageService.getString('add_to_cart'), // Updated
-                        style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500)),
+                ),
+                SizedBox(height: 16.h),
+                // BlocBuilder<GetToWishlistBloc, GetToWishlistState>(
+                //   builder: (context, state) {
+                //     if (state is GetToWishlistLoading) {
+                //       return Expanded(
+                //         child: Column(
+                //           children: List.generate(5, (index) => buildShimmer()),
+                //         ),
+                //       );
+                //     }
+                //     if (state is GetToWishlistError) {
+                //       return Center(
+                //         child: Text(languageService.getString('error'))
+                //       );
+                //     }
+                //
+                //     if (state is GetToWishlistLoaded) {
+                //       final favourites = BlocProvider.of<GetToWishlistBloc>(context)
+                //           .getToWishlistModel;
+                //
+                //       final wishlistItems = favourites.wishlists ?? [];
+                //
+                //       if (wishlistItems.isEmpty) {
+                //         return Center(
+                //           child: Text(
+                //             languageService.getString('no_favorites'),
+                //             style: GoogleFonts.poppins(color: Colors.white),
+                //           )
+                //         );
+                //       }
+                //
+                //       return Expanded(
+                //         child: ListView.builder(
+                //           itemCount: wishlistItems.length,
+                //           itemBuilder: (context, index) {
+                //             final item = wishlistItems[index];
+                //             return FavouriteItemCard(
+                //               item: item,
+                //               languageService: languageService,
+                //             );
+                //           },
+                //         ),
+                //       );
+                //     }
+                //     return const SizedBox();
+                //   },
+                // ),
+
+                // Temporary static list (remove when BlocBuilder is uncommented)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: favourites.length,
+                    itemBuilder: (context, index) {
+                      final item = favourites[index];
+                      return FavouriteItemCard(
+                        item: item,
+                        languageService: languageService,
+                      );
+                    },
                   ),
                 ),
-              ),
+
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    height: 40.h,
+                    width: 204.w,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffF5E9B5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.r),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Center(
+                        child: Text(
+                          languageService.getString('add_to_cart'),
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
 class FavouriteItemCard extends StatefulWidget {
   final Map<String, dynamic> item;
-  final LanguageService languageService; // Add this parameter
+  final LanguageService languageService;
 
   const FavouriteItemCard({
-    Key? key, 
+    Key? key,
     required this.item,
-    required this.languageService, // Add this parameter
+    required this.languageService,
   }) : super(key: key);
 
   @override
@@ -191,7 +213,8 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
-    final String name = item['name'] ?? widget.languageService.getString('unknown_product'); // Updated
+    final String name =
+        item['name'] ?? widget.languageService.getString('no_name');
     final String image = item['image'] ?? '';
     final int basePrice = item['mrp'] ?? 0;
     final int price = item['price'] ?? 0;
@@ -219,46 +242,52 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                 color: Color(0xF4CCC9BC),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Stack(children: [
-                image.isNotEmpty
-                    ? Positioned(
-                        top: 25.h,
-                        left: 30.w,
-                        right: 30.w,
-                        bottom: 5.h,
-                        child: Image.asset(
-                          image,
-                          fit: BoxFit.contain,
-                          width: 10.w,
-                          height: 10.h,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.image_not_supported,
-                                color: Colors.grey);
-                          },
+              child: Stack(
+                children: [
+                  image.isNotEmpty
+                      ? Positioned(
+                          top: 25.h,
+                          left: 30.w,
+                          right: 30.w,
+                          bottom: 5.h,
+                          child: Image.asset(
+                            image,
+                            fit: BoxFit.contain,
+                            width: 10.w,
+                            height: 10.h,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(Icons.image_not_supported,
+                                  color: Colors.grey);
+                            },
+                          ),
+                        )
+                      : const Icon(Icons.image_not_supported,
+                          color: Colors.grey),
+                  Positioned(
+                    top: 10.h,
+                    left: 10.w,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isSelected = !isSelected;
+                        });
+                      },
+                      child: Container(
+                        height: 22.h,
+                        width: 22.w,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFEFECE1),
+                          shape: BoxShape.circle,
                         ),
-                      )
-                    : const Icon(Icons.image_not_supported, color: Colors.grey),
-                Positioned(
-                  top: 10.h,
-                  left: 10.w,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isSelected = !isSelected;
-                      });
-                    },
-                    child: Container(
-                      height: 22.h,
-                      width: 22.w,
-                      decoration: BoxDecoration(
-                          color: Color(0xFFEFECE1), shape: BoxShape.circle),
-                      child: isSelected
-                          ? Icon(Icons.check, size: 16.sp, color: Colors.black)
-                          : null,
+                        child: isSelected
+                            ? Icon(Icons.check,
+                                size: 16.sp, color: Colors.black)
+                            : null,
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
             SizedBox(width: 18.w),
             Expanded(
@@ -278,14 +307,15 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   Row(
                     children: [
                       Text(
-                        '${widget.languageService.getString('mrp')} ₹$basePrice', // Updated
+                        '${widget.languageService.getString('mrp')} ₹$basePrice',
                         style: GoogleFonts.poppins(
-                            color: Color(0xCEB4B2A9),
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.lineThrough,
-                            decorationColor: Color(0xCEB4B2A9),
-                            decorationThickness: 1.5),
+                          color: Color(0xCEB4B2A9),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: Color(0xCEB4B2A9),
+                          decorationThickness: 1.5,
+                        ),
                       ),
                       SizedBox(width: 44.w),
                       Text(
@@ -300,7 +330,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                   ),
                   if (discountPercentage > 0)
                     Text(
-                      '$discountPercentage% ${widget.languageService.getString('off')}', // Updated
+                      '$discountPercentage% ${widget.languageService.getString('discount_20_off').split(' ').last}',
                       style: GoogleFonts.poppins(
                         color: Color(0xCE7FFC83),
                         fontSize: 12,
@@ -314,12 +344,13 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               children: [
                 SizedBox(height: 18.h),
                 CircleAvatar(
-                    radius: 18.r,
-                    backgroundColor: Color(0xFFEFECE1),
-                    child: SvgPicture.asset(
-                      'assets/Icon/trash-2.svg',
-                      fit: BoxFit.contain,
-                    )),
+                  radius: 18.r,
+                  backgroundColor: Color(0xFFEFECE1),
+                  child: SvgPicture.asset(
+                    'assets/Icon/trash-2.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ],
             ),
             SizedBox(width: 9.w),
@@ -342,7 +373,6 @@ Widget buildShimmer() {
         color: const Color(0xFF0A0808),
         borderRadius: BorderRadius.circular(10.r),
       ),
-      // Simulate a loading card
       child: Row(
         children: [
           Container(

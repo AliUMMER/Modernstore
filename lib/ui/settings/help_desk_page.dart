@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:modern_grocery/services/language_service.dart'; // ✅ Add this import
+
 class HelpDeskPage extends StatefulWidget {
   const HelpDeskPage({super.key});
 
@@ -10,9 +12,16 @@ class HelpDeskPage extends StatefulWidget {
 }
 
 class _HelpDeskPageState extends State<HelpDeskPage> {
+  late LanguageService languageService; // ✅ Declare service
   final TextEditingController _messageController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    languageService = LanguageService(); // ✅ Initialize service
+  }
 
   @override
   void dispose() {
@@ -24,15 +33,21 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
 
   Future<void> _launchEmail() async {
     _showSnackBar(
-        'Email: support@modernstore.com\nSubject: ${_subjectController.text}\nMessage: ${_messageController.text}');
+        '${languageService.getString('email')}: support@modernstore.com\n'
+        '${languageService.getString('subject')}: ${_subjectController.text}\n'
+        '${languageService.getString('message')}: ${_messageController.text}');
   }
 
   Future<void> _launchPhone() async {
-    _showSnackBar('Phone: +1 (234) 567-890\nTap to call this number');
+    _showSnackBar(
+        '${languageService.getString('phone')}: +1 (234) 567-890\n'
+        '${languageService.getString('tap_to_call')}');
   }
 
   Future<void> _launchWhatsApp() async {
-    _showSnackBar('WhatsApp: +1 (234) 567-890\nTap to open WhatsApp chat');
+    _showSnackBar(
+        '${languageService.getString('whatsapp')}: +1 (234) 567-890\n'
+        '${languageService.getString('tap_to_open_whatsapp')}');
   }
 
   void _showSnackBar(String message) {
@@ -40,6 +55,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
       SnackBar(
         content: Text(message),
         backgroundColor: const Color(0xFFF5E9B5),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -56,7 +72,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Help & Support',
+          languageService.getString('help_support'), // "Help & Support"
           style: GoogleFonts.poppins(
             color: const Color(0xFFF5E9B5),
             fontSize: 20.sp,
@@ -71,23 +87,23 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Contact Methods
-            _buildSection('Contact Us', [
+            _buildSection(languageService.getString('contact_us'), [
               _buildContactCard(
                 icon: Icons.email,
-                title: 'Email Support',
+                title: languageService.getString('email_support'),
                 subtitle: 'support@modernstore.com',
                 onTap: _launchEmail,
               ),
               _buildContactCard(
                 icon: Icons.phone,
-                title: 'Phone Support',
+                title: languageService.getString('phone_support'),
                 subtitle: '+1 (234) 567-890',
                 onTap: _launchPhone,
               ),
               _buildContactCard(
                 icon: Icons.chat,
                 title: 'WhatsApp',
-                subtitle: 'Chat with us instantly',
+                subtitle: languageService.getString('chat_with_us'),
                 onTap: _launchWhatsApp,
               ),
             ]),
@@ -95,29 +111,29 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
             SizedBox(height: 30.h),
 
             // FAQ Section
-            _buildSection('Frequently Asked Questions', [
+            _buildSection(languageService.getString('faq_title'), [
               _buildFAQItem(
-                'How do I place an order?',
-                'Simply browse our products, add items to cart, and proceed to checkout. You can pay using various methods including credit cards, digital wallets, or cash on delivery.',
+                languageService.getString('faq_how_to_order'),
+                languageService.getString('faq_how_to_order_answer'),
               ),
               _buildFAQItem(
-                'What are your delivery times?',
-                'We offer same-day delivery for orders placed before 2 PM. Standard delivery takes 1-2 business days.',
+                languageService.getString('faq_delivery_times'),
+                languageService.getString('faq_delivery_times_answer'),
               ),
               _buildFAQItem(
-                'How can I track my order?',
-                'You can track your order in real-time through the app. Go to "My Orders" section and click on your order to see its current status.',
+                languageService.getString('faq_track_order'),
+                languageService.getString('faq_track_order_answer'),
               ),
               _buildFAQItem(
-                'What is your return policy?',
-                'We offer a 30-day return policy for most items. Items must be in original condition with tags attached.',
+                languageService.getString('faq_return_policy'),
+                languageService.getString('faq_return_policy_answer'),
               ),
             ]),
 
             SizedBox(height: 30.h),
 
             // Send Message Section
-            _buildSection('Send us a Message', [
+            _buildSection(languageService.getString('send_message'), [
               Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
@@ -131,7 +147,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
                       controller: _subjectController,
                       style: GoogleFonts.inter(color: const Color(0xFFFCF8E8)),
                       decoration: InputDecoration(
-                        labelText: 'Subject',
+                        labelText: languageService.getString('subject'),
                         labelStyle:
                             GoogleFonts.inter(color: const Color(0xFFF5E9B5)),
                         border: OutlineInputBorder(
@@ -156,7 +172,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
                       controller: _emailController,
                       style: GoogleFonts.inter(color: const Color(0xFFFCF8E8)),
                       decoration: InputDecoration(
-                        labelText: 'Your Email',
+                        labelText: languageService.getString('your_email'),
                         labelStyle:
                             GoogleFonts.inter(color: const Color(0xFFF5E9B5)),
                         border: OutlineInputBorder(
@@ -182,7 +198,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
                       maxLines: 4,
                       style: GoogleFonts.inter(color: const Color(0xFFFCF8E8)),
                       decoration: InputDecoration(
-                        labelText: 'Message',
+                        labelText: languageService.getString('message'),
                         labelStyle:
                             GoogleFonts.inter(color: const Color(0xFFF5E9B5)),
                         border: OutlineInputBorder(
@@ -215,7 +231,7 @@ class _HelpDeskPageState extends State<HelpDeskPage> {
                           ),
                         ),
                         child: Text(
-                          'Send Message',
+                          languageService.getString('send_message_button'),
                           style: GoogleFonts.inter(
                             color: const Color(0xFF0A0909),
                             fontSize: 16.sp,

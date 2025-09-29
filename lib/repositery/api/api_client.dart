@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_exception.dart';
@@ -13,54 +12,80 @@ class ApiClient {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('Token');
 
-    String url = basePath + path;
+    // ✅ FIX 1: Ensure path starts with '/' and basePath doesn't end with '/'
+    // This prevents the double URL issue
+    String cleanPath = path.startsWith('/') ? path : '/$path';
+    String cleanBasePath = basePath.endsWith('/') ? basePath.substring(0, basePath.length - 1) : basePath;
+    String url = cleanBasePath + cleanPath;
+    
     if (kDebugMode) {
       print(url);
     }
 
+    // ✅ FIX 2: Added token validation and better error handling
     Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer $token',
     };
+
+    // Only add Authorization header if token exists
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    } else {
+      if (kDebugMode) {
+        print('Warning: No token found in SharedPreferences');
+      }
+    }
 
     http.Response response;
 
-    switch (method) {
-      case "POST":
-        response =
-            await http.post(Uri.parse(url), headers: headers, body: body);
-        break;
-      case "PUT":
-        response = await http.put(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
-        break;
-      case "DELETE":
-        response = await http.delete(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
-        break;
-      case "GET":
-        // Handling GET with body
-        final request = http.Request(
-          'GET',
-          Uri.parse(url),
-        );
-        request.headers.addAll(headers);
-
-        final streamedResponse = await request.send();
-        response = await http.Response.fromStream(streamedResponse);
-        break;
-      case "PATCH":
-        response = await http.patch(Uri.parse(url),
-            headers: headers, body: jsonEncode(body));
-        break;
-      default:
-        response = await http.get(Uri.parse(url), headers: headers);
+    try {
+      switch (method) {
+        case "POST":
+          response = await http.post(
+            Uri.parse(url),
+            headers: headers,
+            body: body,
+          );
+          break;
+        case "PUT":
+          response = await http.put(
+            Uri.parse(url),
+            headers: headers,
+            body: jsonEncode(body),
+          );
+          break;
+        case "DELETE":
+          response = await http.delete(
+            Uri.parse(url),
+            headers: headers,
+            body: jsonEncode(body),
+          );
+          break;
+        case "GET":
+          response = await http.get(
+            Uri.parse(url),
+            headers: headers,
+          );
+          break;
+        case "PATCH":
+          response = await http.patch(
+            Uri.parse(url),
+            headers: headers,
+            body: jsonEncode(body),
+          );
+          break;
+        default:
+          response = await http.get(Uri.parse(url), headers: headers);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Network error on $path: $e');
+      }
+      throw ApiException('Network error: $e', 0);
     }
 
     if (kDebugMode) {
       print('status of $path => ${response.statusCode}');
-    }
-    if (kDebugMode) {
       print(response.body);
     }
 
@@ -75,7 +100,12 @@ class ApiClient {
   String _decodeBodyBytes(http.Response response) {
     var contentType = response.headers['content-type'];
     if (contentType != null && contentType.contains("application/json")) {
-      return jsonDecode(response.body)['message'];
+      try {
+        final decoded = jsonDecode(response.body);
+        return decoded['message'] ?? response.body;
+      } catch (e) {
+        return response.body;
+      }
     } else {
       return response.body;
     }

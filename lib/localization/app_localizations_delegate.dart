@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:modern_grocery/localization/app_localizations.dart';
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'hi', 'ml', 'ar', ''].contains(locale.languageCode);
+    return ['en', 'hi', 'ml',].contains(locale.languageCode);
   }
 
   @override
