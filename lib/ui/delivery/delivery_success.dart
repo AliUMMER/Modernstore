@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
 import 'package:provider/provider.dart';
+// import 'package:flutter_svg/flutter_svg.dart'; // Uncomment if using SVG
 
 class DeliverySuccess extends StatefulWidget {
   const DeliverySuccess({super.key});
@@ -16,7 +17,6 @@ class _DeliverySuccessState extends State<DeliverySuccess>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-  bool _isInitialized = false;
 
   @override
   void initState() {
@@ -25,22 +25,26 @@ class _DeliverySuccessState extends State<DeliverySuccess>
       duration: const Duration(seconds: 3),
       vsync: this,
     );
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_isInitialized) {
-      _animation = Tween<double>(
-        begin: -200.0,
-        end: MediaQuery.of(context).size.width + 200.0,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ));
+    final screenWidth = MediaQuery.of(context).size.width;
 
-      _isInitialized = true;
-    }
+    _animation = Tween<double>(
+      begin: -100.0, // Start from left side (off-screen)
+      end: screenWidth + 100.0, // End at right side (off-screen)
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut, // Smooth acceleration and deceleration
+    ));
   }
 
   @override
@@ -57,22 +61,35 @@ class _DeliverySuccessState extends State<DeliverySuccess>
           backgroundColor: const Color(0XFF0A0909),
           body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 316.h),
                 SizedBox(
-                  height: 90.h,
+                  height: 200.h,
+                ),
+                SizedBox(
+                  height: 120.h,
                   width: double.infinity,
                   child: AnimatedBuilder(
                     animation: _animation,
                     builder: (context, child) {
                       return Stack(
+                        alignment: Alignment.center,
                         children: [
+                          // Animated vehicle
                           Positioned(
                             left: _animation.value,
+                            bottom: 20.h,
                             child: Container(
                               height: 90.h,
-                              width: 90.w,
-                              child: Image.asset('assets/Icon/In Transit.svg'),
+                              width: 120.w,
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    'assets/In Transit.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -80,7 +97,7 @@ class _DeliverySuccessState extends State<DeliverySuccess>
                     },
                   ),
                 ),
-                SizedBox(height: 150.h),
+                SizedBox(height: 50.h),
                 Text(
                   languageService.getString(
                     'Fast, secure, and at your doorstep\nwithin 1 hour!',

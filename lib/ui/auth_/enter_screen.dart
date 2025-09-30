@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/login/login_bloc.dart';
 
 import 'package:modern_grocery/services/language_service.dart';
+import 'package:modern_grocery/ui/auth_/verify_screen.dart';
 import 'package:modern_grocery/ui/location/location_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +39,7 @@ class _EnterScreenState extends State<EnterScreen> {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const LocationPage()),
+                MaterialPageRoute(builder: (context) => VerifyScreen()),
               );
             } else if (state is loginBlocError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -279,21 +280,29 @@ class _EnterScreenState extends State<EnterScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: TextField(
+                              child: TextFormField(
                                 controller: phoneController,
                                 style: GoogleFonts.poppins(
-                                    color: Color(0xFFF5E9B5)),
+                                    color: const Color(0xFFF5E9B5)),
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 15.w, vertical: 15.h),
-                                  hintText: languageService.getString(
-                                    'enter_mobile_hint',
-                                  ),
+                                  hintText: languageService
+                                      .getString('enter_mobile_hint'),
                                   hintStyle: GoogleFonts.poppins(
-                                      color: Color(0x99F5E9B5)),
+                                      color: const Color(0x99F5E9B5)),
                                   border: InputBorder.none,
                                 ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please enter mobile number";
+                                  } else if (!RegExp(r'^[0-9]{10}$')
+                                      .hasMatch(value)) {
+                                    return "Enter valid 10-digit number";
+                                  }
+                                  return null; 
+                                },
                               ),
                             ),
                           ),

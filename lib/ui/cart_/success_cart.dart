@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/localization/app_localizations.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:provider/provider.dart';
 
@@ -15,36 +14,51 @@ class SuccessCart extends StatefulWidget {
 class _SuccessCartState extends State<SuccessCart>
     with SingleTickerProviderStateMixin {
   late AnimationController _blinkController;
-  late Animation<double> _blinkAnimation;
+  late Animation<double> _shadowAnimation;
   bool _showSecondImage = false;
 
   @override
   void initState() {
     super.initState();
     _blinkController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(
+          milliseconds: 1000), // Very slow blink - 1 second each way
       vsync: this,
     );
 
-    _blinkAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+    _shadowAnimation = Tween<double>(begin: 0.4, end: 0.0).animate(
       CurvedAnimation(parent: _blinkController, curve: Curves.easeInOut),
     );
 
-    // Blink 2 times then show second image
-    _startBlinkAnimation();
+    _startAnimation();
   }
 
-  void _startBlinkAnimation() async {
-    // Blink twice (forward + reverse = 1 blink)
+  void _startAnimation() async {
+    // Very very very slow blink animation (3 blinks) - only shadow
+
+    // First blink - very slow
     await _blinkController.forward();
     await _blinkController.reverse();
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    // Second blink - very slow
+    await _blinkController.forward();
+    await _blinkController.reverse();
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    // Third blink - very slow
     await _blinkController.forward();
     await _blinkController.reverse();
 
-    // After blinking, show second image
-    setState(() {
-      _showSecondImage = true;
-    });
+    // Wait before switching to second image
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    // Switch to second image
+    if (mounted) {
+      setState(() {
+        _showSecondImage = true;
+      });
+    }
   }
 
   @override
@@ -63,45 +77,50 @@ class _SuccessCartState extends State<SuccessCart>
             child: Column(
               children: [
                 SizedBox(height: 316.h),
-                // Show first image with blinking or second image after blinking
-                if (!_showSecondImage)
-                  // First image with circular shadow and blink animation
-                  AnimatedBuilder(
-                    animation: _blinkAnimation,
-                    builder: (context, child) {
-                      return Opacity(
-                        opacity: _blinkAnimation.value,
-                        child: Container(
-                          height: 184.h,
-                          width: 184.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFF5E9B5).withOpacity(0.4),
-                                blurRadius: 30,
-                                spreadRadius: 10,
-                              ),
-                            ],
-                          ),
-                          child: Center(
+                SizedBox(
+                  height: 184.h,
+                  width: 184.w,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    child: !_showSecondImage
+                        ? AnimatedBuilder(
+                            key: const ValueKey('firstImage'),
+                            animation: _shadowAnimation,
+                            builder: (context, child) {
+                              return Container(
+                                height: 154.h,
+                                width: 154.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFFF5E9B5)
+                                          .withOpacity(_shadowAnimation.value),
+                                      blurRadius: 30,
+                                      spreadRadius: 20,
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    'assets/cart.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            height: 184.h,
+                            width: 184.w,
                             child: Image.asset(
-                              'assets/s cart.png',
-                              height: 100.h,
-                              width: 100.w,
+                              key: const ValueKey('secondImage'),
+                              'assets/Property 1=Variant7 (2).png',
+                              fit: BoxFit.contain,
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                else
-                  // Second image replaces first image in the same place
-                  Container(
-                    height: 184.h,
-                    width: 184.w,
-                    child: Image.asset('assets/Property 1=Variant7.svg'),
                   ),
+                ),
                 SizedBox(height: 32.h),
                 Text(
                   languageService.getString(

@@ -39,7 +39,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   style: GoogleFonts.inter(
                     color: const Color(0xFFF5E9B5),
                     fontSize: 29.sp,
-                
                     fontWeight: FontWeight.w600,
                     height: 1.38,
                   ),
@@ -49,7 +48,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   style: GoogleFonts.inter(
                     color: const Color(0xFFF5E9B5),
                     fontSize: 29.sp,
-             
                     fontWeight: FontWeight.w600,
                     height: 1.38,
                   ),
@@ -60,7 +58,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   style: GoogleFonts.inter(
                     color: const Color(0xB7FCF8E8),
                     fontSize: 17.sp,
-                   
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -85,7 +82,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           style: GoogleFonts.inter(
                             color: const Color(0xFFFCF8E8),
                             fontSize: 18.sp,
-                         
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -106,7 +102,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           style: GoogleFonts.inter(
                             color: const Color(0xD8FCF8E8),
                             fontSize: 13.sp,
-                        
                             fontWeight: FontWeight.w500,
                             letterSpacing: -0.52,
                           ),
@@ -116,7 +111,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           style: GoogleFonts.inter(
                             color: const Color(0xFFFCF8E8),
                             fontSize: 13.sp,
-                       
                             fontWeight: FontWeight.w500,
                             letterSpacing: -0.52,
                           ),
@@ -126,7 +120,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                           style: GoogleFonts.inter(
                             color: Color(0xFFF5E9B5),
                             fontSize: 14.sp,
-                         
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.56,
                           ),
@@ -148,8 +141,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         );
                       },
                       child: Container(
-                        width: 281,
-                        height: 54,
+                        width: 281.w,
+                        height: 54.r,
                         child: Stack(
                           children: [
                             Positioned(
@@ -161,7 +154,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 decoration: ShapeDecoration(
                                   color: Color(0xFFF5E9B5),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
+                                    borderRadius: BorderRadius.circular(25.r),
                                   ),
                                 ),
                               ),
@@ -172,7 +165,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 style: GoogleFonts.poppins(
                                   color: Color(0xFF0A0808),
                                   fontSize: 18.sp,
-                                 
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
