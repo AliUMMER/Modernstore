@@ -371,7 +371,8 @@ class AppLocalizations {
       'select_delivery_address': 'डिलीवरी पता चुनें',
       'choose_address': 'पता चुनें',
       'use_my_current_location': 'मेरा वर्तमान स्थान उपयोग करें',
-      'continue': 'जारी रखें', // Already exists
+      'continue': 'जारी रखें',
+       // Already exists
       'location_services_disabled': 'स्थान सेवाएं अक्षम हैं।',
       'location_permissions_denied': 'स्थान अनुमतियां अस्वीकृत हैं।',
       'location_permissions_permanently_denied':

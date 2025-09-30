@@ -8,7 +8,7 @@ import 'package:modern_grocery/bloc/addDeliveryAddress/add_delivery_address_bloc
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/admin/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
-import 'package:modern_grocery/ui/your_location.dart';
+import 'package:modern_grocery/ui/location/your_location.dart';
 import 'package:provider/provider.dart';
 
 class ManualLocation extends StatefulWidget {

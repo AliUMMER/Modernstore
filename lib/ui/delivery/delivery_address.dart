@@ -6,7 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/addDeliveryAddress/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/services/language_service.dart';
-import 'package:modern_grocery/ui/cart_/cart_two.dart';
+
+import 'package:modern_grocery/ui/cart_/success_cart.dart';
+import 'package:modern_grocery/ui/delivery/delivery_success.dart';
 import 'package:provider/provider.dart';
 
 class DeliveryAddress extends StatefulWidget {
@@ -235,7 +237,8 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                           // Continue with selected address
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => CartTwo()),
+                            MaterialPageRoute(
+                                builder: (context) => DeliverySuccess()),
                           );
                         },
                         child: Text(

@@ -23,6 +23,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         return Scaffold(
           body: Container(
             width: double.infinity,
+            height: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/Onboarding.png'),
@@ -30,9 +31,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                   SizedBox(height: 233.h),
                   Text(
                     AppLocalizations.getString('brand_name', lang),
@@ -113,7 +118,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                   SizedBox(height: 82.h),
-                  Center(
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text.rich(
                       TextSpan(
                         children: [
@@ -159,10 +165,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ),
                         ],
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
               ),
+            ),
             ),
           ),
         );

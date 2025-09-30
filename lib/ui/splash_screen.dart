@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modern_grocery/ui/onboarding_page.dart';
-import 'package:modern_grocery/ui/location_page.dart';
+import 'package:modern_grocery/ui/location/location_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/services/language_service.dart';
-import 'package:modern_grocery/ui/location_page.dart';
+import 'package:modern_grocery/ui/location/location_page.dart';
 import 'package:provider/provider.dart';
 
 class VerifyScreen extends StatefulWidget {

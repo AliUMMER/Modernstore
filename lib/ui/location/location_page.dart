@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/services/language_service.dart';
-import 'package:modern_grocery/ui/delivery/manual_location.dart';
+import 'package:modern_grocery/ui/location/manual_location.dart';
 import 'package:provider/provider.dart';
 
 class LocationPage extends StatefulWidget {

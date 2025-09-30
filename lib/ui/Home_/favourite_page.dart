@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
+import 'package:modern_grocery/ui/cart_/success_cart.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:provider/provider.dart';
@@ -170,7 +171,14 @@ class _FavouritePageState extends State<FavouritePage> {
                           borderRadius: BorderRadius.circular(25.r),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SuccessCart(),
+                          ),
+                        );
+                      },
                       child: Center(
                         child: Text(
                           languageService.getString('add_to_cart'),
