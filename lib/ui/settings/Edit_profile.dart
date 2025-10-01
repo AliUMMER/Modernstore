@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
-import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
+import 'package:modern_grocery/bloc/delivery_/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
+
 import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
 import 'package:modern_grocery/repositery/model/getUserProfile.dart';
 import 'package:modern_grocery/services/language_service.dart';

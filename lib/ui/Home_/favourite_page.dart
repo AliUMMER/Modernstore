@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modern_grocery/bloc/wishList/GetToWishlist_bloc/get_to_wishlist_bloc.dart';
+import 'package:modern_grocery/bloc/wishList/remove%20towish/removetowishlist_bloc.dart';
 import 'package:modern_grocery/repositery/model/getToWishlist_model.dart';
+import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/cart_/success_cart.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
-import 'package:modern_grocery/services/language_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -25,24 +28,24 @@ class _FavouritePageState extends State<FavouritePage> {
   @override
   void initState() {
     super.initState();
-    // Fetch data when the widget initializes
-    // BlocProvider.of<GetToWishlistBloc>(context).add(fetchGetToWishlistEvent());
+
+    BlocProvider.of<GetToWishlistBloc>(context).add(fetchGetToWishlistEvent());
   }
 
-  final List<Map<String, dynamic>> favourites = [
-    {
-      'name': 'Banana',
-      'image': 'assets/Banana.png',
-      'price': 80,
-      'mrp': 100,
-    },
-    {
-      'name': 'Carrot',
-      'image': 'assets/Carrot.png',
-      'price': 80,
-      'mrp': 100,
-    },
-  ];
+  // final List<Map<String, dynamic>> favourites = [
+  //   {
+  //     'name': 'Banana',
+  //     'image': 'assets/Banana.png',
+  //     'price': 80,
+  //     'mrp': 100,
+  //   },
+  //   {
+  //     'name': 'Carrot',
+  //     'image': 'assets/Carrot.png',
+  //     'price': 80,
+  //     'mrp': 100,
+  //   },
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -98,100 +101,91 @@ class _FavouritePageState extends State<FavouritePage> {
                   ),
                 ),
                 SizedBox(height: 16.h),
-                // BlocBuilder<GetToWishlistBloc, GetToWishlistState>(
-                //   builder: (context, state) {
-                //     if (state is GetToWishlistLoading) {
-                //       return Expanded(
-                //         child: Column(
-                //           children: List.generate(5, (index) => buildShimmer()),
-                //         ),
-                //       );
-                //     }
-                //     if (state is GetToWishlistError) {
-                //       return Center(
-                //         child: Text(languageService.getString('error'))
-                //       );
-                //     }
-                //
-                //     if (state is GetToWishlistLoaded) {
-                //       final favourites = BlocProvider.of<GetToWishlistBloc>(context)
-                //           .getToWishlistModel;
-                //
-                //       final wishlistItems = favourites.wishlists ?? [];
-                //
-                //       if (wishlistItems.isEmpty) {
-                //         return Center(
-                //           child: Text(
-                //             languageService.getString('no_favorites'),
-                //             style: GoogleFonts.poppins(color: Colors.white),
-                //           )
-                //         );
-                //       }
-                //
-                //       return Expanded(
-                //         child: ListView.builder(
-                //           itemCount: wishlistItems.length,
-                //           itemBuilder: (context, index) {
-                //             final item = wishlistItems[index];
-                //             return FavouriteItemCard(
-                //               item: item,
-                //               languageService: languageService,
-                //             );
-                //           },
-                //         ),
-                //       );
-                //     }
-                //     return const SizedBox();
-                //   },
-                // ),
-
-                // Temporary static list (remove when BlocBuilder is uncommented)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: favourites.length,
-                    itemBuilder: (context, index) {
-                      final item = favourites[index];
-                      return FavouriteItemCard(
-                        item: item,
-                        languageService: languageService,
-                      );
-                    },
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    height: 40.h,
-                    width: 204.w,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xffF5E9B5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.r),
-                        ),
+                BlocBuilder<GetToWishlistBloc, GetToWishlistState>(
+                    builder: (context, state) {
+                  if (state is GetToWishlistLoading) {
+                    return Expanded(
+                      child: Column(
+                        children: List.generate(5, (index) => buildShimmer()),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SuccessCart(),
-                          ),
-                        );
-                      },
-                      child: Center(
+                    );
+                  }
+                  if (state is GetToWishlistError) {
+                    return Center(
+                        child: Text(languageService.getString('error')));
+                  }
+
+                  if (state is GetToWishlistLoaded) {
+                    final favourites =
+                        BlocProvider.of<GetToWishlistBloc>(context)
+                            .getToWishlistModel;
+                    final wishlistItems = favourites.wishlists ?? [];
+
+                    if (wishlistItems.isEmpty) {
+                      return Center(
                         child: Text(
-                          languageService.getString('add_to_cart'),
-                          style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          languageService.getString('no_favorites'),
+                          style: GoogleFonts.poppins(color: Colors.white),
                         ),
+                      );
+                    }
+
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: wishlistItems.length,
+                              itemBuilder: (context, index) {
+                                final item = wishlistItems[index];
+                                return FavouriteItemCard(
+                                  item: item.toJson(),
+                                  languageService: languageService,
+                                );
+                              },
+                            ),
+                          ),
+
+                          /// ✅ Button only shows if wishlist has items
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: SizedBox(
+                              height: 40.h,
+                              width: 204.w,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xffF5E9B5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const SuccessCart(),
+                                    ),
+                                  );
+                                },
+                                child: Center(
+                                  child: Text(
+                                    languageService.getString('add_to_cart'),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
+                    );
+                  }
+                  return Container();
+                }),
               ],
             ),
           ),
@@ -220,15 +214,20 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    final item = widget.item;
+    final product = widget.item['productId'];
+    if (product == null) {
+      return const SizedBox.shrink();
+    }
+
     final String name =
-        item['name'] ?? widget.languageService.getString('no_name');
-    final String image = item['image'] ?? '';
-    final int basePrice = item['mrp'] ?? 0;
-    final int price = item['price'] ?? 0;
-    final int discountPercentage =
-        basePrice > 0 ? (((basePrice - price) / basePrice) * 100).round() : 0;
-    final int discountedPrice = price;
+        product['name'] ?? widget.languageService.getString('no_name');
+    final List<String> images =
+        product['images'] != null ? List<String>.from(product['images']) : [];
+    final String imageUrl = images.isNotEmpty ? images.first : '';
+    final int basePrice = product['basePrice'] ?? 0;
+    final int discountPercentage = product['discountPercentage'] ?? 0;
+    final int discountedPrice =
+        basePrice - (basePrice * discountPercentage / 100).round();
 
     return GestureDetector(
       child: Container(
@@ -247,30 +246,28 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               width: 121.w,
               height: 113.h,
               decoration: BoxDecoration(
-                color: Color(0xF4CCC9BC),
+                color: const Color(0xF4CCC9BC),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Stack(
                 children: [
-                  image.isNotEmpty
-                      ? Positioned(
-                          top: 25.h,
-                          left: 30.w,
-                          right: 30.w,
-                          bottom: 5.h,
-                          child: Image.asset(
-                            image,
+                  imageUrl.isNotEmpty
+                      ? Center(
+                          child: Image.network(
+                            imageUrl,
                             fit: BoxFit.contain,
-                            width: 10.w,
-                            height: 10.h,
+                            width: 70.w,
+                            height: 70.h,
                             errorBuilder: (context, error, stackTrace) {
                               return const Icon(Icons.image_not_supported,
                                   color: Colors.grey);
                             },
                           ),
                         )
-                      : const Icon(Icons.image_not_supported,
-                          color: Colors.grey),
+                      : const Center(
+                          child: Icon(Icons.image_not_supported,
+                              color: Colors.grey),
+                        ),
                   Positioned(
                     top: 10.h,
                     left: 10.w,
@@ -284,7 +281,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                         height: 22.h,
                         width: 22.w,
                         decoration: BoxDecoration(
-                          color: Color(0xFFEFECE1),
+                          color: const Color(0xFFEFECE1),
                           shape: BoxShape.circle,
                         ),
                         child: isSelected
@@ -301,15 +298,16 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 9.h),
                   Text(
                     name,
                     style: GoogleFonts.poppins(
-                      color: Color(0xFFFCF8E8),
+                      color: const Color(0xFFFCF8E8),
                       fontSize: 18.sp,
                       fontWeight: FontWeight.w500,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 10.h),
                   Row(
@@ -317,19 +315,19 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                       Text(
                         '${widget.languageService.getString('mrp')} ₹$basePrice',
                         style: GoogleFonts.poppins(
-                          color: Color(0xCEB4B2A9),
+                          color: const Color(0xCEB4B2A9),
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
                           decoration: TextDecoration.lineThrough,
-                          decorationColor: Color(0xCEB4B2A9),
+                          decorationColor: const Color(0xCEB4B2A9),
                           decorationThickness: 1.5,
                         ),
                       ),
-                      SizedBox(width: 44.w),
+                      SizedBox(width: 10.w),
                       Text(
                         '₹${discountedPrice.toString()}',
                         style: GoogleFonts.poppins(
-                          color: Color(0xFFFCF8E8),
+                          color: const Color(0xFFFCF8E8),
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                         ),
@@ -340,7 +338,7 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
                     Text(
                       '$discountPercentage% ${widget.languageService.getString('discount_20_off').split(' ').last}',
                       style: GoogleFonts.poppins(
-                        color: Color(0xCE7FFC83),
+                        color: const Color(0xCE7FFC83),
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -349,14 +347,28 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               ),
             ),
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 18.h),
-                CircleAvatar(
-                  radius: 18.r,
-                  backgroundColor: Color(0xFFEFECE1),
-                  child: SvgPicture.asset(
-                    'assets/Icon/trash-2.svg',
-                    fit: BoxFit.contain,
+                InkWell(
+                  onTap: () {
+                    final productId = widget.item['productId']?['_id'];
+                    if (productId != null) {
+                      context
+                          .read<RemovetowishlistBloc>()
+                          .add(fetchRemovetowishlistEvent(productId));
+                      // Future.delayed(const Duration(milliseconds: 300), () {
+                      //   context.read<GetToWishlistBloc>().add(fetchGetToWishlistEvent());
+                      // });
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 18.r,
+                    backgroundColor: const Color(0xFFEFECE1),
+                    child: SvgPicture.asset(
+                      'assets/Icon/trash-2.svg',
+                      width: 20.w,
+                      height: 20.h,
+                    ),
                   ),
                 ),
               ],

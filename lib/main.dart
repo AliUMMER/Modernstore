@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
-import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
-import 'package:modern_grocery/bloc/GetAllBannerBloc/get_all_banner_bloc.dart';
-import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/GetAllUserCart/get_all_user_cart_bloc.dart';
-import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
-import 'package:modern_grocery/bloc/GetCategoryProducts/get_category_products_bloc.dart';
-import 'package:modern_grocery/bloc/GetToWishlist_bloc/get_to_wishlist_bloc.dart';
-import 'package:modern_grocery/bloc/addCart_bloc/add_cart_bloc.dart';
-import 'package:modern_grocery/bloc/addDeliveryAddress/add_delivery_address_bloc.dart';
-import 'package:modern_grocery/bloc/createCategory/create_category_bloc.dart';
-import 'package:modern_grocery/bloc/createProduct/create_product_bloc.dart';
-import 'package:modern_grocery/bloc/get_all_product/get_all_product_bloc.dart';
-import 'package:modern_grocery/bloc/login/login_bloc.dart';
-import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
-import 'package:modern_grocery/bloc/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
-import 'package:modern_grocery/bloc/userprofile/bloc/userprofile_bloc.dart';
-import 'package:modern_grocery/repositery/api/Cart/addCart_api.dart';
-import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart';
-import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
+import 'package:modern_grocery/bloc/wishList/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
+import 'package:modern_grocery/bloc/Banner_/CreateBanner_bloc/create_banner_bloc.dart';
+import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
 
-import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
-import 'package:modern_grocery/ui/Home_/home_page.dart';
-import 'package:modern_grocery/ui/splash_screen.dart';
-import 'package:modern_grocery/services/language_service.dart';
+import 'package:modern_grocery/bloc/cart_/GetAllUserCart/get_all_user_cart_bloc.dart';
+import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
+import 'package:modern_grocery/bloc/Categories_/GetCategoryProducts/get_category_products_bloc.dart';
+import 'package:modern_grocery/bloc/wishList/GetToWishlist_bloc/get_to_wishlist_bloc.dart';
+import 'package:modern_grocery/bloc/cart_/addCart_bloc/add_cart_bloc.dart';
+import 'package:modern_grocery/bloc/delivery_/addDeliveryAddress/add_delivery_address_bloc.dart';
+import 'package:modern_grocery/bloc/Categories_/createCategory/create_category_bloc.dart';
+import 'package:modern_grocery/bloc/Product_/createProduct/create_product_bloc.dart';
+import 'package:modern_grocery/bloc/Product_/get_all_product/get_all_product_bloc.dart';
+import 'package:modern_grocery/bloc/login/login_bloc.dart';
+import 'package:modern_grocery/bloc/Product_/offerproduct/offerproduct_bloc.dart';
+import 'package:modern_grocery/bloc/wishList/remove%20towish/removetowishlist_bloc.dart';
+import 'package:modern_grocery/bloc/delivery_/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
+
 import 'package:modern_grocery/localization/app_localizations_delegate.dart';
+import 'package:modern_grocery/repositery/api/Cart/addCart_api.dart';
+import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart';
+import 'package:modern_grocery/repositery/api/api_client.dart';
+import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
+import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
+import 'package:modern_grocery/services/language_service.dart';
+import 'package:modern_grocery/ui/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 //String basePath = "http://192.168.223.203:4055/api";
 // String basePath = "http://69.62.79.175:4735/api";
@@ -109,6 +110,9 @@ class MyApp extends StatelessWidget {
                   ),
                   BlocProvider(
                     create: (context) => GetAllUserCartBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => RemovetowishlistBloc(),
                   ),
                 ],
                 child: MaterialApp(

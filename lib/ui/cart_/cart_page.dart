@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/bloc/GetAllUserCart/get_all_user_cart_bloc.dart';
+import 'package:modern_grocery/bloc/cart_/GetAllUserCart/get_all_user_cart_bloc.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/delivery/delivery_address.dart';
@@ -22,23 +22,23 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     // Trigger the API call when the page loads
-    // context.read<GetAllUserCartBloc>().add(fetchGetAllUserCartEvent());
+    context.read<GetAllUserCartBloc>().add(fetchGetAllUserCartEvent());
   }
 
-  final List<Map<String, dynamic>> favourites = [
-    {
-      'name': 'Banana',
-      'image': 'assets/Banana.png',
-      'price': 80,
-      'mrp': 100,
-    },
-    {
-      'name': 'Carrot',
-      'image': 'assets/Carrot.png',
-      'price': 80,
-      'mrp': 100,
-    },
-  ];
+  // final List<Map<String, dynamic>> favourites = [
+  //   {
+  //     'name': 'Banana',
+  //     'image': 'assets/Banana.png',
+  //     'price': 80,
+  //     'mrp': 100,
+  //   },
+  //   {
+  //     'name': 'Carrot',
+  //     'image': 'assets/Carrot.png',
+  //     'price': 80,
+  //     'mrp': 100,
+  //   },
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -79,66 +79,70 @@ class _CartPageState extends State<CartPage> {
                   ),
                   SizedBox(height: 63.h),
 
-                  // BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
-                  //   builder: (context, state) {
-                  //     if (state is GetAllUserCartLoading) {
-                  //       return const Center(child: CircularProgressIndicator());
-                  //     } else if (state is GetAllUserCartLoaded) {
-                  //       final cartModel =
-                  //           context.read<GetAllUserCartBloc>().getAllUserCartModel;
-                  //
-                  //       if (cartModel == null ||
-                  //           cartModel.data == null ||
-                  //           cartModel.data?.allCartItems == null ||
-                  //           cartModel.data!.allCartItems!.isEmpty) {
-                  //         return Center(
-                  //           child: Text(
-                  //             languageService.getString('cart_empty'),
-                  //             style: TextStyle(color: Colors.white70, fontSize: 18),
-                  //           ),
-                  //         );
-                  //       }
-                  //
-                  //       final cartItems = cartModel.data?.allCartItems!;
-                  //       return SizedBox(
-                  //         height: 120 * cartItems!.length.toDouble(),
-                  //         child: Column(
-                  //           children: cartItems.map((item) {
-                  //             return FavouriteItemCard(
-                  //               item: {
-                  //                 'name': item.productId ?? 'Unknown Item',
-                  //                 'image': item.quantity ?? 'assets/placeholder.png',
-                  //                 'price': item.unit ?? 0.0,
-                  //                 'mrp': item.quantity ?? item.totalAmount ?? 0.0,
-                  //               },
-                  //               languageService: languageService,
-                  //             );
-                  //           }).toList(),
-                  //         ),
-                  //       );
-                  //     } else if (state is GetAllUserCartError) {
-                  //       return Center(
-                  //         child: Text(
-                  //           languageService.getString('error_loading_cart'),
-                  //           style: TextStyle(color: Colors.red, fontSize: 18),
-                  //         ),
-                  //       );
-                  //     }
-                  //     return const SizedBox();
-                  //   },
-                  // ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: favourites.length,
-                    itemBuilder: (context, index) {
-                      final item = favourites[index];
-                      return FavouriteItemCard(
-                        item: item,
-                        languageService: languageService,
-                      );
+                  BlocBuilder<GetAllUserCartBloc, GetAllUserCartState>(
+                    builder: (context, state) {
+                      if (state is GetAllUserCartLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is GetAllUserCartLoaded) {
+                        final cartModel = context
+                            .read<GetAllUserCartBloc>()
+                            .getAllUserCartModel;
+
+                        if (cartModel == null ||
+                            cartModel.data == null ||
+                            cartModel.data?.allCartItems == null ||
+                            cartModel.data!.allCartItems!.isEmpty) {
+                          return Center(
+                            child: Text(
+                              languageService.getString('cart_empty'),
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 18),
+                            ),
+                          );
+                        }
+
+                        final cartItems = cartModel.data?.allCartItems!;
+                        return SizedBox(
+                          height: 120 * cartItems!.length.toDouble(),
+                          child: Column(
+                            children: cartItems.map((item) {
+                              return FavouriteItemCard(
+                                item: {
+                                  'name': item.productId.toString(),
+                                  'image':
+                                      item.quantity ?? 'assets/placeholder.png',
+                                  'price': item.unit ?? "",
+                                  'mrp':
+                                      item.quantity ?? item.totalAmount ?? ""
+                                },
+                                languageService: languageService,
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      } else if (state is GetAllUserCartError) {
+                        return Center(
+                          child: Text(
+                            languageService.getString('error_loading_cart'),
+                            style: TextStyle(color: Colors.red, fontSize: 18),
+                          ),
+                        );
+                      }
+                      return const SizedBox();
                     },
                   ),
+                  // ListView.builder(
+                  //   shrinkWrap: true,
+                  //   physics: const NeverScrollableScrollPhysics(),
+                  //   itemCount: favourites.length,
+                  //   itemBuilder: (context, index) {
+                  //     final item = favourites[index];
+                  //     return FavouriteItemCard(
+                  //       item: item,
+                  //       languageService: languageService,
+                  //     );
+                  //   },
+                  // ),
                   _buildCheckoutSection(languageService),
                 ],
               ),
@@ -216,8 +220,8 @@ class _CartPageState extends State<CartPage> {
                 children: [
                   _buildPriceRow(languageService.getString('price'),
                       '₹${totalPrice.toStringAsFixed(2)}', languageService),
-                  _buildPriceRow(
-                      languageService.getString('discount'), '₹5.00', languageService),
+                  _buildPriceRow(languageService.getString('discount'), '₹5.00',
+                      languageService),
                   _buildPriceRow(languageService.getString('delivery_charge'),
                       '₹20.00', languageService),
                   Divider(color: Colors.white70, thickness: 1.h),
@@ -274,7 +278,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildPriceRow(String label, String price, LanguageService languageService,
+  Widget _buildPriceRow(
+      String label, String price, LanguageService languageService,
       {bool isBold = false}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -393,13 +398,21 @@ class _FavouriteItemCardState extends State<FavouriteItemCard> {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: widget.item['image'] != null
-                ? Image.asset(
-                    widget.item['image'] as String,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Image.asset(
-                        'assets/placeholder.png',
-                        fit: BoxFit.contain),
-                  )
+                ? (widget.item['image'].toString().startsWith('http')
+                    ? Image.network(
+                        widget.item['image'],
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset('assets/placeholder.png',
+                                fit: BoxFit.contain),
+                      )
+                    : Image.asset(
+                        widget.item['image'],
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset('assets/placeholder.png',
+                                fit: BoxFit.contain),
+                      ))
                 : Image.asset('assets/placeholder.png', fit: BoxFit.contain),
           ),
           SizedBox(width: 18.w),

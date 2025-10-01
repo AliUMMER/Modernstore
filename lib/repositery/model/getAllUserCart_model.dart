@@ -29,14 +29,14 @@ class GetAllUserCartModel {
 }
 
 class Data {
-  int? totalCartLength;
+  String? totalCartLength;
   double? totalCartAmount;
   List<AllCartItems>? allCartItems;
 
   Data({this.totalCartLength, this.totalCartAmount, this.allCartItems});
 
   Data.fromJson(Map<String, dynamic> json) {
-    if(json["totalCartLength"] is int) {
+    if(json["totalCartLength"] is String) {
       totalCartLength = json["totalCartLength"];
     }
     if(json["totalCartAmount"] is double) {
@@ -66,12 +66,12 @@ class AllCartItems {
   String? id;
   String? userId;
   ProductId? productId;
-  int? quantity;
+  String? quantity;
   String? unit;
   double? totalAmount;
   String? createdAt;
   String? updatedAt;
-  int? v;
+  String? v;
 
   AllCartItems({this.id, this.userId, this.productId, this.quantity, this.unit, this.totalAmount, this.createdAt, this.updatedAt, this.v});
 
@@ -85,7 +85,7 @@ class AllCartItems {
     if(json["productId"] is Map) {
       productId = json["productId"] == null ? null : ProductId.fromJson(json["productId"]);
     }
-    if(json["quantity"] is int) {
+    if(json["quantity"] is String) {
       quantity = json["quantity"];
     }
     if(json["unit"] is String) {
@@ -100,7 +100,7 @@ class AllCartItems {
     if(json["updatedAt"] is String) {
       updatedAt = json["updatedAt"];
     }
-    if(json["__v"] is int) {
+    if(json["__v"] is String) {
       v = json["__v"];
     }
   }

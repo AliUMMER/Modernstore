@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
+
 import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/services/language_service.dart'; // Add this import
 import 'package:modern_grocery/ui/products/fruites_page.dart';

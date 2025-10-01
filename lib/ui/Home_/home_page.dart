@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/bloc/GetAllBannerBloc/get_all_banner_bloc.dart';
-import 'package:modern_grocery/bloc/GetAllCategories/bloc/get_all_categories_bloc.dart';
-import 'package:modern_grocery/bloc/GetCategoryProducts/get_category_products_bloc.dart';
-import 'package:modern_grocery/bloc/offerproduct/offerproduct_bloc.dart';
+import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
+
+import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/Categories_/GetCategoryProducts/get_category_products_bloc.dart';
+import 'package:modern_grocery/bloc/Product_/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/localization/app_localizations.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/products/fruites_page.dart';

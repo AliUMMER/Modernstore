@@ -78,7 +78,8 @@ class _FruitesPageState extends State<FruitesPage> {
             final fruit = fruits[index];
             return FruitCard(
               fruit: fruit,
-              languageService: languageService, // Pass languageService to FruitCard
+              languageService:
+                  languageService, // Pass languageService to FruitCard
             );
           },
         ),
@@ -135,7 +136,8 @@ class FruitCard extends StatelessWidget {
 
             // **Fruit Name**
             Text(
-              languageService.getString(fruit['name'].toLowerCase()) ?? fruit['name'], // Localized fruit name
+              languageService.getString(fruit['name'].toLowerCase()) ??
+                  fruit['name'], // Localized fruit name
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 16.sp,
@@ -169,7 +171,8 @@ class FruitCard extends StatelessWidget {
 
             // **Discount**
             Text(
-              languageService.getString('discount_20_off'), // Localized discount text
+              languageService
+                  .getString('discount_20_off'), // Localized discount text
               style: GoogleFonts.poppins(
                 color: Colors.green,
                 fontSize: 14.sp,
@@ -185,7 +188,8 @@ class FruitCard extends StatelessWidget {
                 // You can add a localized toast message here if needed
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(languageService.getString('item_added_to_cart')),
+                    content:
+                        Text(languageService.getString('item_added_to_cart')),
                   ),
                 );
               },

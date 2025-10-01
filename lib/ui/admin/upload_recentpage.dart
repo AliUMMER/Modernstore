@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:modern_grocery/bloc/CreateBanner_bloc/create_banner_bloc.dart';
+import 'package:modern_grocery/bloc/Banner_/CreateBanner_bloc/create_banner_bloc.dart';
 import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
 

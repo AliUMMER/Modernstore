@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/bloc/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
+import 'package:modern_grocery/bloc/wishList/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
-import 'package:modern_grocery/bloc/addCart_bloc/add_cart_bloc.dart';
+import 'package:modern_grocery/bloc/cart_/addCart_bloc/add_cart_bloc.dart';
 import 'package:modern_grocery/localization/app_localizations.dart';
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/cart_/success_cart.dart';
@@ -27,6 +27,8 @@ class _ProductDetailsState extends State<ProductDetails> {
   void initState() {
     super.initState();
     context.read<GetbyidBloc>().add(FetchGetbyid(widget.productId));
+    BlocProvider.of<AddToWishlistBloc>(context)
+        .add(fetchAddToWishlistEvent(widget.productId));
   }
 
   Widget _quantityButton(String text, VoidCallback onPressed) {
@@ -54,7 +56,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         final lang = languageService.currentLanguage;
-        
+
         return BlocListener<AddCartBloc, AddCartState>(
           listener: (context, state) {
             if (state is AddCartLoaded) {
@@ -65,7 +67,8 @@ class _ProductDetailsState extends State<ProductDetails> {
             } else if (state is AddCartError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(AppLocalizations.getString('failed_add_to_cart', lang)),
+                  content: Text(
+                      AppLocalizations.getString('failed_add_to_cart', lang)),
                   backgroundColor: Colors.red,
                 ),
               );
@@ -85,7 +88,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                   return Scaffold(
                     body: Center(
                       child: Text(
-                        AppLocalizations.getString('product_data_unavailable', lang),
+                        AppLocalizations.getString(
+                            'product_data_unavailable', lang),
                         style: GoogleFonts.poppins(color: Colors.white),
                       ),
                     ),
@@ -102,10 +106,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                           Container(
                             width: 1.sw,
                             height: 0.45.sh,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(25),
-                                bottomRight: Radius.circular(25),
+                                bottomLeft: Radius.circular(25.r),
+                                bottomRight: Radius.circular(25.r),
                               ),
                               color: Color(0xffDDDACB),
                             ),
@@ -113,15 +117,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                               children: [
                                 SizedBox(height: 20.h),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(left: 16.w),
-                                      child: const BackButton(color: Colors.black),
+                                      child:
+                                          const BackButton(color: Colors.black),
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(right: 16.w),
-                                      child: const ImageIcon(
+                                      child: ImageIcon(
                                           AssetImage('assets/Vector.png')),
                                     ),
                                   ],
@@ -136,7 +142,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           ? product.data!.images.first
                                           : 'https://modern-store-backend.onrender.com/image/uploads/products/placeholder.png',
                                       fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) =>
+                                      errorBuilder: (context, error,
+                                              stackTrace) =>
                                           Image.asset('assets/placeholder.png'),
                                     ),
                                   ),
@@ -154,7 +161,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               children: [
                                 // Title & Wishlist
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: Text(
@@ -166,17 +174,25 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         ),
                                       ),
                                     ),
-                                    BlocListener<AddToWishlistBloc, AddToWishlistState>(
+                                    BlocListener<AddToWishlistBloc,
+                                        AddToWishlistState>(
                                       listener: (context, state) {
                                         if (state is AddToWishlistLoaded) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             SnackBar(
                                               content: Text(
                                                 product.data!.inWishlist
-                                                    ? AppLocalizations.getString('added_to_wishlist', lang)
-                                                    : AppLocalizations.getString('removed_from_wishlist', lang),
+                                                    ? AppLocalizations
+                                                        .getString(
+                                                            'added_to_wishlist',
+                                                            lang)
+                                                    : AppLocalizations.getString(
+                                                        'removed_from_wishlist',
+                                                        lang),
                                               ),
-                                              duration: const Duration(seconds: 2),
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             ),
                                           );
                                         }
@@ -186,15 +202,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         builder: (context, state) {
                                           return IconButton(
                                             onPressed: () {
-                                              context.read<AddToWishlistBloc>().add(
-                                                  fetchAddToWishlistEvent(
+                                              context
+                                                  .read<AddToWishlistBloc>()
+                                                  .add(fetchAddToWishlistEvent(
                                                       widget.productId));
                                             },
                                             icon: Icon(
                                               product.data!.inWishlist
                                                   ? Icons.favorite
                                                   : Icons.favorite_outline,
-                                              color: const Color(0xF2FCF8E8),
+                                              color: product.data!.inWishlist
+                                                  ? Colors.red
+                                                  : const Color(0xF2FCF8E8),
                                               size: 24.sp,
                                             ),
                                           );
@@ -207,7 +226,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                                 // Price & Quantity
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       '₹${product.data!.basePrice.toStringAsFixed(2)}/${product.data!.unit.toLowerCase()}',
@@ -251,7 +271,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                                 // Details
                                 Text(
-                                  AppLocalizations.getString('product_detail', lang),
+                                  AppLocalizations.getString(
+                                      'product_detail', lang),
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 18.sp,
@@ -283,10 +304,12 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                                 // Review
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      AppLocalizations.getString('review', lang),
+                                      AppLocalizations.getString(
+                                          'review', lang),
                                       style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontSize: 18.sp,
@@ -307,12 +330,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ),
                                       onRatingUpdate: (rating) {
                                         setState(() => _rating = rating);
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           SnackBar(
                                             content: Text(
-                                              AppLocalizations.getString('rating_updated', lang),
+                                              AppLocalizations.getString(
+                                                  'rating_updated', lang),
                                             ),
-                                            duration: const Duration(seconds: 1),
+                                            duration:
+                                                const Duration(seconds: 1),
                                           ),
                                         );
                                       },
@@ -327,7 +353,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     builder: (context, state) {
                                       return ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xFFF4E289),
+                                          backgroundColor:
+                                              const Color(0xFFF4E289),
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 40.w,
                                             vertical: 12.h,
@@ -343,7 +370,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             : () {
                                                 context.read<AddCartBloc>().add(
                                                       FetchAddCart(
-                                                          widget.productId, count),
+                                                          widget.productId,
+                                                          count),
                                                     );
                                               },
                                         child: state is AddCartLoading
@@ -354,12 +382,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                     const CircularProgressIndicator(
                                                   strokeWidth: 2,
                                                   valueColor:
-                                                      AlwaysStoppedAnimation<Color>(
-                                                          Colors.black),
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(Colors.black),
                                                 ),
                                               )
                                             : Text(
-                                                AppLocalizations.getString('add_to_cart', lang),
+                                                AppLocalizations.getString(
+                                                    'add_to_cart', lang),
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 16.sp,
                                                   color: Colors.black,

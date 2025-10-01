@@ -22,7 +22,7 @@ class GetAllUserCartBloc
         print(e);
         emit(GetAllUserCartError());
       }
-      // TODO: implement event handler
+      
     });
   }
 }
