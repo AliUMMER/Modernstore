@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:modern_grocery/bloc/login/login_bloc.dart';
+import 'package:modern_grocery/bloc/Login_/login/login_bloc.dart';
 
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/auth_/verify_screen.dart';
@@ -22,6 +22,15 @@ class _EnterScreenState extends State<EnterScreen> {
   String selectedCountryCode = '+91';
   String selectedCountryFlag = '🇮🇳';
 
+  void _handleLogin(BuildContext context) {
+    final fullPhoneNumber = phoneController.text.trim();
+    print('Logging in with $fullPhoneNumber');
+
+    BlocProvider.of<LoginBloc>(context).add(fetchlogin(
+      phoneNumber: fullPhoneNumber,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,12 +43,17 @@ class _EnterScreenState extends State<EnterScreen> {
             if (state is loginBlocLoaded) {
               final token = state.login.accessToken;
               final prefs = await SharedPreferences.getInstance();
-              await prefs.setString('Token', token!);
-              print('Token saved: $token');
+              await prefs.setString('token', token);
+              print('token saved: $token');
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => VerifyScreen()),
+                MaterialPageRoute(
+                    builder: (context) => VerifyScreen(
+                          phoneNumber:
+                              '${selectedCountryCode}${phoneController.text}',
+                          phoneNumberForApi: phoneController.text.trim(),
+                        )),
               );
             } else if (state is loginBlocError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +98,7 @@ class _EnterScreenState extends State<EnterScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const LocationPage(),
+                                builder: (context) => LocationPage(),
                               ),
                             );
                           },
@@ -301,7 +315,7 @@ class _EnterScreenState extends State<EnterScreen> {
                                       .hasMatch(value)) {
                                     return "Enter valid 10-digit number";
                                   }
-                                  return null; 
+                                  return null;
                                 },
                               ),
                             ),
@@ -326,13 +340,7 @@ class _EnterScreenState extends State<EnterScreen> {
                               );
                               return;
                             }
-
-                            final fullPhoneNumber =
-                                '$selectedCountryCode${phoneController.text}';
-                            print('Logging in with $fullPhoneNumber');
-
-                            BlocProvider.of<LoginBloc>(context)
-                                .add(fetchlogin());
+                            _handleLogin(context);
                           },
                           child: Container(
                             width: 0.7 * screenWidth,

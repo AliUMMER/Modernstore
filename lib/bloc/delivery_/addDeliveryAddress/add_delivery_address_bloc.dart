@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:modern_grocery/repositery/api/Delivery/addDeliveryAddress_api.dart';
-import 'package:modern_grocery/repositery/model/addDeliveryAddress.dart';
+import 'package:modern_grocery/repositery/model/user/addDeliveryAddress.dart';
 
 part 'add_delivery_address_event.dart';
 part 'add_delivery_address_state.dart';

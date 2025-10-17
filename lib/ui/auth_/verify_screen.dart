@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,16 +8,54 @@ import 'package:modern_grocery/ui/location/location_page.dart';
 import 'package:provider/provider.dart';
 
 class VerifyScreen extends StatefulWidget {
-  const VerifyScreen({super.key});
+  final String phoneNumber;
+  final String phoneNumberForApi;
+
+  const VerifyScreen(
+      {super.key, required this.phoneNumber, required this.phoneNumberForApi});
 
   @override
   State<VerifyScreen> createState() => _VerifyScreenState();
 }
 
 class _VerifyScreenState extends State<VerifyScreen> {
-  // Assuming phoneNumber is passed from previous screen or fetched
-  // For now, hardcoded as in your original code
-  final String phoneNumber = '+91 55 678 34578';
+  final List<TextEditingController> otpController = List.generate(
+    5,
+    (index) => TextEditingController(),
+  );
+  final List<FocusNode> focusNodes = List.generate(
+    5,
+    (index) => FocusNode(),
+  );
+
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNodes[0].requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    for (var controller in otpController) {
+      controller.dispose();
+    }
+    for (var node in focusNodes) {
+      node.dispose();
+    }
+
+    String getOtp() {
+      return otpController
+          .map(
+            (contro) => contro.text,
+          )
+          .join();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +76,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 SizedBox(height: 150.h),
                 Text(
                   languageService.getString('enter_verification_code'),
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFFF5E9B5),
                     fontSize: 29.sp,
                     fontWeight: FontWeight.w600,
@@ -45,7 +85,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 ),
                 Text(
                   languageService.getString('sent_on_whatsapp'),
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xFFF5E9B5),
                     fontSize: 29.sp,
                     fontWeight: FontWeight.w600,
@@ -55,7 +95,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 SizedBox(height: 25.h),
                 Text(
                   '${languageService.getString('sent_to')} $phoneNumber',
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.poppins(
                     color: const Color(0xB7FCF8E8),
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w400,
@@ -79,7 +119,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       child: Center(
                         child: Text(
                           '4', // This should be replaced by user input later
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFFFCF8E8),
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
@@ -99,7 +139,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       children: [
                         TextSpan(
                           text: languageService.getString('didnt_receive_code'),
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xD8FCF8E8),
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -108,7 +148,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         ),
                         TextSpan(
                           text: '  ',
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: const Color(0xFFFCF8E8),
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
@@ -117,7 +157,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         ),
                         TextSpan(
                           text: languageService.getString('resend_code'),
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: Color(0xFFF5E9B5),
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w700,

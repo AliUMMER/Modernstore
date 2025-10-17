@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:modern_grocery/repositery/api/getUserProfile_api.dart';
-import 'package:modern_grocery/repositery/model/getUserProfile.dart';
+import 'package:modern_grocery/repositery/api/Delivery/getUserProfile_api.dart';
+import 'package:modern_grocery/repositery/model/user/getUserProfile.dart';
 
 part 'userprofile_event.dart';
 part 'userprofile_state.dart';
 
 class UserprofileBloc extends Bloc<UserprofileEvent, UserprofileState> {
-  GetuserprofileApi getuserprofileApi = GetuserprofileApi();
+  GetUserProfileApi getuserprofileApi = GetUserProfileApi();
 
   late GetUserProfile getUserProfile;
 
@@ -16,14 +16,15 @@ class UserprofileBloc extends Bloc<UserprofileEvent, UserprofileState> {
       emit(Userprofileloading());
       try {
         getUserProfile = await getuserprofileApi.getGetUserProfile();
-
         emit(Userprofileloaded());
       } catch (e) {
-        print(e);
+        print('UserProfile Error: $e');
+     
+        if (e.toString().contains('401') || e.toString().contains('Invalid token')) {
+          print('Token is invalid or expired');
+        }
         emit(UserprofileError());
       }
-
-      // TODO: implement event handler
     });
   }
 }

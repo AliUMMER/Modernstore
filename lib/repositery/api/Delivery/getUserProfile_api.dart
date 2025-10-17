@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/user/getUserDlvAddresses.dart';
+import 'package:modern_grocery/repositery/model/user/getUserProfile.dart';
 
-class GetUserDeliveryAddressesApi {
+class GetUserProfileApi {
   final ApiClient apiClient = ApiClient();
 
-  Future<GetUserDlvAddresses> getGetUserDlvAddresses() async {
-    const String endpoint = '/user/get-delivery-addresses';
+  Future<GetUserProfile> getGetUserProfile() async {
+    const String endpoint = '/user/profile';
 
     try {
       // GET request — no body needed
@@ -15,13 +15,13 @@ class GetUserDeliveryAddressesApi {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonMap = jsonDecode(response.body);
-        return GetUserDlvAddresses.fromJson(jsonMap);
+        return GetUserProfile.fromJson(jsonMap);
       } else {
         throw Exception(
-            'Failed to load delivery addresses (Status: ${response.statusCode})');
+            'Failed to load user profile (Status: ${response.statusCode})');
       }
     } catch (e) {
-      print('❌ GetUserDeliveryAddresses API Error: $e');
+      print('❌ GetUserProfile API Error: $e');
       rethrow;
     }
   }

@@ -7,8 +7,10 @@ class LoginInitial extends LoginState {}
 
 class loginBlocLoading extends LoginState {}
 
-class loginBlocLoaded extends LoginState {
-  late Login login;
+final class OTPSentSuccess extends LoginState {}
+
+final class loginBlocLoaded extends LoginState {
+  final Loginmodel login;
   loginBlocLoaded({required this.login});
 }
 

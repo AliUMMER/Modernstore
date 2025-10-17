@@ -1,34 +1,30 @@
 // To parse this JSON data, do
 //
-//     final loginmodel = loginmodelFromJson(jsonString);
+//     final getUserProfile = getUserProfileFromJson(jsonString);
 
 import 'dart:convert';
 
-Loginmodel loginmodelFromJson(String str) => Loginmodel.fromJson(json.decode(str));
+GetUserProfile getUserProfileFromJson(String str) => GetUserProfile.fromJson(json.decode(str));
 
-String loginmodelToJson(Loginmodel data) => json.encode(data.toJson());
+String getUserProfileToJson(GetUserProfile data) => json.encode(data.toJson());
 
-class Loginmodel {
+class GetUserProfile {
     bool success;
     User user;
-    String accessToken;
 
-    Loginmodel({
+    GetUserProfile({
         required this.success,
         required this.user,
-        required this.accessToken,
     });
 
-    factory Loginmodel.fromJson(Map<String, dynamic> json) => Loginmodel(
+    factory GetUserProfile.fromJson(Map<String, dynamic> json) => GetUserProfile(
         success: json["success"],
         user: User.fromJson(json["user"]),
-        accessToken: json["accessToken"],
     );
 
     Map<String, dynamic> toJson() => {
         "success": success,
         "user": user.toJson(),
-        "accessToken": accessToken,
     };
 }
 

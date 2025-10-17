@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/addDeliveryAddress.dart';
+import 'package:modern_grocery/repositery/model/user/addDeliveryAddress.dart';
 
 class AddDeliveryAddressApi {
   ApiClient apiClient = ApiClient();

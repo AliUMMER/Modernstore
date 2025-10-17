@@ -6,8 +6,8 @@ import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:modern_grocery/bloc/delivery_/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
 
-import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
-import 'package:modern_grocery/repositery/model/getUserProfile.dart';
+import 'package:modern_grocery/repositery/model/user/getUserDlvAddresses.dart';
+import 'package:modern_grocery/repositery/model/user/getUserProfile.dart';
 import 'package:modern_grocery/services/language_service.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -45,20 +45,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void _initializeControllers() {
-    nameController =
-        TextEditingController(text: _profileData?.user?.name ?? '');
+    nameController = TextEditingController(text: _profileData?.user.name ?? '');
     phoneController =
-        TextEditingController(text: _profileData?.user?.phoneNumber ?? '');
+        TextEditingController(text: _profileData?.user.phoneNumber ?? '');
 
-    String deliveryAddress = '';
+    String? deliveryAddress = '';
     if (_addressData != null &&
         _addressData!.data != null &&
-        _addressData!.data!.isNotEmpty) {
-      deliveryAddress = _addressData!.data![0].address ?? '';
+        _addressData!.data.isNotEmpty) {
+      deliveryAddress = addressValues.reverse[_addressData!.data.first.address];
     }
     addressController = TextEditingController(text: deliveryAddress);
 
     _controllersInitialized = true;
+  }
+
+  void _saveChanges() {
+    // final updatedName = nameController.text.trim();
+    // final updatedPhone = phoneController.text.trim();
+    // final updatedAddress = addressController.text.trim();
+    // if (updatedName.isNotEmpty && updatedPhone.isNotEmpty) {
+    //   BlocProvider.of<UserprofileBloc>(context).add(
+    //     UpdateUserProfileEvent(
+    //       name: updatedName,
+    //       phoneNumber: updatedPhone,
+    //     ),
+    //   );
+
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Profile updated successfully')),
+    //   );
+    //   Navigator.pop(context);
+    // }
   }
 
   @override
@@ -79,7 +97,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 body: Center(
                   child: Text(
                     languageService.getString('profile_unavailable'),
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 16.sp,
                     ),
@@ -106,7 +124,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       body: Center(
                         child: Text(
                           languageService.getString('address_unavailable'),
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 16.sp,
                           ),
@@ -115,9 +133,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     );
                   }
                   if (addressState is UserdeliveryaddressLoaded) {
-                    _addressData = BlocProvider.of<UserdeliveryaddressBloc>(
-                            context)
-                        .getUserDlvAddresses;
+                    _addressData =
+                        BlocProvider.of<UserdeliveryaddressBloc>(context)
+                            .getUserDlvAddresses;
 
                     if (!_controllersInitialized) {
                       _initializeControllers();
@@ -131,7 +149,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         leading: const BackButton(color: Colors.white),
                         title: Text(
                           languageService.getString('edit_profile'),
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
@@ -146,27 +164,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           children: [
                             SizedBox(height: 20.h),
                             Stack(
-                              alignment: Alignment.bottomRight,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.all(4.w),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 16.sp,
-                                    color: Colors.black,
+                                CircleAvatar(
+                                  radius: 40.r,
+                                  backgroundImage:
+                                      _profileData?.user.profileImage != null
+                                          ? NetworkImage(
+                                              _profileData!.user.profileImage)
+                                          : null,
+                                  backgroundColor: Colors.grey[600],
+                                  child: _profileData?.user.profileImage == null
+                                      ? Icon(
+                                          Icons.person,
+                                          size: 40.sp,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: EdgeInsets.all(4.w),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 16.sp,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 10.h),
                             Text(
-                              _profileData?.user?.name ??
+                              _profileData?.user.name ??
                                   languageService.getString('user_name'),
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.poppins(
                                 fontSize: 18.sp,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -176,8 +213,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             Container(
                               padding: EdgeInsets.all(16.w),
                               decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: const Color(0xffC4C1B4)),
+                                border:
+                                    Border.all(color: const Color(0xffC4C1B4)),
                                 borderRadius: BorderRadius.circular(12.r),
                               ),
                               child: Column(
@@ -185,7 +222,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 children: [
                                   Text(
                                     languageService.getString('name'),
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w400,
@@ -197,7 +234,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   SizedBox(height: 20.h),
                                   Text(
                                     languageService.getString('phone_number'),
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w400,
@@ -209,7 +246,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   SizedBox(height: 20.h),
                                   Text(
                                     languageService.getString('address'),
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w400,
@@ -224,9 +261,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     width: double.infinity,
                                     height: 50.h,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        // Add save functionality here
-                                      },
+                                      onPressed: _saveChanges,
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor:
                                             const Color(0xFFFCF8E8),
@@ -238,7 +273,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: Text(
                                         languageService
                                             .getString('save_changes'),
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.poppins(
                                           color: const Color(0xFF0A0909),
                                           fontSize: 16.sp,
                                           fontWeight: FontWeight.w500,
@@ -281,14 +316,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: TextField(
               controller: controller,
               maxLines: maxLines,
-              style: GoogleFonts.inter(
+              style: GoogleFonts.poppins(
                 color: const Color(0xffC4C1B4),
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
               ),
               decoration: InputDecoration(
                 hintText: '',
-                hintStyle: GoogleFonts.inter(
+                hintStyle: GoogleFonts.poppins(
                   color: Colors.white54,
                   fontSize: 14.sp,
                 ),

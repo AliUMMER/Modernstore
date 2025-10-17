@@ -10,82 +10,68 @@ class ApiClient {
   Future<http.Response> invokeAPI(
       String path, String method, Object? body) async {
     final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('Token');
+    final token = preferences.getString('token');
 
-    // ✅ FIX 1: Ensure path starts with '/' and basePath doesn't end with '/'
-    // This prevents the double URL issue
     String cleanPath = path.startsWith('/') ? path : '/$path';
-    String cleanBasePath = basePath.endsWith('/') ? basePath.substring(0, basePath.length - 1) : basePath;
+    String cleanBasePath = basePath.endsWith('/')
+        ? basePath.substring(0, basePath.length - 1)
+        : basePath;
     String url = cleanBasePath + cleanPath;
-    
-    if (kDebugMode) {
-      print(url);
-    }
 
-    // ✅ FIX 2: Added token validation and better error handling
+    if (kDebugMode) print(' $method $url');
+
     Map<String, String> headers = {
       'Content-Type': 'application/json',
     };
 
-    // Only add Authorization header if token exists
     if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
     } else {
-      if (kDebugMode) {
-        print('Warning: No token found in SharedPreferences');
-      }
+      if (kDebugMode) print(' Warning: No token found in SharedPreferences');
     }
 
     http.Response response;
 
     try {
-      switch (method) {
+      switch (method.toUpperCase()) {
         case "POST":
           response = await http.post(
             Uri.parse(url),
             headers: headers,
-            body: body,
+            body: body != null ? jsonEncode(body) : null,
           );
           break;
         case "PUT":
           response = await http.put(
             Uri.parse(url),
             headers: headers,
-            body: jsonEncode(body),
+            body: body != null ? jsonEncode(body) : null,
           );
           break;
         case "DELETE":
           response = await http.delete(
             Uri.parse(url),
             headers: headers,
-            body: jsonEncode(body),
-          );
-          break;
-        case "GET":
-          response = await http.get(
-            Uri.parse(url),
-            headers: headers,
+            body: body != null ? jsonEncode(body) : null,
           );
           break;
         case "PATCH":
           response = await http.patch(
             Uri.parse(url),
             headers: headers,
-            body: jsonEncode(body),
+            body: body != null ? jsonEncode(body) : null,
           );
           break;
-        default:
+        default: // GET
           response = await http.get(Uri.parse(url), headers: headers);
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Network error on $path: $e');
-      }
+      if (kDebugMode) print('🌐 Network error on $path: $e');
       throw ApiException('Network error: $e', 0);
     }
 
     if (kDebugMode) {
-      print('status of $path => ${response.statusCode}');
+      print('📦 status of $path => ${response.statusCode}');
       print(response.body);
     }
 

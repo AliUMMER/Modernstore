@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
+import 'package:modern_grocery/bloc/Login_/verify/verify_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
 import 'package:modern_grocery/bloc/wishList/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/Banner_/CreateBanner_bloc/create_banner_bloc.dart';
@@ -17,7 +18,7 @@ import 'package:modern_grocery/bloc/delivery_/addDeliveryAddress/add_delivery_ad
 import 'package:modern_grocery/bloc/Categories_/createCategory/create_category_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/createProduct/create_product_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/get_all_product/get_all_product_bloc.dart';
-import 'package:modern_grocery/bloc/login/login_bloc.dart';
+import 'package:modern_grocery/bloc/Login_/login/login_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/bloc/wishList/remove%20towish/removetowishlist_bloc.dart';
 import 'package:modern_grocery/bloc/delivery_/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
                 providers: [
                   BlocProvider(
                     create: (context) => LoginBloc(),
+                  ),
+                  BlocProvider(
+                    create: (context) => VerifyBloc(),
                   ),
                   BlocProvider(
                     create: (context) => GetAllCategoriesBloc(),
@@ -134,7 +138,6 @@ class MyApp extends StatelessWidget {
                     Locale('en', 'US'),
                     Locale('hi', 'IN'),
                     Locale('ml', 'IN'),
-                 
                   ],
                   //home: HomePage(),
                   home: SplashScreen(),

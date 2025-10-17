@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:modern_grocery/repositery/api/Delivery/GetUserDlvAddresses_api.dart';
-import 'package:modern_grocery/repositery/model/getUserDlvAddresses.dart';
+import 'package:modern_grocery/repositery/model/user/getUserDlvAddresses.dart';
 
 part 'userdeliveryaddress_event.dart';
 part 'userdeliveryaddress_state.dart';
 
 class UserdeliveryaddressBloc
     extends Bloc<UserdeliveryaddressEvent, UserdeliveryaddressState> {
-  GetUserDlvAddressesapi getUserDlvAddressesapi = GetUserDlvAddressesapi();
+  GetUserDeliveryAddressesApi getUserDlvAddressesapi = GetUserDeliveryAddressesApi();
   late GetUserDlvAddresses getUserDlvAddresses;
 
   UserdeliveryaddressBloc() : super(UserdeliveryaddressInitial()) {
@@ -20,10 +20,13 @@ class UserdeliveryaddressBloc
             await getUserDlvAddressesapi.getGetUserDlvAddresses();
         emit(UserdeliveryaddressLoaded());
       } catch (e) {
-        print(e);
+        print('UserDeliveryAddress Error: $e');
+        // Check if it's a token error
+        if (e.toString().contains('401') || e.toString().contains('Invalid token')) {
+          print('Token is invalid or expired for delivery addresses');
+        }
         emit(UserdeliveryaddressError());
       }
-      // TODO: implement event handler
     });
   }
 }
