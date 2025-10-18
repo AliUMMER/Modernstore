@@ -64,20 +64,7 @@ class _EnterScreenState extends State<EnterScreen> {
                   backgroundColor: Colors.red,
                 ),
               );
-            } else if (state is loginBlocLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: [
-                      const CircularProgressIndicator(color: Colors.white),
-                      const SizedBox(width: 20),
-                      Text(languageService.getString('processing')),
-                    ],
-                  ),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            }
+            } else if (state is loginBlocLoading) {}
           },
           child: Scaffold(
             backgroundColor: const Color(0XFF0A0909),

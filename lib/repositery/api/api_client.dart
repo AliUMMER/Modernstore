@@ -26,8 +26,34 @@ class ApiClient {
 
     if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
-    } else {
-      if (kDebugMode) print(' Warning: No token found in SharedPreferences');
+    }
+
+    // 🔍 DEBUG: Print body BEFORE encoding
+    if (body != null && kDebugMode) {
+      print('Body before encoding: $body');
+      print(' Body type: ${body.runtimeType}');
+      if (body is Map) {
+        body.forEach((key, value) {
+          print('🔍   $key: $value (${value.runtimeType})');
+        });
+      }
+    }
+
+    // 🔍 DEBUG: Print encoded body
+    String? encodedBody;
+    if (body != null) {
+      encodedBody = jsonEncode(body);
+      if (kDebugMode) {
+        print(' Encoded body: $encodedBody');
+        // Parse it back to verify
+        var decoded = jsonDecode(encodedBody);
+        print(' Decoded back: $decoded');
+        if (decoded is Map) {
+          decoded.forEach((key, value) {
+            print('🔍   $key: $value (${value.runtimeType})');
+          });
+        }
+      }
     }
 
     http.Response response;
@@ -38,41 +64,41 @@ class ApiClient {
           response = await http.post(
             Uri.parse(url),
             headers: headers,
-            body: body != null ? jsonEncode(body) : null,
+            body: encodedBody,
           );
           break;
         case "PUT":
           response = await http.put(
             Uri.parse(url),
             headers: headers,
-            body: body != null ? jsonEncode(body) : null,
+            body: encodedBody,
           );
           break;
         case "DELETE":
           response = await http.delete(
             Uri.parse(url),
             headers: headers,
-            body: body != null ? jsonEncode(body) : null,
+            body: encodedBody,
           );
           break;
         case "PATCH":
           response = await http.patch(
             Uri.parse(url),
             headers: headers,
-            body: body != null ? jsonEncode(body) : null,
+            body: encodedBody,
           );
           break;
         default: // GET
           response = await http.get(Uri.parse(url), headers: headers);
       }
     } catch (e) {
-      if (kDebugMode) print('🌐 Network error on $path: $e');
+      if (kDebugMode) print(' Network error on $path: $e');
       throw ApiException('Network error: $e', 0);
     }
 
     if (kDebugMode) {
-      print('📦 status of $path => ${response.statusCode}');
-      print(response.body);
+      print(' status of $path => ${response.statusCode}');
+      print(' Response body: ${response.body}');
     }
 
     if (response.statusCode >= 400) {

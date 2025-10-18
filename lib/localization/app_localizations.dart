@@ -29,6 +29,12 @@ class AppLocalizations {
       'chat_with_us': 'Chat with us instantly',
       'whatsapp': 'WhatsApp',
 
+      'please_enter_complete_otp': 'Please enter complete 6-digit OTP',
+      'verification_success': 'Verification Successful!',
+      'otp_resent': 'OTP has been resent successfully',
+      'processing': 'Processing...',
+      'please_enter_phone': 'Please enter phone number',
+      'login_error': 'Login failed. Please try again.',
       // HelpDeskPage - FAQ Section
       'faq_title': 'Frequently Asked Questions',
       'faq_how_to_order': 'How do I place an order?',
@@ -104,9 +110,7 @@ class AppLocalizations {
       'mobile_number': 'Mobile Number',
       'enter_mobile_hint': 'Enter your mobile number',
       'continue_with_phone': 'Continue with Phone',
-      'login_error': 'Login error. Please try again.',
-      'processing': 'Processing...',
-      'please_enter_phone': 'Please enter your phone number',
+
       'send': 'Send Message',
       'faq': 'Frequently Asked Questions',
 
@@ -372,7 +376,7 @@ class AppLocalizations {
       'choose_address': 'पता चुनें',
       'use_my_current_location': 'मेरा वर्तमान स्थान उपयोग करें',
       'continue': 'जारी रखें',
-       // Already exists
+      // Already exists
       'location_services_disabled': 'स्थान सेवाएं अक्षम हैं।',
       'location_permissions_denied': 'स्थान अनुमतियां अस्वीकृत हैं।',
       'location_permissions_permanently_denied':
@@ -473,6 +477,13 @@ class AppLocalizations {
       'loading': 'ലോഡ് ചെയ്യുന്നു...',
       'error': 'പിശക്',
       'success': 'വിജയം',
+
+      'please_enter_complete_otp': 'ദയവായി 6 അക്ക OTP നൽകുക',
+      'verification_success': 'സ്ഥിരീകരണം വിജയകരം!',
+      'otp_resent': 'OTP വീണ്ടും അയച്ചു',
+      'processing': 'പ്രോസസ്സ് ചെയ്യുന്നു...',
+      'please_enter_phone': 'ദയവായി ഫോൺ നമ്പർ നൽകുക',
+      'login_error': 'ലോഗിൻ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.',
 
 // HomePage
       'location': 'സ്ഥലം',
@@ -606,9 +617,6 @@ class AppLocalizations {
       'mobile_number': 'മൊബൈൽ നമ്പർ',
       'enter_mobile_hint': 'നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക',
 
-      'login_error': 'ലോഗിൻ പിശക്. വീണ്ടും ശ്രമിക്കുക.',
-      'processing': 'പ്രോസസ്സിംഗ്...',
-      'please_enter_phone': 'നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക',
       // Search & Products
       'find_products': 'ഉത്പാദനങ്ങൾ കണ്ടെത്തുക',
       'search_something': 'എന്തെങ്കിലും തിരയുക...',
