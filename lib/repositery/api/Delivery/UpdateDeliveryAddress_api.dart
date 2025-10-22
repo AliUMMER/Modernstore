@@ -19,7 +19,7 @@ class UpdateDeliveryAddressapi {
     };
 
     Response response =
-        await apiClient.invokeAPI(trendingpath, 'PUT', jsonEncode(body));
+        await apiClient.invokeAPI(trendingpath, 'PUT', jsonEncode(body) as Map<String, dynamic>?);
 
     return UpdateDeliveryAddress.fromJson(jsonDecode(response.body));
   }

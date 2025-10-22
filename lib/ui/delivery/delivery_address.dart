@@ -6,8 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/delivery_/addDeliveryAddress/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/services/language_service.dart';
-
-import 'package:modern_grocery/ui/cart_/success_cart.dart';
 import 'package:modern_grocery/ui/delivery/delivery_success.dart';
 import 'package:provider/provider.dart';
 
@@ -20,15 +18,15 @@ class DeliveryAddress extends StatefulWidget {
 
 class _DeliveryAddressState extends State<DeliveryAddress> {
   String? apiAddress;
-  String currentLocation = "Use My Current Location"; // This will be localized
-  String selectedAddressType = 'current'; // 'current' or 'api'
+  String currentLocation = "Use My Current Location";
+  String selectedAddressType = 'current';
   late LanguageService languageService;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-    context.read<AddDeliveryAddressBloc>().add(fetchAddDeliveryAddress());
+    context.read<AddDeliveryAddressBloc>().add(fetchAddDeliveryAddress(DeliveryData: {}));
   }
 
   Future<void> _getCurrentLocation() async {
@@ -120,7 +118,7 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                           if (state is AddDeliveryAddressLoaded) {
                             setState(() {
                               apiAddress =
-                                  state.addDeliveryAddress.data!.address;
+                                  state.DeliveryData as String?;
                             });
                           } else if (state is AddDeliveryAddressError) {
                             _showSnack(languageService
@@ -234,7 +232,6 @@ class _DeliveryAddressState extends State<DeliveryAddress> {
                             return;
                           }
 
-                          // Continue with selected address
                           Navigator.push(
                             context,
                             MaterialPageRoute(

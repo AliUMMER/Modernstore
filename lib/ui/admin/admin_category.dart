@@ -1,16 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
 
-
 import 'package:modern_grocery/bloc/Categories_/createCategory/create_category_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as p;
-
-import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 
 // Assuming Category is a class within GetAllCategoriesModel
 class Category {
@@ -31,7 +29,7 @@ class _AdminCategoryState extends State<AdminCategory> {
   @override
   void initState() {
     super.initState();
-    // Fetch categories when the widget initializes
+
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
   }
 
@@ -365,10 +363,9 @@ class _AdminCategoryState extends State<AdminCategory> {
             ),
           );
         } else if (state is GetAllCategoriesLoaded) {
-          final categories = BlocProvider.of<GetAllCategoriesBloc>(context)
-              .getAllCategoriesModel;
+          final categories = state.categories;
           ;
-          if (categories.categories == null || categories.categories!.isEmpty) {
+          if (categories.isEmpty || categories.isEmpty) {
             return const Center(
               child: Text(
                 'No categories available',
@@ -379,7 +376,7 @@ class _AdminCategoryState extends State<AdminCategory> {
 
           return Expanded(
             child: GridView.builder(
-              itemCount: categories.categories!.length,
+              itemCount: categories.length,
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 250,
                 mainAxisSpacing: 16,
@@ -387,7 +384,7 @@ class _AdminCategoryState extends State<AdminCategory> {
                 childAspectRatio: 3 / 4,
               ),
               itemBuilder: (context, index) {
-                final category = categories.categories![index];
+                final category = categories[index];
                 return Container(
                   decoration: BoxDecoration(
                     color: const Color(0xFFE8E1D1),
@@ -402,7 +399,7 @@ class _AdminCategoryState extends State<AdminCategory> {
                           children: [
                             const SizedBox(height: 20),
                             Image.network(
-                              category.image.toString(),
+                              category.categories[0].image,
                               height: 80,
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>
@@ -422,17 +419,17 @@ class _AdminCategoryState extends State<AdminCategory> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 15),
+                            SizedBox(height: 15.h),
                             Text(
-                              category.name.toString(),
+                              category.categories[0].name,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
-                              semanticsLabel: category.name,
+                              semanticsLabel: category.categories[0].name,
                             ),
-                            const SizedBox(height: 15),
+                            SizedBox(height: 15),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 4,

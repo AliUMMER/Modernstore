@@ -82,11 +82,57 @@ class _EnterScreenState extends State<EnterScreen> {
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LocationPage(),
-                              ),
+                            // Show warning dialog before skipping
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: const Color(0xFF1C1C1C),
+                                  title: Text(
+                                    languageService.getString('skip_warning_title'),
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFFF5E9B5),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  content: Text(
+                                    languageService.getString('skip_warning_message'),
+                                  
+                                    style: GoogleFonts.poppins(
+                                      color: const Color(0xFFFCF8E8),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text(
+                                        languageService.getString('cancel'),
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFFF5E9B5),
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => LocationPage(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        languageService.getString('continue'),
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
                           child: Container(

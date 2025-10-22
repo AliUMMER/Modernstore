@@ -6,25 +6,32 @@ import 'package:modern_grocery/repositery/model/user/addDeliveryAddress.dart';
 class AddDeliveryAddressApi {
   ApiClient apiClient = ApiClient();
 
-  Future<AddDeliveryAddress> getaddDeliveryAddress() async {
+  Future<AddDeliveryAddress> getaddDeliveryAddress(
+      Map<String, dynamic> deliverydata) async {
     String url = '/user/add-delivery-address';
 
-    var body = {
-      "address": "Root-sys, SkyMall, Edarikkode, Kottakkal",
-      "city": "Edarikkode",
-      "pincode": "123456",
-      "latitude": "1.00000000000000",
-      "longitude": "2.0000000000000"
-    };
+    try {
+      final body = jsonEncode(deliverydata);
 
-    Response response = await apiClient.invokeAPI(
-      url,
-      'POST',
-      jsonEncode(body),
-    );
+// var body = {
+//       "address": "Root-sys, SkyMall, Edarikkode, Kottakkal",
+//       "city": "Edarikkode",
+//       "pincode": "123456",
+//       "latitude": "1.00000000000000",
+//       "longitude": "2.0000000000000"
+//     };
 
-    print('adddelivery addresssss   $body');
+      Response response = await apiClient.invokeAPI(
+        url,
+        'POST',
+        body,
+      );
 
-    return AddDeliveryAddress.fromJson(jsonDecode(response.body));
+      print('adddelivery addresssss   $body');
+
+      return AddDeliveryAddress.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      throw Exception('Failed to add AddDeliveryAddress: $e');
+    }
   }
 }

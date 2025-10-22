@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:modern_grocery/bloc/Product_/createProduct/create_product_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/get_all_product/get_all_product_bloc.dart';
-import 'package:modern_grocery/repositery/model/getAllProduct.dart';
+import 'package:modern_grocery/repositery/model/product/getAllProduct.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:badges/badges.dart' as badges;
 

@@ -19,21 +19,24 @@ class ManualLocation extends StatefulWidget {
 }
 
 class _ManualLocationState extends State<ManualLocation> {
-  bool isAdmin = true; // Default is user   // false for  Admin
+  bool isAdmin = false; // Default is user   // false for  Admin
   String currentLocation = "Use My Current Location"; // Will be localized
   String? apiAddress;
   String selectedAddressType = 'current'; // 'current' or 'api'
-  late LanguageService languageService;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
-    context.read<AddDeliveryAddressBloc>().add(fetchAddDeliveryAddress());
+    // Removed: Do not call add-delivery-address API on init with empty data
+    // context.read<AddDeliveryAddressBloc>().add(fetchAddDeliveryAddress(DeliveryData: {}));
   }
 
   Future<void> _getCurrentLocation() async {
     try {
+      final languageService =
+          Provider.of<LanguageService>(context, listen: false);
+
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         _showSnack(languageService.getString('location_services_disabled'));
@@ -76,6 +79,8 @@ class _ManualLocationState extends State<ManualLocation> {
         currentLocation = address;
       });
     } catch (e) {
+      final languageService =
+          Provider.of<LanguageService>(context, listen: false);
       _showSnack(
         '${languageService.getString('error_fetching_location')}$e',
       );
@@ -101,7 +106,7 @@ class _ManualLocationState extends State<ManualLocation> {
           listener: (context, state) {
             if (state is AddDeliveryAddressLoaded) {
               setState(() {
-                apiAddress = state.addDeliveryAddress.data!.address;
+                apiAddress = state.DeliveryData as String?;
               });
             } else if (state is AddDeliveryAddressError) {
               _showSnack(languageService.getString('failed_fetch_address_api'));

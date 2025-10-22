@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/getAllProduct.dart';
+
+import 'package:modern_grocery/repositery/model/product/getAllProduct.dart';
 
 class GetallproductApi {
   ApiClient apiClient = ApiClient();

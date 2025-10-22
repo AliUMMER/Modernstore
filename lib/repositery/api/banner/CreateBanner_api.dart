@@ -3,9 +3,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:modern_grocery/repositery/model/CreateBanner_model.dart';
+import 'package:modern_grocery/repositery/model/Banner/CreateBanner_model.dart';
 
 class CreatebannerApi {
   ApiClient api = ApiClient();
@@ -25,14 +26,13 @@ class CreatebannerApi {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('Token');
+    final token = prefs.getString('token');
     print('Stored token: $token');
     if (token == null || token.isEmpty) {
       throw Exception('Access token not found. Please log in again.');
     }
 
-    final uri = Uri.parse(
-        'https://modern-store-backend.onrender.com/api//banner/create');
+    final uri = Uri.parse('$basePath/banner/create');
 
     final request = http.MultipartRequest('POST', uri);
 

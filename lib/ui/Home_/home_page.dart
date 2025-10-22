@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
 import 'package:modern_grocery/bloc/Categories_/GetCategoryProducts/get_category_products_bloc.dart';
@@ -32,6 +33,22 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _checkTokenAndFetchData();
+  }
+
+  Future<void> _checkTokenAndFetchData() async {
+    // Debug: Check if token exists
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    print(
+        '🔐 [HomePage] Token check: ${token != null && token.isNotEmpty ? "Token exists (${token.substring(0, 20)}...)" : "NO TOKEN FOUND!"}');
+
+    if (token == null || token.isEmpty) {
+      print(
+          '⚠️ [HomePage] WARNING: No authentication token! User must login first.');
+      // Optionally show a dialog or redirect to login
+    }
+
     // Fetch data when the widget initializes
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
     BlocProvider.of<GetAllBannerBloc>(context).add(fetchGetAllBanner());
@@ -42,30 +59,30 @@ class _HomePageState extends State<HomePage> {
         .add(FetchCategoryProducts(categoryId: '67ec290adaa2fb3cd2af3a2a'));
   }
 
-  // Local fallback data
-  final List<Map<String, String>> localCategories = [
-    {'name': 'Fruits', 'image': 'assets/Fruits.png'},
-    {'name': 'Milk', 'image': 'assets/Milk.png'},
-    {'name': 'Meats', 'image': 'assets/Meats.png'},
-    {'name': 'Nuts', 'image': 'assets/Nuts.png'},
-    {'name': 'Vegetables', 'image': 'assets/Vegetables.png'},
-    {'name': 'Fancy', 'image': 'assets/Fancy.png'},
-    {'name': 'Rice', 'image': 'assets/Rice.png'},
-    {'name': 'Egg', 'image': 'assets/Egg.png'},
-    {'name': 'Pet Food', 'image': 'assets/Pet Food.png'},
-    {'name': 'Perfume', 'image': 'assets/Perfume.png'},
-    {'name': 'Sanitary Pad', 'image': 'assets/Sanitary pads.png'},
-    {'name': 'Bakery', 'image': 'assets/Bakery.png'},
-    {'name': 'Gadget', 'image': 'assets/Gadget.png'},
-    {'name': 'Beverages', 'image': 'assets/Beverages.png'},
-  ];
+  // // Local fallback data
+  // final List<Map<String, String>> localCategories = [
+  //   {'name': 'Fruits', 'image': 'assets/Fruits.png'},
+  //   {'name': 'Milk', 'image': 'assets/Milk.png'},
+  //   {'name': 'Meats', 'image': 'assets/Meats.png'},
+  //   {'name': 'Nuts', 'image': 'assets/Nuts.png'},
+  //   {'name': 'Vegetables', 'image': 'assets/Vegetables.png'},
+  //   {'name': 'Fancy', 'image': 'assets/Fancy.png'},
+  //   {'name': 'Rice', 'image': 'assets/Rice.png'},
+  //   {'name': 'Egg', 'image': 'assets/Egg.png'},
+  //   {'name': 'Pet Food', 'image': 'assets/Pet Food.png'},
+  //   {'name': 'Perfume', 'image': 'assets/Perfume.png'},
+  //   {'name': 'Sanitary Pad', 'image': 'assets/Sanitary pads.png'},
+  //   {'name': 'Bakery', 'image': 'assets/Bakery.png'},
+  //   {'name': 'Gadget', 'image': 'assets/Gadget.png'},
+  //   {'name': 'Beverages', 'image': 'assets/Beverages.png'},
+  // ];
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         final lang = languageService.currentLanguage;
-        
+
         return Scaffold(
           backgroundColor: const Color(0xFF0A0909),
           body: SingleChildScrollView(
@@ -134,7 +151,8 @@ class _HomePageState extends State<HomePage> {
                         height: 48.h,
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: AppLocalizations.getString('search_something', lang),
+                            hintText: AppLocalizations.getString(
+                                'search_something', lang),
                             hintStyle: GoogleFonts.poppins(
                                 color: AppConstants.primaryText,
                                 fontSize: 14.sp,
@@ -146,17 +164,20 @@ class _HomePageState extends State<HomePage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText, width: 2.w),
+                                  color: AppConstants.secondaryText,
+                                  width: 2.w),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText, width: 2.w),
+                                  color: AppConstants.secondaryText,
+                                  width: 2.w),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText, width: 2.w),
+                                  color: AppConstants.secondaryText,
+                                  width: 2.w),
                             ),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15.h, horizontal: 13.w),
@@ -196,7 +217,8 @@ class _HomePageState extends State<HomePage> {
                                   return Builder(
                                     builder: (BuildContext context) {
                                       return Container(
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 5.0),
                                         decoration: BoxDecoration(
@@ -230,7 +252,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     SizedBox(height: 10.h),
                                     Text(
-                                      AppLocalizations.getString('failed_load_banners', lang),
+                                      AppLocalizations.getString(
+                                          'failed_load_banners', lang),
                                       style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontSize: 14.sp,
@@ -238,9 +261,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     SizedBox(height: 5.h),
                                     Text(
-                                      state.errorMessage.contains('Authentication')
-                                          ? AppLocalizations.getString('please_login', lang)
-                                          : AppLocalizations.getString('try_again_later', lang),
+                                      state.errorMessage
+                                              .contains('Authentication')
+                                          ? AppLocalizations.getString(
+                                              'please_login', lang)
+                                          : AppLocalizations.getString(
+                                              'try_again_later', lang),
                                       style: GoogleFonts.poppins(
                                         color: Colors.grey[400],
                                         fontSize: 12.sp,
@@ -255,10 +281,7 @@ class _HomePageState extends State<HomePage> {
 
                           if (state is GetAllBannerLoaded) {
                             final banner = state.banner;
-                            final bannerImages = banner.banners
-                                    ?.expand((b) => b.images ?? [])
-                                    .toList() ??
-                                [];
+                            final bannerImages = banner.banners.toList();
 
                             return Column(
                               children: [
@@ -269,9 +292,11 @@ class _HomePageState extends State<HomePage> {
                                             items: bannerImages.map((imageUrl) {
                                               return ClipRRect(
                                                 borderRadius:
-                                                    BorderRadius.circular(8.0.r),
+                                                    BorderRadius.circular(
+                                                        8.0.r),
                                                 child: CachedNetworkImage(
-                                                  imageUrl: imageUrl,
+                                                  imageUrl: imageUrl.images
+                                                      .toString(),
                                                   fit: BoxFit.cover,
                                                   width: double.infinity,
                                                   errorWidget:
@@ -280,7 +305,8 @@ class _HomePageState extends State<HomePage> {
                                                     color: Colors.grey[800],
                                                     child: Center(
                                                       child: Icon(
-                                                        Icons.image_not_supported,
+                                                        Icons
+                                                            .image_not_supported,
                                                         color: Colors.grey[400],
                                                         size: 50.sp,
                                                       ),
@@ -288,7 +314,8 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   placeholder: (context, url) =>
                                                       Shimmer.fromColors(
-                                                    baseColor: Colors.grey[900]!,
+                                                    baseColor:
+                                                        Colors.grey[900]!,
                                                     highlightColor:
                                                         Colors.grey[800]!,
                                                     child: Container(
@@ -309,8 +336,10 @@ class _HomePageState extends State<HomePage> {
                                               autoPlayInterval:
                                                   const Duration(seconds: 3),
                                               autoPlayAnimationDuration:
-                                                  const Duration(milliseconds: 800),
-                                              autoPlayCurve: Curves.fastOutSlowIn,
+                                                  const Duration(
+                                                      milliseconds: 800),
+                                              autoPlayCurve:
+                                                  Curves.fastOutSlowIn,
                                               enlargeCenterPage: true,
                                               enlargeFactor: 0.3,
                                               scrollDirection: Axis.horizontal,
@@ -336,20 +365,20 @@ class _HomePageState extends State<HomePage> {
                                                   _currrentBanner = entry.key;
                                                 }),
                                                 child: Container(
-                                                  width:
-                                                      _currrentBanner == entry.key
-                                                          ? 10.w
-                                                          : 6.w,
+                                                  width: _currrentBanner ==
+                                                          entry.key
+                                                      ? 10.w
+                                                      : 6.w,
                                                   height: 6.h,
                                                   margin: EdgeInsets.symmetric(
                                                       vertical: 8.h,
                                                       horizontal: 3.w),
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color:
-                                                        _currrentBanner == entry.key
-                                                            ? Colors.white
-                                                            : Colors.grey,
+                                                    color: _currrentBanner ==
+                                                            entry.key
+                                                        ? Colors.white
+                                                        : Colors.grey,
                                                   ),
                                                 ),
                                               );
@@ -366,7 +395,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         child: Center(
                                           child: Text(
-                                            AppLocalizations.getString('no_banners', lang),
+                                            AppLocalizations.getString(
+                                                'no_banners', lang),
                                             style: GoogleFonts.poppins(
                                                 color: Colors.white),
                                           ),
@@ -415,7 +445,8 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (context) => FruitesPage()),
                     );
                   },
-                  child: BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
+                  child:
+                      BlocBuilder<GetAllCategoriesBloc, GetAllCategoriesState>(
                     builder: (context, state) {
                       if (state is GetAllCategoriesLoading) {
                         return Shimmer.fromColors(
@@ -429,7 +460,8 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                      left: index == 0 ? 20.w : 10.w, right: 10.w),
+                                      left: index == 0 ? 20.w : 10.w,
+                                      right: 10.w),
                                   child: Column(
                                     children: [
                                       CircleAvatar(
@@ -452,28 +484,32 @@ class _HomePageState extends State<HomePage> {
                       }
                       if (state is GetAllCategoriesError) {
                         return Center(
-                            child: Text(AppLocalizations.getString('failed_load_categories', lang),
-                                style: GoogleFonts.poppins(color: Colors.white)));
+                            child: Text(
+                                AppLocalizations.getString(
+                                    'failed_load_categories', lang),
+                                style:
+                                    GoogleFonts.poppins(color: Colors.white)));
                       }
                       if (state is GetAllCategoriesLoaded) {
-                        final data = BlocProvider.of<GetAllCategoriesBloc>(context)
-                            .getAllCategoriesModel;
+                        final Category = state.categories;
+
                         return SizedBox(
                           height: 120.h,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount:
-                                data.categories?.length ?? localCategories.length,
+                            itemCount: Category.length,
                             itemBuilder: (context, index) {
-                              final category = data.categories?[index];
+                              final category = Category[index];
                               final String categoryName =
-                                  category?.name ?? localCategories[index]['name']!;
-                              final String imageUrl = category?.image ?? '';
+                                  category.categories[0].name;
+                              final String imageUrl =
+                                  category.categories[0].image;
                               final bool useLocalImage = imageUrl.isEmpty;
 
                               return Padding(
                                 padding: EdgeInsets.only(
-                                    left: index == 0 ? 20.w : 10.w, right: 10.w),
+                                    left: index == 0 ? 20.w : 10.w,
+                                    right: 10.w),
                                 child: Column(
                                   children: [
                                     CircleAvatar(
@@ -483,7 +519,7 @@ class _HomePageState extends State<HomePage> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: useLocalImage
                                             ? Image.asset(
-                                                localCategories[index]['image']!,
+                                                imageUrl,
                                                 fit: BoxFit.cover,
                                               )
                                             : CachedNetworkImage(
@@ -492,7 +528,7 @@ class _HomePageState extends State<HomePage> {
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Image.asset(
-                                                  localCategories[index]['image']!,
+                                                  imageUrl,
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -551,8 +587,9 @@ class _HomePageState extends State<HomePage> {
                     }
 
                     if (state is OfferproductLoaded) {
-                      final bestDeals = BlocProvider.of<OfferproductBloc>(context)
-                          .offerproductModel;
+                      final bestDeals =
+                          BlocProvider.of<OfferproductBloc>(context)
+                              .offerproductModel;
                       print('bloc loaded successfully');
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -564,10 +601,11 @@ class _HomePageState extends State<HomePage> {
                               itemCount: bestDeals.data?.length,
                               itemBuilder: (context, index) {
                                 final product = bestDeals.data![index];
-                                
+
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                      left: index == 0 ? 20.w : 10.w, right: 10.w),
+                                      left: index == 0 ? 20.w : 10.w,
+                                      right: 10.w),
                                   child: GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -581,15 +619,17 @@ class _HomePageState extends State<HomePage> {
                                     },
                                     child: ProductCard(
                                       product: {
-                                        'name':
-                                            (product.name ?? AppLocalizations.getString('unknown', lang)).toString(),
-                                        'price': (product.basePrice ?? 0)
+                                        'name': (product.name ??
+                                                AppLocalizations.getString(
+                                                    'unknown', lang))
                                             .toString(),
+                                        'price':
+                                            (product.basePrice ?? 0).toString(),
                                         'rating': product.v ?? 0,
-                                        'image':
-                                            (product.images?.isNotEmpty ?? false)
-                                                ? product.images![0].toString()
-                                                : 'assets/placeholder.png',
+                                        'image': (product.images?.isNotEmpty ??
+                                                false)
+                                            ? product.images![0].toString()
+                                            : 'assets/placeholder.png',
                                       },
                                     ),
                                   ),
@@ -601,7 +641,9 @@ class _HomePageState extends State<HomePage> {
                       );
                     } else if (state is OfferproductError) {
                       return Center(
-                          child: Text(AppLocalizations.getString('failed_load_deals', lang),
+                          child: Text(
+                              AppLocalizations.getString(
+                                  'failed_load_deals', lang),
                               style: GoogleFonts.poppins(color: Colors.white)));
                     } else {
                       return const SizedBox.shrink();
@@ -645,7 +687,8 @@ class _HomePageState extends State<HomePage> {
 
                       // Check if data exists and is not empty
                       if (beverages.data == null || beverages.data!.isEmpty) {
-                        return Text(AppLocalizations.getString('no_beverages', lang),
+                        return Text(
+                            AppLocalizations.getString('no_beverages', lang),
                             style: GoogleFonts.poppins(color: Colors.white));
                       }
 
@@ -666,7 +709,8 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProductDetails(
-                                        productId: beverages.data![index].id ?? '',
+                                        productId:
+                                            beverages.data![index].id ?? '',
                                       ),
                                     ),
                                   );
@@ -680,7 +724,9 @@ class _HomePageState extends State<HomePage> {
                       );
                     } else if (state is GetCategoryProductsError) {
                       return Center(
-                          child: Text(AppLocalizations.getString('failed_load_beverages', lang),
+                          child: Text(
+                              AppLocalizations.getString(
+                                  'failed_load_beverages', lang),
                               style: GoogleFonts.poppins(color: Colors.white)));
                     } else {
                       return const SizedBox.shrink();
@@ -751,7 +797,8 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ProductDetails(
-                                        productId: vegetables.data![index].id ?? '',
+                                        productId:
+                                            vegetables.data![index].id ?? '',
                                       ),
                                     ),
                                   );
@@ -767,7 +814,8 @@ class _HomePageState extends State<HomePage> {
                     } else if (state is GetCategoryProductsError) {
                       return Center(
                         child: Text(
-                          AppLocalizations.getString('failed_load_vegetables', lang),
+                          AppLocalizations.getString(
+                              'failed_load_vegetables', lang),
                           style: GoogleFonts.poppins(color: Colors.white),
                         ),
                       );

@@ -13,7 +13,7 @@ class AddstockinventoryApi {
     var body = {"productId": "67fbf7d1694818c17b3b6ff7", "stockQnt": 10};
 
     Response response =
-        await apiClient.invokeAPI(trendingpath, 'POST', jsonEncode(body));
+        await apiClient.invokeAPI(trendingpath, 'POST', jsonEncode(body) as Map<String, dynamic>?);
     return AddStocksInventory.fromJson(jsonDecode(response.body));
   }
 }

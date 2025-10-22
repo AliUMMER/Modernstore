@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:modern_grocery/repositery/api/product/getbyidproduct_api.dart';
-import 'package:modern_grocery/repositery/model/getByIdProduct.dart';
+import 'package:modern_grocery/repositery/model/product/getByIdProduct.dart';
 
 part 'getbyid_event.dart';
 part 'getbyid_state.dart';

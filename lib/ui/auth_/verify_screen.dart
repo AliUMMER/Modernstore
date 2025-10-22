@@ -60,9 +60,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
     if (otp.length != 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(Provider.of<LanguageService>(context, listen: false)
-                  .getString('please_enter_complete_otp') ??
-              'Please enter complete 5-digit OTP'),
+          content: Text(
+            Provider.of<LanguageService>(context, listen: false)
+                .getString('please_enter_complete_otp'),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -108,8 +109,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      languageService.getString('verification_success') ??
-                          'Verification Successful!'),
+                    languageService.getString('verification_success'),
+                  ),
                   backgroundColor: Colors.green,
                   duration: const Duration(seconds: 2),
                 ),
@@ -147,8 +148,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(languageService.getString('otp_resent') ??
-                      'OTP has been resent successfully'),
+                  content: Text(
+                    languageService.getString('otp_resent'),
+                  ),
                   backgroundColor: Colors.green,
                   duration: const Duration(seconds: 2),
                 ),
@@ -171,8 +173,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Text(languageService.getString('processing') ??
-                          'Processing...'),
+                      Text(
+                        languageService.getString('processing'),
+                      ),
                     ],
                   ),
                   duration: const Duration(seconds: 30),
@@ -189,7 +192,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 48.w),
+                padding: EdgeInsets.symmetric(horizontal: 23.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -197,8 +200,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
                     // Title
                     Text(
-                      languageService.getString('enter_verification_code') ??
-                          'Enter verification code',
+                      languageService.getString('enter_verification_code'),
                       style: GoogleFonts.poppins(
                         color: const Color(0xFFF5E9B5),
                         fontSize: 29.sp,
@@ -208,8 +210,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     ),
 
                     Text(
-                      languageService.getString('sent_on_whatsapp') ??
-                          'sent on WhatsApp',
+                      languageService.getString('sent_on_whatsapp'),
                       style: GoogleFonts.poppins(
                         color: const Color(0xFFF5E9B5),
                         fontSize: 29.sp,
@@ -222,7 +223,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
                     // Phone number display
                     Text(
-                      '${languageService.getString('sent_to') ?? 'Sent to'} ${widget.phoneNumber}',
+                      '${languageService.getString('sent_to')} ${widget.phoneNumber}',
                       style: GoogleFonts.poppins(
                         color: const Color(0xB7FCF8E8),
                         fontSize: 17.sp,
@@ -232,17 +233,16 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
                     SizedBox(height: 56.h),
 
-                    // OTP Input Fields - FULLY FUNCTIONAL
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(5, (index) {
+                      children: List.generate(6, (index) {
                         return Container(
                           width: 58.w,
                           height: 58.h,
                           decoration: BoxDecoration(
                             color: const Color(0xFF0A0808),
                             border: Border.all(
-                              width: 1.5,
+                              width: 1.w,
                               color: focusNodes[index].hasFocus
                                   ? const Color(0xFFF5E9B5)
                                   : const Color(0xFFFCF8E8),
@@ -308,8 +308,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             children: [
                               TextSpan(
                                 text: languageService
-                                        .getString('didnt_receive_code') ??
-                                    "Didn't receive the code?",
+                                    .getString('didnt_receive_code'),
                                 style: GoogleFonts.poppins(
                                   color: const Color(0xD8FCF8E8),
                                   fontSize: 13.sp,
@@ -327,9 +326,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 ),
                               ),
                               TextSpan(
-                                text:
-                                    languageService.getString('resend_code') ??
-                                        'Resend Code',
+                                text: languageService.getString('resend_code'),
                                 style: GoogleFonts.poppins(
                                   color: isLoading
                                       ? const Color(0x80F5E9B5)
@@ -374,8 +371,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                     ),
                                   )
                                 : Text(
-                                    languageService.getString('verify') ??
-                                        'Verify',
+                                    languageService.getString('verify'),
                                     style: GoogleFonts.poppins(
                                       color: const Color(0xFF0A0808),
                                       fontSize: 18.sp,

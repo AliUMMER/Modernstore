@@ -8,7 +8,6 @@ import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
 import 'package:modern_grocery/bloc/wishList/AddToWishlist_bloc/add_to_wishlist_bloc.dart';
 import 'package:modern_grocery/bloc/Banner_/CreateBanner_bloc/create_banner_bloc.dart';
 import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
-
 import 'package:modern_grocery/bloc/cart_/GetAllUserCart/get_all_user_cart_bloc.dart';
 import 'package:modern_grocery/bloc/GetById/getbyid_bloc.dart';
 import 'package:modern_grocery/bloc/Categories_/GetCategoryProducts/get_category_products_bloc.dart';
@@ -22,7 +21,6 @@ import 'package:modern_grocery/bloc/Login_/login/login_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/offerproduct/offerproduct_bloc.dart';
 import 'package:modern_grocery/bloc/wishList/remove%20towish/removetowishlist_bloc.dart';
 import 'package:modern_grocery/bloc/delivery_/userdelivery%20addrees/userdeliveryaddress_bloc.dart';
-
 import 'package:modern_grocery/localization/app_localizations_delegate.dart';
 import 'package:modern_grocery/repositery/api/Cart/addCart_api.dart';
 import 'package:modern_grocery/repositery/api/Categories/createCategory_api.dart';
@@ -33,8 +31,6 @@ import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-//String basePath = "http://192.168.223.203:4055/api";
-// String basePath = "http://69.62.79.175:4735/api";
 String basePath = "https://modern-store-backend.onrender.com/api";
 
 void main() {
@@ -47,9 +43,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => LanguageService(),
-        child: Consumer<LanguageService>(
-            builder: (context, languageService, child) {
+      create: (context) => LanguageService(),
+      child: Consumer<LanguageService>(
+        builder: (context, languageService, child) {
           return ScreenUtilInit(
             designSize: const Size(430, 917),
             minTextAdapt: true,
@@ -74,19 +70,23 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                   BlocProvider(
-                    create: (context) =>
-                        GetbyidBloc(getbyidproductApi: GetbyidproductApi()),
+                    create: (context) => GetbyidBloc(
+                      getbyidproductApi: GetbyidproductApi(),
+                    ),
                   ),
                   BlocProvider(
                     create: (context) => GetAllBannerBloc(),
                   ),
                   BlocProvider(
                     create: (context) => CreateCategoryBloc(
-                      createcategoryApi:
-                          CreatecategoryApi(apiClient: ApiClient()),
+                      createcategoryApi: CreatecategoryApi(
+                        apiClient: ApiClient(),
+                      ),
                     ),
                   ),
-                  BlocProvider(create: (context) => CreateProductBloc()),
+                  BlocProvider(
+                    create: (context) => CreateProductBloc(),
+                  ),
                   BlocProvider(
                     create: (context) => GetAllProductBloc(),
                   ),
@@ -106,9 +106,15 @@ class MyApp extends StatelessWidget {
                     create: (context) => GetToWishlistBloc(),
                   ),
                   BlocProvider(
-                    create: (context) =>
-                        CreateBannerBloc(api: CreatebannerApi()),
+                    create: (context) => CreateBannerBloc(
+                      api: CreatebannerApi(),
+                    ),
                   ),
+                  // BEVERAGES BLOC - First Instance
+                  BlocProvider(
+                    create: (context) => GetCategoryProductsBloc(),
+                  ),
+                  // VEGETABLES BLOC - Second Instance for multiple categories
                   BlocProvider(
                     create: (context) => GetCategoryProductsBloc(),
                   ),
@@ -123,8 +129,9 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   title: 'Modern Store',
                   theme: ThemeData(
-                    colorScheme:
-                        ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                    colorScheme: ColorScheme.fromSeed(
+                      seedColor: Colors.deepPurple,
+                    ),
                     useMaterial3: true,
                   ),
                   locale: languageService.locale,
@@ -139,12 +146,13 @@ class MyApp extends StatelessWidget {
                     Locale('hi', 'IN'),
                     Locale('ml', 'IN'),
                   ],
-                  //home: HomePage(),
-                  home: SplashScreen(),
+                  home: const SplashScreen(),
                 ),
               );
             },
           );
-        }));
+        },
+      ),
+    );
   }
 }

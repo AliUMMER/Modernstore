@@ -21,19 +21,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('Token');
+    final token = prefs.getString('token');
 
-    // Wait for 2 seconds then navigate
     Timer(
       const Duration(seconds: 2),
       () {
         if (token != null && token.isNotEmpty) {
-          // If token exists, user is already logged in
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const LocationPage()),
           );
         } else {
-          // If no token, show onboarding
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const OnboardingPage()),
           );

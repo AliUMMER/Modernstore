@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -136,7 +137,7 @@ class _RecentPageState extends State<RecentPage> {
         listener: (context, state) {
           if (state is CreateBannerLoaded) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('✅ Banner saved successfully!')),
+              const SnackBar(content: Text('Banner saved successfully!')),
             );
             _titleController.clear();
             _categoryController.clear();
@@ -147,7 +148,7 @@ class _RecentPageState extends State<RecentPage> {
             Navigator.of(context).pop();
           } else if (state is CreateBannerError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('❌ Error: ${state.message}')),
+              SnackBar(content: Text('Error: ${state.message}')),
             );
           }
         },
@@ -163,7 +164,7 @@ class _RecentPageState extends State<RecentPage> {
                   height: 200.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(color: Colors.grey),
                   ),
                   clipBehavior: Clip.hardEdge,
@@ -187,7 +188,7 @@ class _RecentPageState extends State<RecentPage> {
                   const SizedBox(height: 16),
                 ],
 
-                 Text(
+                Text(
                   'Banner Details',
                   style: TextStyle(
                     color: AppConstants.textColor,

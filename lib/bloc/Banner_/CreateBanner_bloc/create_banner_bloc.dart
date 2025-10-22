@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modern_grocery/repositery/api/banner/CreateBanner_api.dart';
-import 'package:modern_grocery/repositery/model/CreateBanner_model.dart';
+import 'package:modern_grocery/repositery/model/Banner/CreateBanner_model.dart';
 import 'package:meta/meta.dart';
 
 part 'create_banner_event.dart';

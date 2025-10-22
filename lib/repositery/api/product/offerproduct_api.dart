@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/offerproduct model.dart';
+import 'package:modern_grocery/repositery/model/product/offerproduct%20model.dart';
 
 class OfferproductApi {
   ApiClient apiClient = ApiClient();

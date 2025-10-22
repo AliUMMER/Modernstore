@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
-
-import 'package:modern_grocery/repositery/model/GetAllCategoriesModel.dart';
 import 'package:modern_grocery/services/language_service.dart'; // Add this import
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
@@ -19,9 +17,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late GetAllCategoriesModel data;
+
   int selectedIndex = 0;
-  late LanguageService languageService; // Add this line
+  late LanguageService languageService; 
 
   @override
   void initState() {
@@ -124,21 +122,20 @@ class _SearchPageState extends State<SearchPage> {
               if (state is GetAllCategoriesError) {
                 return Center(
                     child: Text(
-                        languageService.getString('categories_not_recognized'), // Localized text
+                        languageService.getString('categories_not_recognized'),
                         style: GoogleFonts.poppins(color: Colors.white)));
               }
               if (state is GetAllCategoriesLoaded) {
-                data = BlocProvider.of<GetAllCategoriesBloc>(context)
-                    .getAllCategoriesModel;
+                final Category=state.categories;
                 return Expanded(
                   child: GridView.count(
                     crossAxisCount: 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
-                    children: data.categories!.map((category) {
+                    children: Category.map((category) {
                       return _buildCategoryCard(
-                        category.name ?? languageService.getString('no_name'), // Localized text
-                        category.image ?? 'no image',
+                           category.categories[0].name,
+                          category.categories[0].image,
                       );
                     }).toList(),
                   ),

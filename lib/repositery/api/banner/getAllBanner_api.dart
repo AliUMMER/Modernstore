@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/getAllBanner%20Model.dart';
+import 'package:modern_grocery/repositery/model/Banner/getAllBanner%20Model.dart';
 
 class GetallbannerApi {
   ApiClient apiClient = ApiClient();
