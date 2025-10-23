@@ -66,12 +66,29 @@ class Loginapi {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("token", loginmodel.accessToken);
         await prefs.setString("phone", loginmodel.user.phoneNumber);
+        await prefs.setString("userId", loginmodel.user.id);
+        final userRole = loginmodel.user.role;
+        await prefs.setString('role', userRole);
 
-        print(' Token saved successfully: ${loginmodel.accessToken}');
+        final isAdmin = userRole.toLowerCase() == 'admin';
+        await prefs.setBool('isAdmin', isAdmin);
+
+        if (loginmodel.user.name != null) {
+          await prefs.setString('userName', loginmodel.user.name);
+        }
+
+        print('User role: $userRole');
+        print('Is Admin: $isAdmin');
+        print('userId:${loginmodel.user.id}');
+        print('Token saved successfully: ${loginmodel.accessToken}');
+
+        print('VERIFICATION');
+        print('Stored Token: ${prefs.getString("token")}');
+        print('Stored Role: ${prefs.getString("role")}');
+        print('Stored IsAdmin: ${prefs.getBool("isAdmin")}');
       } else {
         print(' No token received in response.');
       }
-
       print(' OTP verified successfully');
       return loginmodel;
     } catch (e) {

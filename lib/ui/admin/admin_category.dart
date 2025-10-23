@@ -114,6 +114,7 @@ class _AdminCategoryState extends State<AdminCategory> {
   }
 
   @override
+  
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -329,7 +330,7 @@ class _AdminCategoryState extends State<AdminCategory> {
 
   void _handleCategorySubmission() {
     if (_categoryController.text.trim().isEmpty || _image == null) {
-      setState(() => _isUploading = true); // Trigger validation
+      setState(() => _isUploading = true);
       _showSnackBar(
           'Please provide both a category name and an image', Colors.red);
       return;
@@ -462,7 +463,6 @@ class _AdminCategoryState extends State<AdminCategory> {
                             semanticsLabel: 'Edit category',
                           ),
                           onPressed: () {
-                            // TODO: Implement edit functionality
                             _showSnackBar('Edit functionality not implemented',
                                 Colors.blue);
                           },
@@ -475,7 +475,7 @@ class _AdminCategoryState extends State<AdminCategory> {
             ),
           );
         }
-        return const SizedBox(); // Fallback for unhandled states
+        return const SizedBox();
       },
     );
   }

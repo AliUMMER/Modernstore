@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:modern_grocery/main.dart';
 import 'package:modern_grocery/repositery/api/api_client.dart';
+import 'package:modern_grocery/repositery/model/product/getByIdProduct.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modern_grocery/repositery/model/Banner/CreateBanner_model.dart';
 
@@ -27,16 +28,22 @@ class CreatebannerApi {
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
+    final role = prefs.getString('role');
     print('Stored token: $token');
+    print('User role: $role');
+
     if (token == null || token.isEmpty) {
       throw Exception('Access token not found. Please log in again.');
     }
+    if (role != 'adimin') {
+      throw Exception('Unauthorized: Only admins can create banners.');
+    }
 
     final uri = Uri.parse('$basePath/banner/create');
-
     final request = http.MultipartRequest('POST', uri);
 
     request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Content-Type'] = 'multipart/form-data';
 
     request.fields.addAll({
       'title': title,
@@ -45,6 +52,7 @@ class CreatebannerApi {
       'categoryId': categoryId,
       'link': link,
     });
+    print('Form fields: ${request.fields}');
 
     final fileName = file.path.split('/').last;
     final extension = fileName.split('.').last.toLowerCase();
@@ -53,7 +61,7 @@ class CreatebannerApi {
     // --- Start of Custom Upload Progress Logic ---
     // Read the file as a stream
     final fileStream = file.openRead();
-    final totalLength = await file.length(); // Get total length of the file
+    final totalLength = await file.length();
 
     int bytesSent = 0;
 
@@ -61,23 +69,20 @@ class CreatebannerApi {
     final progressStream = StreamTransformer<List<int>, List<int>>.fromHandlers(
       handleData: (data, sink) {
         bytesSent += data.length;
-        onSendProgress?.call(
-            bytesSent, totalLength); // Call the progress callback
+        onSendProgress?.call(bytesSent, totalLength);
         sink.add(data);
       },
     ).bind(fileStream);
 
     final multipartFile = http.MultipartFile(
-      'image', // 👈 Double-check this field name with your backend
-      progressStream, // Use the progress-tracking stream
+      'image',
+      progressStream,
       totalLength,
       filename: fileName,
       contentType: contentType,
     );
 
     request.files.add(multipartFile);
-
-    // --- End of Custom Upload Progress Logic ---
 
     // Send the request
     final streamedResponse = await request.send();

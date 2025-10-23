@@ -15,19 +15,19 @@ class ApiClient {
 
     final String url = basePath + (path.startsWith('/') ? path : '/$path');
 
-    if (kDebugMode) print('🌐 API Request: $method $url');
+    if (kDebugMode) print(' API Request: $method $url');
 
     final headers = <String, String>{
       'Content-Type': 'application/json',
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
 
-    if (kDebugMode) print('🔑 Token: ${token ?? "No token"}');
+    if (kDebugMode) print(' Token: ${token ?? "No token"}');
 
     String? encodedBody;
     if (body != null) {
       encodedBody = body is String ? body : jsonEncode(body);
-      if (kDebugMode) print('📦 Body: $encodedBody');
+      if (kDebugMode) print(' Body: $encodedBody');
     }
 
     http.Response response;
@@ -54,7 +54,7 @@ class ApiClient {
           response = await http.get(Uri.parse(url), headers: headers);
       }
     } catch (e) {
-      if (kDebugMode) print('❌ Network error on $path: $e');
+      if (kDebugMode) print(' Network error on $path: $e');
       throw ApiException('Network error: $e', 0);
     }
 
@@ -63,7 +63,7 @@ class ApiClient {
       print('🧾 Response: ${response.body}');
     }
 
-    // ✅ Error handling
+  
     if (response.statusCode >= 400) {
       log('$path : ${response.statusCode} : ${response.body}');
       throw ApiException(_decodeError(response), response.statusCode);
