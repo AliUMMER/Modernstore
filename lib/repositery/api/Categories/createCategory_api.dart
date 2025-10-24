@@ -1,20 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
-import 'package:modern_grocery/repositery/api/api_client.dart';
+import 'package:modern_grocery/main.dart';
+import 'package:modern_grocery/repositery/model/Categories/createCategory_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreatecategoryApi {
-  final ApiClient apiClient;
-
-  CreatecategoryApi({required this.apiClient});
-
-  Future<void> uploadCategory({
+  Future<CreateCategoryModel> uploadCategory({
     required String categoryName,
     required File imageFile,
+   
   }) async {
-    final url = Uri.parse('https/api/category/create');
+    final url = Uri.parse('$basePath/category/create');
     final request = http.MultipartRequest('POST', url);
 
     final preferences = await SharedPreferences.getInstance();
@@ -42,8 +39,7 @@ class CreatecategoryApi {
       print(' Response Body: $resBody');
 
       if (response.statusCode == 200) {
-        final data = json.decode(resBody);
-        print(' Category Created: ${data['data'] ?? 'No data returned'}');
+        return CreateCategoryModel.fromJson(json.decode(resBody));
       } else {
         final errorResponse = json.decode(resBody);
         throw Exception(

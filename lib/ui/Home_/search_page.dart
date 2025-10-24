@@ -17,9 +17,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   int selectedIndex = 0;
-  late LanguageService languageService; 
+  late LanguageService languageService;
 
   @override
   void initState() {
@@ -78,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                 languageService.getString('find_products'), // Localized text
                 style: GoogleFonts.poppins(
                   fontSize: 24.sp,
-                  color: AppConstants.textColor,
+                  color: appColor.textColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -87,15 +86,16 @@ class _SearchPageState extends State<SearchPage> {
             Container(
               decoration: BoxDecoration(
                 border:
-                    Border.all(color: AppConstants.secondaryText, width: 2.w),
+                    Border.all(color: appColor.secondaryText, width: 2.w),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: TextField(
                 style: GoogleFonts.poppins(color: Color(0x91FCF8E8)),
                 decoration: InputDecoration(
-                  hintText: languageService.getString('search_something'), // Localized text
+                  hintText: languageService
+                      .getString('search_something'), // Localized text
                   hintStyle: GoogleFonts.poppins(
-                      color: AppConstants.primaryText, fontSize: 14.sp),
+                      color: appColor.primaryText, fontSize: 14.sp),
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.search, color: Color(0x91FCF8E8)),
                   contentPadding:
@@ -126,7 +126,7 @@ class _SearchPageState extends State<SearchPage> {
                         style: GoogleFonts.poppins(color: Colors.white)));
               }
               if (state is GetAllCategoriesLoaded) {
-                final Category=state.categories;
+                final Category = state.categories;
                 return Expanded(
                   child: GridView.count(
                     crossAxisCount: 2,
@@ -134,8 +134,8 @@ class _SearchPageState extends State<SearchPage> {
                     mainAxisSpacing: 20,
                     children: Category.map((category) {
                       return _buildCategoryCard(
-                           category.categories[0].name,
-                          category.categories[0].image,
+                        category.name,
+                        category.image,
                       );
                     }).toList(),
                   ),
@@ -160,7 +160,7 @@ class _SearchPageState extends State<SearchPage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppConstants.primaryText,
+          color: appColor.primaryText,
           borderRadius: BorderRadius.circular(22.r),
         ),
         child: Column(

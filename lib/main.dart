@@ -79,9 +79,7 @@ class MyApp extends StatelessWidget {
                   ),
                   BlocProvider(
                     create: (context) => CreateCategoryBloc(
-                      createcategoryApi: CreatecategoryApi(
-                        apiClient: ApiClient(),
-                      ),
+                      createcategoryApi: CreatecategoryApi(),
                     ),
                   ),
                   BlocProvider(

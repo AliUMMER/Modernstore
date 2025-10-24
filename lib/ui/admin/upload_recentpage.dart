@@ -85,18 +85,18 @@ class _RecentPageState extends State<RecentPage> {
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
-        style: const TextStyle(color: AppConstants.textColor),
+        style: const TextStyle(color: appColor.textColor),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: AppConstants.textColor),
+          labelStyle: const TextStyle(color: appColor.textColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: AppConstants.accentColor),
+            borderSide: BorderSide(color: appColor.accentColor),
           ),
           filled: true,
-          fillColor: AppConstants.backgroundColor,
+          fillColor: appColor.backgroundColor,
         ),
         validator: isRequired
             ? (value) {
@@ -118,7 +118,7 @@ class _RecentPageState extends State<RecentPage> {
       return const Center(
         child: Text(
           'Image not found',
-          style: TextStyle(color: AppConstants.textColor, fontSize: 16),
+          style: TextStyle(color: appColor.textColor, fontSize: 16),
         ),
       );
     }
@@ -127,10 +127,10 @@ class _RecentPageState extends State<RecentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppConstants.backgroundColor,
+      backgroundColor: appColor.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppConstants.backgroundColor,
-        foregroundColor: AppConstants.textColor,
+        backgroundColor: appColor.backgroundColor,
+        foregroundColor: appColor.textColor,
         title: Text('Banner Management'),
       ),
       body: BlocListener<CreateBannerBloc, CreateBannerState>(
@@ -147,9 +147,7 @@ class _RecentPageState extends State<RecentPage> {
             setState(() => _uploadProgress = 0.0);
             Navigator.of(context).pop();
           } else if (state is CreateBannerError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.message}')),
-            );
+            Text('Error: ${state.message}');
           }
         },
         child: SingleChildScrollView(
@@ -178,12 +176,12 @@ class _RecentPageState extends State<RecentPage> {
                     value: _uploadProgress,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                        AppConstants.accentColor),
+                        appColor.accentColor),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(color: AppConstants.textColor),
+                    style: const TextStyle(color: appColor.textColor),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -191,7 +189,7 @@ class _RecentPageState extends State<RecentPage> {
                 Text(
                   'Banner Details',
                   style: TextStyle(
-                    color: AppConstants.textColor,
+                    color: appColor.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -232,7 +230,7 @@ class _RecentPageState extends State<RecentPage> {
                           ? 'Uploading...'
                           : 'Save Banner'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppConstants.buttonColor,
+                        backgroundColor: appColor.buttonColor,
                         foregroundColor: Colors.black,
                         minimumSize: const Size(double.infinity, 50),
                         textStyle: const TextStyle(fontSize: 18),

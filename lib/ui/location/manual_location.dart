@@ -20,14 +20,11 @@ class ManualLocation extends StatefulWidget {
 }
 
 class _ManualLocationState extends State<ManualLocation> {
-  bool isAdmin = false;
+  bool isAdmin = true;
   bool isLoadingAdminStatus = true;
   String currentLocation = "Use My Current Location";
   String? apiAddress;
   String selectedAddressType = 'current';
-
-  // 🔧 DEVELOPER MODE - Set to false before production
-  final bool isDeveloperMode = true;
 
   @override
   void initState() {
@@ -44,13 +41,6 @@ class _ManualLocationState extends State<ManualLocation> {
       final userType = prefs.getString('userType');
       final isAdminFlag = prefs.getBool('isAdmin');
 
-      print('=== ADMIN STATUS CHECK ===');
-      print('role: $role');
-      print('userType: $userType');
-      print('isAdmin: $isAdminFlag');
-      print('All keys: ${prefs.getKeys()}');
-      print('========================');
-
       setState(() {
         isAdmin = role == 'admin' ||
             role == 'Admin' ||
@@ -60,10 +50,7 @@ class _ManualLocationState extends State<ManualLocation> {
 
         isLoadingAdminStatus = false;
       });
-
-      print('✅ Is Admin: $isAdmin');
     } catch (e) {
-      print('❌ Error checking admin status: $e');
       setState(() {
         isAdmin = false;
         isLoadingAdminStatus = false;
@@ -137,108 +124,6 @@ class _ManualLocationState extends State<ManualLocation> {
     );
   }
 
-  // 🔧 DEVELOPER TEST FUNCTIONS
-  Future<void> _setAdminMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('role', 'admin');
-    await prefs.setBool('isAdmin', true);
-    setState(() {
-      isAdmin = true;
-    });
-    _showSnack('✅ Admin mode activated');
-    print('🔧 DEV: Switched to ADMIN mode');
-  }
-
-  Future<void> _setUserMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('role', 'user');
-    await prefs.setBool('isAdmin', false);
-    setState(() {
-      isAdmin = false;
-    });
-    _showSnack('✅ User mode activated');
-    print('🔧 DEV: Switched to USER mode');
-  }
-
-  Future<void> _showDebugInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF1C1C1C),
-        title: Text(
-          '🔍 Debug Info',
-          style: GoogleFonts.poppins(color: Color(0xFFFCF8E8)),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _debugInfoRow('Token', prefs.getString('token')),
-              _debugInfoRow('Role', prefs.getString('role')),
-              _debugInfoRow('IsAdmin', prefs.getBool('isAdmin').toString()),
-              _debugInfoRow('UserId', prefs.getString('userId')),
-              _debugInfoRow('Phone', prefs.getString('phone')),
-              Divider(color: Color(0xFFF5E9B5)),
-              Text(
-                'All Keys:',
-                style: GoogleFonts.poppins(
-                  color: Color(0xFFF5E9B5),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                prefs.getKeys().join('\n'),
-                style: GoogleFonts.poppins(
-                  color: Color(0xFFFCF8E8),
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Close',
-              style: GoogleFonts.poppins(color: Color(0xFFF5E9B5)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _debugInfoRow(String label, String? value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$label: ',
-            style: GoogleFonts.poppins(
-              color: Color(0xFFF5E9B5),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value ?? 'null',
-              style: GoogleFonts.poppins(
-                color: Color(0xFFFCF8E8),
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (isLoadingAdminStatus) {
@@ -273,120 +158,7 @@ class _ManualLocationState extends State<ManualLocation> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: ListView(
                   children: [
-                    // 🔧 DEVELOPER TESTING PANEL (Only visible in dev mode)
-                    if (isDeveloperMode) ...[
-                      SizedBox(height: 20.h),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Color(0xFF1C1C1C),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.orange, width: 2),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.bug_report, color: Colors.orange),
-                                SizedBox(width: 8),
-                                Text(
-                                  '🔧 Developer Testing Panel',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.orange,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: _setAdminMode,
-                                    icon: Icon(Icons.admin_panel_settings,
-                                        size: 18),
-                                    label: Text('Admin'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: isAdmin
-                                          ? Color(0xFFF5E9B5)
-                                          : Color(0xFF2C2C2C),
-                                      foregroundColor: isAdmin
-                                          ? Color(0xFF0A0808)
-                                          : Color(0xFFFCF8E8),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: _setUserMode,
-                                    icon: Icon(Icons.person, size: 18),
-                                    label: Text('User'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: !isAdmin
-                                          ? Color(0xFFF5E9B5)
-                                          : Color(0xFF2C2C2C),
-                                      foregroundColor: !isAdmin
-                                          ? Color(0xFF0A0808)
-                                          : Color(0xFFFCF8E8),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            OutlinedButton.icon(
-                              onPressed: _showDebugInfo,
-                              icon: Icon(Icons.info_outline,
-                                  color: Color(0xFFF5E9B5)),
-                              label: Text(
-                                'Show Debug Info',
-                                style: GoogleFonts.poppins(
-                                    color: Color(0xFFF5E9B5)),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xFFF5E9B5)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
-
-                    SizedBox(height: 168.h),
-
-                    // Show admin badge if user is admin
-                    if (isAdmin) ...[
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF5E9B5),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.admin_panel_settings,
-                                color: Color(0xFF0A0808)),
-                            SizedBox(width: 8),
-                            Text(
-                              'Admin Mode',
-                              style: GoogleFonts.poppins(
-                                color: Color(0xFF0A0808),
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
-
+                    SizedBox(height: 150.h),
                     Text(
                       languageService.getString('select_delivery_address'),
                       style: GoogleFonts.poppins(
@@ -523,17 +295,12 @@ class _ManualLocationState extends State<ManualLocation> {
               ? currentLocation
               : (apiAddress ?? '');
 
-          print('📍 Chosen Address: $chosenAddress');
-          print('👤 Is Admin: $isAdmin');
-
-          if (isAdmin) {
-            print('🔐 Navigating to Admin Panel');
+          if (!isAdmin) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AdminNavibar()),
             );
           } else {
-            print('👥 Navigating to User Home');
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

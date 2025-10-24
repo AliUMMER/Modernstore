@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
 import 'package:modern_grocery/bloc/Categories_/GetCategoryProducts/get_category_products_bloc.dart';
 import 'package:modern_grocery/bloc/Product_/offerproduct/offerproduct_bloc.dart';
@@ -15,7 +13,9 @@ import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/products/fruites_page.dart';
 import 'package:modern_grocery/ui/products/product_details.dart';
 import 'package:modern_grocery/widgets/app_color.dart';
+import 'package:modern_grocery/widgets/fontstyle.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,6 +28,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final CarouselController _carouselController = CarouselController();
   int _currrentBanner = 0;
 
   @override
@@ -37,16 +38,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkTokenAndFetchData() async {
-    // Debug: Check if token exists
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     print(
-        '🔐 [HomePage] Token check: ${token != null && token.isNotEmpty ? "Token exists (${token.substring(0, 20)}...)" : "NO TOKEN FOUND!"}');
+        ' [HomePage] Token check: ${token != null && token.isNotEmpty ? "Token exists (${token.substring(0, 20)}...)" : "NO TOKEN FOUND!"}');
 
     if (token == null || token.isEmpty) {
       print(
-          '⚠️ [HomePage] WARNING: No authentication token! User must login first.');
-      // Optionally show a dialog or redirect to login
+          ' [HomePage] WARNING: No authentication token! User must login first.');
     }
 
     // Fetch data when the widget initializes
@@ -102,30 +101,28 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 AppLocalizations.getString('location', lang),
-                                style: GoogleFonts.poppins(
-                                  color: const Color(0xADFCF8E8),
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                style: fontStyles.heading2.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15.sp),
                               ),
                               Row(
                                 children: [
                                   Icon(
                                     Icons.location_on_sharp,
-                                    color: Color(0xFFF5E9B5),
+                                    color: appColor.iconColor,
                                     size: 22.sp,
                                   ),
                                   SizedBox(width: 3.w),
                                   Text(
                                     'Tirur ITC road', // Keep this as is since it's location specific
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFFFCF8E8),
-                                      fontSize: 16.sp,
+                                    style: fontStyles.heading2.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  Icon(Icons.keyboard_arrow_down,
-                                      color: Color(0xFFF5E9B5)),
+                                  Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: appColor.iconColor,
+                                  ),
                                 ],
                               ),
                             ],
@@ -138,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                             },
                             icon: Icon(
                               Icons.favorite_outline,
-                              color: Color(0xFFF5E9B5),
+                              color: appColor.iconColor,
                               size: 22.sp,
                             ),
                           )
@@ -153,10 +150,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: InputDecoration(
                             hintText: AppLocalizations.getString(
                                 'search_something', lang),
-                            hintStyle: GoogleFonts.poppins(
-                                color: AppConstants.primaryText,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400),
+                            hintStyle: fontStyles.primaryTextStyle,
                             prefixIcon:
                                 Icon(Icons.search, color: Color(0x91FCF8E8)),
                             filled: true,
@@ -164,20 +158,17 @@ class _HomePageState extends State<HomePage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText,
-                                  width: 2.w),
+                                  color: appColor.secondaryText, width: 2.w),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText,
-                                  width: 2.w),
+                                  color: appColor.secondaryText, width: 2.w),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide(
-                                  color: AppConstants.secondaryText,
-                                  width: 2.w),
+                                  color: appColor.secondaryText, width: 2.w),
                             ),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15.h, horizontal: 13.w),
@@ -247,17 +238,14 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Icon(
                                       Icons.error_outline,
-                                      color: Colors.red,
+                                      color: appColor.errorColor,
                                       size: 40.sp,
                                     ),
                                     SizedBox(height: 10.h),
                                     Text(
                                       AppLocalizations.getString(
                                           'failed_load_banners', lang),
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 14.sp,
-                                      ),
+                                      style: fontStyles.errorstyle,
                                     ),
                                     SizedBox(height: 5.h),
                                     Text(
@@ -267,10 +255,7 @@ class _HomePageState extends State<HomePage> {
                                               'please_login', lang)
                                           : AppLocalizations.getString(
                                               'try_again_later', lang),
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.grey[400],
-                                        fontSize: 12.sp,
-                                      ),
+                                      style: fontStyles.errorstyle2,
                                       textAlign: TextAlign.center,
                                     ),
                                   ],
@@ -281,127 +266,130 @@ class _HomePageState extends State<HomePage> {
 
                           if (state is GetAllBannerLoaded) {
                             final banner = state.banner;
+
+                            if (banner.banners.isEmpty) {
+                              return Container(
+                                  height: 200.h,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[800],
+                                    borderRadius: BorderRadius.circular(8.0.r),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.getString(
+                                          'no_banners', lang),
+                                      style: fontStyles.errorstyle2,
+                                    ),
+                                  ));
+                            }
+
                             final bannerImages = banner.banners.toList();
 
                             return Column(
                               children: [
-                                bannerImages.isNotEmpty
-                                    ? Column(
-                                        children: [
-                                          CarouselSlider(
-                                            items: bannerImages.map((imageUrl) {
-                                              return ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        8.0.r),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: imageUrl.images
-                                                      .toString(),
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Container(
-                                                    color: Colors.grey[800],
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons
-                                                            .image_not_supported,
-                                                        color: Colors.grey[400],
-                                                        size: 50.sp,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  placeholder: (context, url) =>
-                                                      Shimmer.fromColors(
-                                                    baseColor:
-                                                        Colors.grey[900]!,
-                                                    highlightColor:
-                                                        Colors.grey[800]!,
-                                                    child: Container(
-                                                      color: Colors.grey[800],
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            options: CarouselOptions(
-                                              height: 222.h,
-                                              aspectRatio: 16 / 9,
-                                              viewportFraction: 0.8,
-                                              initialPage: 0,
-                                              enableInfiniteScroll: true,
-                                              reverse: false,
-                                              autoPlay: true,
-                                              autoPlayInterval:
-                                                  const Duration(seconds: 3),
-                                              autoPlayAnimationDuration:
-                                                  const Duration(
-                                                      milliseconds: 800),
-                                              autoPlayCurve:
-                                                  Curves.fastOutSlowIn,
-                                              enlargeCenterPage: true,
-                                              enlargeFactor: 0.3,
-                                              scrollDirection: Axis.horizontal,
-                                              onPageChanged: (index, reason) {
-                                                setState(() {
-                                                  _currrentBanner = index;
-                                                });
-                                              },
-                                            ),
+                                CarouselSlider(
+                                  items: bannerImages.map((imageUrl) {
+                                    return ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(8.0.r),
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl.images.toString(),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        errorWidget: (context, url, error) =>
+                                            Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[800],
+                                            borderRadius:
+                                                BorderRadius.circular(8.0.r),
                                           ),
-                                          SizedBox(height: 22.h),
-
-                                          // Indicator Dots
-                                          Row(
+                                          child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: bannerImages
-                                                .asMap()
-                                                .entries
-                                                .map((entry) {
-                                              return GestureDetector(
-                                                onTap: () => setState(() {
-                                                  _currrentBanner = entry.key;
-                                                }),
-                                                child: Container(
-                                                  width: _currrentBanner ==
-                                                          entry.key
-                                                      ? 10.w
-                                                      : 6.w,
-                                                  height: 6.h,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 8.h,
-                                                      horizontal: 3.w),
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: _currrentBanner ==
-                                                            entry.key
-                                                        ? Colors.white
-                                                        : Colors.grey,
-                                                  ),
+                                            children: [
+                                              Icon(
+                                                Icons.broken_image_outlined,
+                                                color: Colors.grey[400],
+                                                size: 50.sp,
+                                              ),
+                                              SizedBox(height: 8.h),
+                                              Text(
+                                                AppLocalizations.getString(
+                                                    'image_load_failed', lang),
+                                                style: fontStyles.errorstyle2
+                                                    .copyWith(
+                                                  color: Colors.grey[400],
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      )
-                                    : Container(
-                                        height: 200.h,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[800],
-                                          borderRadius:
-                                              BorderRadius.circular(8.0.r),
                                         ),
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalizations.getString(
-                                                'no_banners', lang),
-                                            style: GoogleFonts.poppins(
-                                                color: Colors.white),
+                                        placeholder: (context, url) =>
+                                            Shimmer.fromColors(
+                                          baseColor: Colors.grey[900]!,
+                                          highlightColor: Colors.grey[800]!,
+                                          child: Container(
+                                            color: Colors.grey[800],
                                           ),
                                         ),
                                       ),
+                                    );
+                                  }).toList(),
+                                  options: CarouselOptions(
+                                    height: 222.h,
+                                    aspectRatio: 16 / 9,
+                                    viewportFraction: 0.8,
+                                    initialPage: 0,
+                                    enableInfiniteScroll:
+                                        bannerImages.length > 1,
+                                    reverse: false,
+                                    autoPlay: bannerImages.length > 1,
+                                    autoPlayInterval:
+                                        const Duration(seconds: 3),
+                                    autoPlayAnimationDuration:
+                                        const Duration(milliseconds: 800),
+                                    autoPlayCurve: Curves.fastOutSlowIn,
+                                    enlargeCenterPage: true,
+                                    enlargeFactor: 0.3,
+                                    scrollDirection: Axis.horizontal,
+                                    onPageChanged: (index, reason) {
+                                      if (context.mounted) {
+                                        _currrentBanner = index;
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 22.h),
+                                if (bannerImages.length > 1)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: bannerImages
+                                        .asMap()
+                                        .entries
+                                        .map((entry) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          // Handle indicator tap if needed
+                                        },
+                                        child: Container(
+                                          width: _currrentBanner == entry.key
+                                              ? 10.w
+                                              : 6.w,
+                                          height: 6.h,
+                                          margin: EdgeInsets.symmetric(
+                                            vertical: 8.h,
+                                            horizontal: 3.w,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: _currrentBanner == entry.key
+                                                ? Colors.white
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
                               ],
                             );
                           }
@@ -421,18 +409,12 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         AppLocalizations.getString('categories', lang),
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFCF8E8),
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: fontStyles.heading2,
                       ),
                       TextButton(
                         onPressed: () {},
-                        child: Text(
-                          AppLocalizations.getString('see_all', lang),
-                          style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
-                        ),
+                        child: Text(AppLocalizations.getString('see_all', lang),
+                            style: fontStyles.bodyText),
                       ),
                     ],
                   ),
@@ -487,8 +469,7 @@ class _HomePageState extends State<HomePage> {
                             child: Text(
                                 AppLocalizations.getString(
                                     'failed_load_categories', lang),
-                                style:
-                                    GoogleFonts.poppins(color: Colors.white)));
+                                style: fontStyles.errorstyle));
                       }
                       if (state is GetAllCategoriesLoaded) {
                         final Category = state.categories;
@@ -500,10 +481,8 @@ class _HomePageState extends State<HomePage> {
                             itemCount: Category.length,
                             itemBuilder: (context, index) {
                               final category = Category[index];
-                              final String categoryName =
-                                  category.categories[0].name;
-                              final String imageUrl =
-                                  category.categories[0].image;
+                              final String categoryName = category.name;
+                              final String imageUrl = category.image;
                               final bool useLocalImage = imageUrl.isEmpty;
 
                               return Padding(
@@ -514,11 +493,11 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     CircleAvatar(
                                       radius: 40.r,
-                                      backgroundColor: const Color(0xFFFCF8E8),
+                                      backgroundColor: Color(0xFFFCF8E8),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: useLocalImage
-                                            ? Image.asset(
+                                            ? Image.network(
                                                 imageUrl,
                                                 fit: BoxFit.cover,
                                               )
@@ -535,13 +514,13 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     SizedBox(height: 11.h),
-                                    Text(
-                                      categoryName,
-                                      style: GoogleFonts.poppins(
+                                    Text(categoryName,
+                                        style: fontStyles.primaryTextStyle
+                                            .copyWith(
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w600,
-                                          color: Color(0xFFFCF8E8)),
-                                    ),
+                                          color: appColor.textColor2,
+                                        )),
                                   ],
                                 ),
                               );
@@ -562,18 +541,12 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         AppLocalizations.getString('best_deals', lang),
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFCF8E8),
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: fontStyles.heading2,
                       ),
                       TextButton(
                         onPressed: () {},
-                        child: Text(
-                          AppLocalizations.getString('see_all', lang),
-                          style: GoogleFonts.poppins(color: Color(0xFFDDD2A3)),
-                        ),
+                        child: Text(AppLocalizations.getString('see_all', lang),
+                            style: fontStyles.bodyText),
                       ),
                     ],
                   ),

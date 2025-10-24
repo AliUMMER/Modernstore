@@ -40,7 +40,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppConstants.textColor,
+      backgroundColor: appColor.textColor,
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -73,7 +73,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
         ],
       ),
       bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(canvasColor: AppConstants.textColor),
+        data: Theme.of(context).copyWith(canvasColor: appColor.textColor),
         child: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

@@ -31,6 +31,7 @@ class _AdminCategoryState extends State<AdminCategory> {
     super.initState();
 
     BlocProvider.of<GetAllCategoriesBloc>(context).add(fetchGetAllCategories());
+    ;
   }
 
   File? _image;
@@ -114,7 +115,6 @@ class _AdminCategoryState extends State<AdminCategory> {
   }
 
   @override
-  
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -195,7 +195,7 @@ class _AdminCategoryState extends State<AdminCategory> {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFFFF1C5),
           foregroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         ),
@@ -228,7 +228,7 @@ class _AdminCategoryState extends State<AdminCategory> {
         },
         child: AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           title: const Text('Add New Category'),
           content: SingleChildScrollView(
             child: Column(
@@ -239,7 +239,7 @@ class _AdminCategoryState extends State<AdminCategory> {
                   'Category Name *',
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 TextField(
                   controller: _categoryController,
                   decoration: InputDecoration(
@@ -365,7 +365,7 @@ class _AdminCategoryState extends State<AdminCategory> {
           );
         } else if (state is GetAllCategoriesLoaded) {
           final categories = state.categories;
-          ;
+
           if (categories.isEmpty || categories.isEmpty) {
             return const Center(
               child: Text(
@@ -400,7 +400,7 @@ class _AdminCategoryState extends State<AdminCategory> {
                           children: [
                             const SizedBox(height: 20),
                             Image.network(
-                              category.categories[0].image,
+                              category.image,
                               height: 80,
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>
@@ -422,13 +422,13 @@ class _AdminCategoryState extends State<AdminCategory> {
                             ),
                             SizedBox(height: 15.h),
                             Text(
-                              category.categories[0].name,
+                              category.name,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
-                              semanticsLabel: category.categories[0].name,
+                              semanticsLabel: category.name,
                             ),
                             SizedBox(height: 15),
                             Container(

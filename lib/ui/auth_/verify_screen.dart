@@ -57,7 +57,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     final otp = getOTP();
 
     // Validate OTP length
-    if (otp.length != 5) {
+    if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -256,7 +256,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             keyboardType: TextInputType.number,
                             maxLength: 1,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFFFCF8E8),
+                              color:  Color(0xFFFCF8E8),
                               fontSize: 22.sp,
                               fontWeight: FontWeight.w600,
                             ),
@@ -282,12 +282,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               // Auto-submit when all fields are filled
                               if (index == 4 && value.isNotEmpty) {
                                 final otp = getOTP();
-                                if (otp.length == 5) {
+                                if (otp.length == 6) {
                                   FocusScope.of(context).unfocus();
                                   // Optional: Auto-verify after 500ms
-                                  // Future.delayed(const Duration(milliseconds: 500), () {
-                                  //   _handleVerify(context);
-                                  // });
+                                  Future.delayed(const Duration(milliseconds: 500), () {
+                                    _handleVerify(context);
+                                  });
                                 }
                               }
                             },

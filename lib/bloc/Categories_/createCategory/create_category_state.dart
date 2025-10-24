@@ -8,8 +8,8 @@ final class CreateCategoryInitial extends CreateCategoryState {}
 final class CreateCategoryLoading extends CreateCategoryState {}
 
 final class CreateCategoryLoaded extends CreateCategoryState {
-  final CreateCategoryModel createCategory;
-  CreateCategoryLoaded({required this.createCategory});
+  final  CreateCategoryModel result;
+  CreateCategoryLoaded({required this.result});
 }
 
 final class CreateCategoryError extends CreateCategoryState {

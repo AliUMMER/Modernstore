@@ -104,7 +104,7 @@ class _DeliverySuccessState extends State<DeliverySuccess>
                   ),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    color: AppConstants.textColor,
+                    color: appColor.textColor,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.16,

@@ -1,71 +1,61 @@
+// To parse this JSON data, do
+//
+//     final createCategoryModel = createCategoryModelFromJson(jsonString);
+
+import 'dart:convert';
+
+CreateCategoryModel createCategoryModelFromJson(String str) => CreateCategoryModel.fromJson(json.decode(str));
+
+String createCategoryModelToJson(CreateCategoryModel data) => json.encode(data.toJson());
+
 class CreateCategoryModel {
-  bool? success;
-  Category? category;
+    bool success;
+    Category category;
 
-  CreateCategoryModel({this.success, this.category});
+    CreateCategoryModel({
+        required this.success,
+        required this.category,
+    });
 
-  CreateCategoryModel.fromJson(Map<String, dynamic> json) {
-    if (json["success"] is bool) {
-      success = json["success"];
-    }
-    if (json["category"] is Map) {
-      category =
-          json["category"] == null ? null : Category.fromJson(json["category"]);
-    }
-  }
+    factory CreateCategoryModel.fromJson(Map<String, dynamic> json) => CreateCategoryModel(
+        success: json["success"],
+        category: Category.fromJson(json["category"]),
+    );
 
-  static List<CreateCategoryModel> fromList(List<Map<String, dynamic>> list) {
-    return list.map(CreateCategoryModel.fromJson).toList();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["success"] = success;
-    if (category != null) {
-      _data["category"] = category?.toJson();
-    }
-    return _data;
-  }
+    Map<String, dynamic> toJson() => {
+        "success": success,
+        "category": category.toJson(),
+    };
 }
 
 class Category {
-  String? name;
-  String? description;
-  String? image;
-  String? id;
-  int? v;
+    String name;
+    String description;
+    String image;
+    String id;
+    int v;
 
-  Category({this.name, this.description, this.image, this.id, this.v});
+    Category({
+        required this.name,
+        required this.description,
+        required this.image,
+        required this.id,
+        required this.v,
+    });
 
-  Category.fromJson(Map<String, dynamic> json) {
-    if (json["name"] is String) {
-      name = json["name"];
-    }
-    if (json["description"] is String) {
-      description = json["description"];
-    }
-    if (json["image"] is String) {
-      image = json["image"];
-    }
-    if (json["_id"] is String) {
-      id = json["_id"];
-    }
-    if (json["__v"] is int) {
-      v = json["__v"];
-    }
-  }
+    factory Category.fromJson(Map<String, dynamic> json) => Category(
+        name: json["name"],
+        description: json["description"],
+        image: json["image"],
+        id: json["_id"],
+        v: json["__v"],
+    );
 
-  static List<Category> fromList(List<Map<String, dynamic>> list) {
-    return list.map(Category.fromJson).toList();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["name"] = name;
-    _data["description"] = description;
-    _data["image"] = image;
-    _data["_id"] = id;
-    _data["__v"] = v;
-    return _data;
-  }
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "description": description,
+        "image": image,
+        "_id": id,
+        "__v": v,
+    };
 }

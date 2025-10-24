@@ -10,8 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modern_grocery/repositery/model/Banner/CreateBanner_model.dart';
 
 class CreatebannerApi {
-  ApiClient api = ApiClient();
-
   Future<CreateBannerModel> uploadBanner({
     required String title,
     required String category,

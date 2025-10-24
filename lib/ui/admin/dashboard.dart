@@ -143,34 +143,14 @@ class _DashboardState extends State<Dashboard> {
                         Positioned(
                           bottom: 12,
                           right: 12,
-                          child: GestureDetector(
-                            onTap: () async {
-                              // final picker = ImagePicker();
-                              // final pickedFile = await picker.pickImage(
-                              //     source: ImageSource.gallery);
-
-                              // if (pickedFile != null) {
-                              //   print('Selected image: ${pickedFile.path}');
-                              //   Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           RecentPage(imagePath: pickedFile.path),
-                              //     ),
-                              //   );
-                              // } else {
-                              //   print('No image selected.');
-                              // }
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.black,
-                                shape: BoxShape.circle,
-                              ),
-                              padding: const EdgeInsets.all(8),
-                              child: const Icon(Icons.add,
-                                  color: Colors.white, size: 20),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
                             ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(Icons.add,
+                                color: Colors.white, size: 20),
                           ),
                         ),
                       ],

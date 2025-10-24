@@ -62,7 +62,7 @@ class _FavouritePageState extends State<FavouritePage> {
                   children: [
                     SizedBox(width: 40.w),
                     BackButton(
-                      color: AppConstants.primaryText,
+                      color: appColor.primaryText,
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
@@ -77,7 +77,7 @@ class _FavouritePageState extends State<FavouritePage> {
                       icon: Icon(
                         Icons.shopping_cart_outlined,
                         size: 22.sp,
-                        color: AppConstants.primaryText,
+                        color: appColor.primaryText,
                       ),
                       onPressed: () {
                         if (widget.onFavTap != null) {
@@ -93,7 +93,7 @@ class _FavouritePageState extends State<FavouritePage> {
                   child: Text(
                     languageService.getString('favorites'),
                     style: GoogleFonts.poppins(
-                      color: AppConstants.primaryText,
+                      color: appColor.primaryText,
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.24,
