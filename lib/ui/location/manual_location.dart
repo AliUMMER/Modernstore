@@ -6,11 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/delivery_/addDeliveryAddress/add_delivery_address_bloc.dart';
 import 'package:modern_grocery/services/language_service.dart';
-import 'package:modern_grocery/ui/admin/admin_navibar.dart';
 import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:modern_grocery/ui/location/your_location.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ManualLocation extends StatefulWidget {
   const ManualLocation({super.key});
@@ -20,8 +18,6 @@ class ManualLocation extends StatefulWidget {
 }
 
 class _ManualLocationState extends State<ManualLocation> {
-  bool isAdmin = true;
-  bool isLoadingAdminStatus = true;
   String currentLocation = "Use My Current Location";
   String? apiAddress;
   String selectedAddressType = 'current';
@@ -29,33 +25,8 @@ class _ManualLocationState extends State<ManualLocation> {
   @override
   void initState() {
     super.initState();
-    _checkAdminStatus();
+
     _getCurrentLocation();
-  }
-
-  Future<void> _checkAdminStatus() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      final role = prefs.getString('role');
-      final userType = prefs.getString('userType');
-      final isAdminFlag = prefs.getBool('isAdmin');
-
-      setState(() {
-        isAdmin = role == 'admin' ||
-            role == 'Admin' ||
-            userType == 'admin' ||
-            userType == 'Admin' ||
-            isAdminFlag == true;
-
-        isLoadingAdminStatus = false;
-      });
-    } catch (e) {
-      setState(() {
-        isAdmin = false;
-        isLoadingAdminStatus = false;
-      });
-    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -126,17 +97,6 @@ class _ManualLocationState extends State<ManualLocation> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoadingAdminStatus) {
-      return Scaffold(
-        backgroundColor: const Color(0xFF0A0909),
-        body: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFFF5E9B5),
-          ),
-        ),
-      );
-    }
-
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return BlocListener<AddDeliveryAddressBloc, AddDeliveryAddressState>(
@@ -294,19 +254,11 @@ class _ManualLocationState extends State<ManualLocation> {
           String chosenAddress = selectedAddressType == 'current'
               ? currentLocation
               : (apiAddress ?? '');
-
-          if (!isAdmin) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const AdminNavibar()),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const NavigationBarWidget()),
-            );
-          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const NavigationBarWidget()),
+          );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFF5E9B5),

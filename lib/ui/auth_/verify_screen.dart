@@ -6,8 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:modern_grocery/bloc/Login_/verify/verify_bloc.dart';
 import 'package:modern_grocery/bloc/Login_/verify/verify_event.dart';
 import 'package:modern_grocery/services/language_service.dart';
-import 'package:modern_grocery/ui/location/location_page.dart';
+import 'package:modern_grocery/ui/admin/admin_navibar.dart'; // Ensure this path is correct
+import 'package:modern_grocery/ui/location/location_page.dart'; // Ensure this path is correct
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerifyScreen extends StatefulWidget {
   final String phoneNumber; // Display format: +91 1234567890
@@ -28,13 +30,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
       List.generate(6, (index) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   bool isLoading = false;
+  bool isAdmin = false; // Flag to determine navigation target
+  bool isLoadingAdminStatus = true; // Start as true
 
   @override
   void initState() {
     super.initState();
+    _checkAdminStatus(); // Check admin status when screen initializes
     // Auto focus on first field when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      focusNodes[0].requestFocus();
+      if (mounted) {
+        // Check if widget is still mounted
+        focusNodes[0].requestFocus();
+      }
     });
   }
 
@@ -53,16 +61,56 @@ class _VerifyScreenState extends State<VerifyScreen> {
     return otpControllers.map((controller) => controller.text).join();
   }
 
+  // --- Check Admin Status ---
+  Future<void> _checkAdminStatus() async {
+    // Assume not admin initially, show loading
+    setState(() {
+      isLoadingAdminStatus = true;
+    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final role = prefs.getString('role');
+      final userType = prefs.getString('userType');
+      final isAdminFlag = prefs.getBool('isAdmin');
+
+      // Determine if user is admin based on stored values
+      final bool isAdminResult = role == 'admin' ||
+          role == 'Admin' ||
+          userType == 'admin' ||
+          userType == 'Admin' ||
+          isAdminFlag == true;
+
+      // Update state only if the widget is still mounted
+      if (mounted) {
+        setState(() {
+          isAdmin = isAdminResult;
+          isLoadingAdminStatus = false; // Done loading status
+        });
+      }
+    } catch (e) {
+      print("Error checking admin status: $e");
+      // If error occurs, assume not admin and stop loading
+      if (mounted) {
+        setState(() {
+          isAdmin = false;
+          isLoadingAdminStatus = false;
+        });
+      }
+    }
+  }
+
+  // --- Handle Verify Button Tap ---
   void _handleVerify(BuildContext context) {
     final otp = getOTP();
+    final languageService =
+        Provider.of<LanguageService>(context, listen: false);
 
     // Validate OTP length
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            Provider.of<LanguageService>(context, listen: false)
-                .getString('please_enter_complete_otp'),
+            languageService.getString('please_enter_complete_otp'),
           ),
           backgroundColor: Colors.red,
         ),
@@ -70,41 +118,57 @@ class _VerifyScreenState extends State<VerifyScreen> {
       return;
     }
 
-    // Trigger OTP verification
+    // Trigger OTP verification BLoC event
     BlocProvider.of<VerifyBloc>(context).add(
       fetchVerifyOTPEvent(
-        phoneNumber: widget.phoneNumberForApi,
+        phoneNumber: widget.phoneNumber,
         otp: otp,
       ),
     );
   }
 
+  // --- Handle Resend Button Tap ---
   void _handleResendOTP(BuildContext context) {
     // Clear existing OTP fields
     for (var controller in otpControllers) {
       controller.clear();
     }
-    focusNodes[0].requestFocus();
+    if (mounted) {
+      // Ensure widget is mounted before focusing
+      focusNodes[0].requestFocus();
+    }
 
-    // Trigger resend OTP
+    // Trigger resend OTP BLoC event
     BlocProvider.of<VerifyBloc>(context).add(
-      ResendOTPRequested(phoneNumber: widget.phoneNumberForApi),
+      ResendOTPRequested(phoneNumber: widget.phoneNumber),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // --- Show loading indicator while checking admin status ---
+    if (isLoadingAdminStatus) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF0A0909),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFF5E9B5),
+          ),
+        ),
+      );
+    }
+
+    // --- Build UI once admin status is loaded ---
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return BlocListener<VerifyBloc, VerifyState>(
           listener: (context, state) {
-            // Dismiss any existing snackbars
+            // Dismiss any existing snackbars before showing a new one
             ScaffoldMessenger.of(context).clearSnackBars();
 
+            // --- Handle BLoC States ---
             if (state is VerifySuccess) {
-              setState(() {
-                isLoading = false;
-              });
+              setState(() => isLoading = false); // Stop loading indicator
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -112,75 +176,74 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     languageService.getString('verification_success'),
                   ),
                   backgroundColor: Colors.green,
-                  duration: const Duration(seconds: 2),
+                  duration: const Duration(seconds: 1), // Shorter duration
                 ),
               );
 
-              // Navigate to location page after brief delay
+              //
+              // --- CORRECTED NAVIGATION LOGIC ---
+              // Navigate only AFTER successful verification
+              //
               Future.delayed(const Duration(milliseconds: 500), () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LocationPage()),
-                );
+                if (mounted) {
+                  // Check if widget is still mounted before navigating
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        // Navigate to AdminNavibar if isAdmin, else LocationPage
+                        builder: (context) => !isAdmin
+                            ? const LocationPage()
+                            :  const AdminNavibar()
+                      ));
+                }
               });
             } else if (state is VerifyError) {
-              setState(() {
-                isLoading = false;
-              });
+              setState(() => isLoading = false); // Stop loading indicator
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  content: Text(state.message), // Show error from BLoC
                   backgroundColor: Colors.red,
                   duration: const Duration(seconds: 3),
                 ),
               );
 
-              // Clear OTP fields on error
+              // Clear OTP fields on error for re-entry
               for (var controller in otpControllers) {
                 controller.clear();
               }
-              focusNodes[0].requestFocus();
+              if (mounted) {
+                // Check before focusing
+                focusNodes[0].requestFocus();
+              }
             } else if (state is OTPResent) {
-              setState(() {
-                isLoading = false;
-              });
+              setState(() => isLoading = false); // Stop loading indicator
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     languageService.getString('otp_resent'),
                   ),
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.blue, // Use blue for info
                   duration: const Duration(seconds: 2),
                 ),
               );
             } else if (state is VerifyLoading) {
-              setState(() {
-                isLoading = true;
-              });
+              setState(() => isLoading = true); // Start loading indicator
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: [
-                      const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Text(
-                        languageService.getString('processing'),
-                      ),
-                    ],
-                  ),
-                  duration: const Duration(seconds: 30),
-                ),
-              );
+              // Optional: Show a persistent "Verifying..." SnackBar
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Row(
+              //       children: [
+              //         const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
+              //         const SizedBox(width: 20),
+              //         Text(languageService.getString('processing')),
+              //       ],
+              //     ),
+              //     duration: const Duration(seconds: 30), // Long duration, cleared on success/error
+              //   ),
+              // );
             }
           },
           child: Scaffold(
@@ -191,14 +254,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
               leading: const BackButton(color: Color(0xffFCF8E8)),
             ),
             body: SingleChildScrollView(
+              // Allows scrolling if keyboard appears
               child: Padding(
+                // Consistent horizontal padding
                 padding: EdgeInsets.symmetric(horizontal: 23.w),
                 child: Column(
+                  // --- ALIGNMENT: Main content starts here ---
+                  // crossAxisAlignment: CrossAxisAlignment.start ensures children
+                  // like Title and Phone Number are aligned to the left.
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 150.h),
+                    SizedBox(height: 100.h), // Reduced top spacing slightly
 
-                    // Title
+                    // --- ALIGNMENT: Title (Left Aligned) ---
                     Text(
                       languageService.getString('enter_verification_code'),
                       style: GoogleFonts.poppins(
@@ -208,7 +276,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         height: 1.38,
                       ),
                     ),
-
                     Text(
                       languageService.getString('sent_on_whatsapp'),
                       style: GoogleFonts.poppins(
@@ -218,10 +285,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         height: 1.38,
                       ),
                     ),
-
                     SizedBox(height: 25.h),
 
-                    // Phone number display
+                    // --- ALIGNMENT: Phone number display (Left Aligned) ---
                     Text(
                       '${languageService.getString('sent_to')} ${widget.phoneNumber}',
                       style: GoogleFonts.poppins(
@@ -230,21 +296,25 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-
                     SizedBox(height: 56.h),
 
+                    // --- ALIGNMENT: OTP Boxes (Row with SpaceBetween) ---
+                    // Row arranges children horizontally.
+                    // MainAxisAlignment.spaceBetween distributes space evenly *between* the boxes.
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(6, (index) {
                         return Container(
-                          width: 58.w,
+                          width:
+                              58.w, // Slightly smaller width for better spacing
                           height: 58.h,
                           decoration: BoxDecoration(
                             color: const Color(0xFF0A0808),
                             border: Border.all(
                               width: 1.w,
                               color: focusNodes[index].hasFocus
-                                  ? const Color(0xFFF5E9B5)
+                                  ? const Color(
+                                      0xFFF5E9B5) // Highlight focused box
                                   : const Color(0xFFFCF8E8),
                             ),
                             borderRadius: BorderRadius.circular(15),
@@ -256,37 +326,46 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             keyboardType: TextInputType.number,
                             maxLength: 1,
                             style: GoogleFonts.poppins(
-                              color:  Color(0xFFFCF8E8),
+                              color: Color(0xFFFCF8E8),
                               fontSize: 22.sp,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: const InputDecoration(
-                              counterText: '',
+                              counterText: '', // Hide the counter
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
+                              contentPadding:
+                                  EdgeInsets.zero, // Adjust if needed
                             ),
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
+                            // --- Auto-focus logic ---
                             onChanged: (value) {
-                              setState(() {});
+                              setState(
+                                  () {}); // Update border color on focus change
 
-                              if (value.isNotEmpty && index < 4) {
+                              if (value.isNotEmpty && index < 5) {
+                                // Check index < 5
                                 // Move to next field
-                                focusNodes[index + 1].requestFocus();
+                                if (mounted)
+                                  focusNodes[index + 1].requestFocus();
                               } else if (value.isEmpty && index > 0) {
                                 // Move to previous field on backspace
-                                focusNodes[index - 1].requestFocus();
+                                if (mounted)
+                                  focusNodes[index - 1].requestFocus();
                               }
 
-                              // Auto-submit when all fields are filled
-                              if (index == 4 && value.isNotEmpty) {
+                              // Auto-submit when last field is filled
+                              if (index == 5 && value.isNotEmpty) {
+                                // Check index == 5
                                 final otp = getOTP();
                                 if (otp.length == 6) {
-                                  FocusScope.of(context).unfocus();
-                                  // Optional: Auto-verify after 500ms
-                                  Future.delayed(const Duration(milliseconds: 500), () {
-                                    _handleVerify(context);
+                                  FocusScope.of(context)
+                                      .unfocus(); // Hide keyboard
+                                  // Auto-verify slightly delayed
+                                  Future.delayed(
+                                      const Duration(milliseconds: 300), () {
+                                    if (mounted) _handleVerify(context);
                                   });
                                 }
                               }
@@ -295,10 +374,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         );
                       }),
                     ),
-
                     SizedBox(height: 56.h),
 
-                    // Resend Code Section - FULLY FUNCTIONAL
+                    // --- ALIGNMENT: Resend Code (Centered Horizontally) ---
+                    // Center widget centers its child horizontally.
                     Center(
                       child: GestureDetector(
                         onTap:
@@ -313,27 +392,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                   color: const Color(0xD8FCF8E8),
                                   fontSize: 13.sp,
                                   fontWeight: FontWeight.w500,
-                                  letterSpacing: -0.52,
                                 ),
                               ),
                               TextSpan(
-                                text: '  ',
-                                style: GoogleFonts.poppins(
-                                  color: const Color(0xFFFCF8E8),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: -0.52,
-                                ),
+                                text: ' ', // Add space
+                                style: GoogleFonts.poppins(fontSize: 13.sp),
                               ),
                               TextSpan(
                                 text: languageService.getString('resend_code'),
                                 style: GoogleFonts.poppins(
                                   color: isLoading
-                                      ? const Color(0x80F5E9B5)
-                                      : const Color(0xFFF5E9B5),
+                                      ? const Color(
+                                          0x80F5E9B5) // Dim if loading
+                                      : const Color(0xFFF5E9B5), // Accent color
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w700,
-                                  letterSpacing: -0.56,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -342,17 +415,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         ),
                       ),
                     ),
-
                     SizedBox(height: 40.h),
 
-                    // Verify Button - FULLY FUNCTIONAL
+                    // --- ALIGNMENT: Verify Button (Centered Horizontally) ---
+                    // Center widget centers its child horizontally.
                     Center(
                       child: GestureDetector(
+                        // Disable tap while loading
                         onTap: isLoading ? null : () => _handleVerify(context),
                         child: Container(
-                          width: 281.w,
+                          width: 281.w, // Specific width
                           height: 54.h,
                           decoration: ShapeDecoration(
+                            // Dim button color while loading
                             color: isLoading
                                 ? const Color(0x80F5E9B5)
                                 : const Color(0xFFF5E9B5),
@@ -361,12 +436,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             ),
                           ),
                           child: Center(
+                            // Show loading indicator or text
                             child: isLoading
                                 ? const SizedBox(
                                     width: 24,
                                     height: 24,
                                     child: CircularProgressIndicator(
-                                      color: Color(0xFF0A0808),
+                                      color: Color(0xFF0A0808), // Dark color
                                       strokeWidth: 2.5,
                                     ),
                                   )
@@ -382,8 +458,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         ),
                       ),
                     ),
-
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 40.h), // Bottom padding
                   ],
                 ),
               ),

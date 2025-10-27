@@ -58,24 +58,6 @@ class _HomePageState extends State<HomePage> {
         .add(FetchCategoryProducts(categoryId: '67ec290adaa2fb3cd2af3a2a'));
   }
 
-  // // Local fallback data
-  // final List<Map<String, String>> localCategories = [
-  //   {'name': 'Fruits', 'image': 'assets/Fruits.png'},
-  //   {'name': 'Milk', 'image': 'assets/Milk.png'},
-  //   {'name': 'Meats', 'image': 'assets/Meats.png'},
-  //   {'name': 'Nuts', 'image': 'assets/Nuts.png'},
-  //   {'name': 'Vegetables', 'image': 'assets/Vegetables.png'},
-  //   {'name': 'Fancy', 'image': 'assets/Fancy.png'},
-  //   {'name': 'Rice', 'image': 'assets/Rice.png'},
-  //   {'name': 'Egg', 'image': 'assets/Egg.png'},
-  //   {'name': 'Pet Food', 'image': 'assets/Pet Food.png'},
-  //   {'name': 'Perfume', 'image': 'assets/Perfume.png'},
-  //   {'name': 'Sanitary Pad', 'image': 'assets/Sanitary pads.png'},
-  //   {'name': 'Bakery', 'image': 'assets/Bakery.png'},
-  //   {'name': 'Gadget', 'image': 'assets/Gadget.png'},
-  //   {'name': 'Beverages', 'image': 'assets/Beverages.png'},
-  // ];
-
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageService>(
@@ -289,41 +271,26 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 CarouselSlider(
                                   items: bannerImages.map((imageUrl) {
+                                    final String url =
+                                        (imageUrl.images.isNotEmpty &&
+                                                imageUrl.images.isNotEmpty)
+                                            ? imageUrl.images[0]
+                                            : "";
+
+                                    if (url.isEmpty ||
+                                        !url.startsWith('http')) {
+                                      return _buildErrorImage(lang);
+                                    }
+
                                     return ClipRRect(
                                       borderRadius:
                                           BorderRadius.circular(8.0.r),
                                       child: CachedNetworkImage(
-                                        imageUrl: imageUrl.images.toString(),
+                                        imageUrl: url, // <-- USE THE FIXED URL
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         errorWidget: (context, url, error) =>
-                                            Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[800],
-                                            borderRadius:
-                                                BorderRadius.circular(8.0.r),
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.broken_image_outlined,
-                                                color: Colors.grey[400],
-                                                size: 50.sp,
-                                              ),
-                                              SizedBox(height: 8.h),
-                                              Text(
-                                                AppLocalizations.getString(
-                                                    'image_load_failed', lang),
-                                                style: fontStyles.errorstyle2
-                                                    .copyWith(
-                                                  color: Colors.grey[400],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                            _buildErrorImage(lang),
                                         placeholder: (context, url) =>
                                             Shimmer.fromColors(
                                           baseColor: Colors.grey[900]!,
@@ -483,7 +450,11 @@ class _HomePageState extends State<HomePage> {
                               final category = Category[index];
                               final String categoryName = category.name;
                               final String imageUrl = category.image;
-                              final bool useLocalImage = imageUrl.isEmpty;
+                              //
+                              // --- FIX #3 & #4 (Category Image Logic) ---
+                              //
+                              final bool isNetworkImage =
+                                  (imageUrl.startsWith('http'));
 
                               return Padding(
                                 padding: EdgeInsets.only(
@@ -496,18 +467,27 @@ class _HomePageState extends State<HomePage> {
                                       backgroundColor: Color(0xFFFCF8E8),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: useLocalImage
-                                            ? Image.network(
-                                                imageUrl,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : CachedNetworkImage(
+                                        child: isNetworkImage
+                                            ? CachedNetworkImage(
                                                 imageUrl: imageUrl,
                                                 fit: BoxFit.cover,
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Image.asset(
-                                                  imageUrl,
+                                                  'assets/placeholder.png', // <-- FIX
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : Image.asset(
+                                                // <-- Use asset for local files
+                                                imageUrl.isEmpty
+                                                    ? 'assets/placeholder.png'
+                                                    : imageUrl,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error,
+                                                        stackTrace) =>
+                                                    Image.asset(
+                                                  'assets/placeholder.png',
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -804,16 +784,82 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+
+  // Helper widget to show a standard error image
+  Widget _buildErrorImage(String lang) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(8.0.r),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.broken_image_outlined,
+            color: Colors.grey[400],
+            size: 50.sp,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            AppLocalizations.getString('image_load_failed', lang),
+            style: fontStyles.errorstyle2.copyWith(
+              color: Colors.grey[400],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-// Reusable Product Card Widget remains the same
+//
+// --- FIX #4 (Product Card Image Logic) ---
+//
 class ProductCard extends StatelessWidget {
   final Map<String, dynamic> product;
 
   const ProductCard({super.key, required this.product});
 
+  // Helper widget to safely display an image from a network URL or local asset
+  Widget _buildProductImage(String imageUrl) {
+    bool isNetworkImage = imageUrl.startsWith('http');
+
+    if (isNetworkImage) {
+      return CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.grey[800]!,
+          highlightColor: Colors.grey[700]!,
+          child: Container(color: Colors.grey[800]),
+        ),
+        errorWidget: (context, url, error) => Image.asset(
+          'assets/placeholder.png', // Fallback
+          fit: BoxFit.cover,
+        ),
+      );
+    } else {
+      // Try to load as an asset, or use placeholder if path is bad
+      return Image.asset(
+        imageUrl.isEmpty ? 'assets/placeholder.png' : imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) => Image.asset(
+          'assets/placeholder.png', // Fallback
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final String imageUrl = product['image'] ?? 'assets/placeholder.png';
+
     return Container(
       width: 140.w,
       padding: const EdgeInsets.all(10),
@@ -839,12 +885,11 @@ class ProductCard extends StatelessWidget {
                     color: const Color(0xFFFCF8E8),
                     borderRadius: BorderRadius.circular(10),
                   ),
+                  // Clip the image to the container's border radius
+                  clipBehavior: Clip.hardEdge,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
-                      product['image'] ?? 'assets/placeholder.png',
-                      fit: BoxFit.cover,
-                    ),
+                    child: _buildProductImage(imageUrl), // <-- USE HELPER
                   ),
                 ),
                 Align(

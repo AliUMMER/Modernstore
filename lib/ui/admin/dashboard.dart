@@ -1,11 +1,15 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modern_grocery/bloc/Banner_/GetAllBannerBloc/get_all_banner_bloc.dart';
+import 'package:modern_grocery/ui/admin/admin_profile.dart';
 import 'package:modern_grocery/ui/admin/upload_recentpage.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -15,6 +19,11 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  void initState() {
+    super.initState();
+    BlocProvider.of<GetAllBannerBloc>(context).add(fetchGetAllBanner());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +61,81 @@ class _DashboardState extends State<Dashboard> {
           child: SvgPicture.asset('assets/Group.svg'),
         ),
         SizedBox(width: 24.w),
-        SvgPicture.asset('assets/Group 6918.svg'),
+        GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminProfile(),
+                  ));
+            },
+            child: SvgPicture.asset('assets/Group 6918.svg')),
+      ],
+    );
+  }
+
+  Widget _buildbanner() {
+    return Column(
+      children: [
+        BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
+          builder: (context, state) {
+            if (state is GetAllBannerLoaded) {
+              final banner = state.banner;
+
+              if (banner.banners.isEmpty) {
+                return Container(
+                  height: 200.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8.0.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Banners loaded',
+                      style: GoogleFonts.poppins(color: Colors.white),
+                    ),
+                  ),
+                );
+              }
+
+              
+
+            } else if (state is GetAllBannerError) {
+              return Container(
+                height: 200.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey[800],
+                  borderRadius: BorderRadius.circular(8.0.r),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: appColor.errorColor,
+                        size: 40.sp,
+                      ),
+                      SizedBox(height: 10.h),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              // loading or other states
+              return Container(
+                height: 200.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey[800],
+                  borderRadius: BorderRadius.circular(8.0.r),
+                ),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          },
+        )
       ],
     );
   }

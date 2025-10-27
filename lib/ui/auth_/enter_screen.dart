@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -46,6 +47,9 @@ class _EnterScreenState extends State<EnterScreen> {
               await prefs.setString('token', token);
               print('token saved: $token');
 
+              final String numberToSave = phoneController.text.trim();
+              await prefs.setString('number', numberToSave);
+              print('Number saved: $numberToSave');
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -89,15 +93,16 @@ class _EnterScreenState extends State<EnterScreen> {
                                 return AlertDialog(
                                   backgroundColor: const Color(0xFF1C1C1C),
                                   title: Text(
-                                    languageService.getString('skip_warning_title'),
+                                    languageService
+                                        .getString('skip_warning_title'),
                                     style: GoogleFonts.poppins(
                                       color: const Color(0xFFF5E9B5),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                   content: Text(
-                                    languageService.getString('skip_warning_message'),
-                                  
+                                    languageService
+                                        .getString('skip_warning_message'),
                                     style: GoogleFonts.poppins(
                                       color: const Color(0xFFFCF8E8),
                                     ),
@@ -118,7 +123,8 @@ class _EnterScreenState extends State<EnterScreen> {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => LocationPage(),
+                                            builder: (context) =>
+                                                LocationPage(),
                                           ),
                                         );
                                       },
@@ -341,6 +347,10 @@ class _EnterScreenState extends State<EnterScreen> {
                                       color: const Color(0x99F5E9B5)),
                                   border: InputBorder.none,
                                 ),
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(10),
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Please enter mobile number";

@@ -4,8 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:modern_grocery/main.dart';
-import 'package:modern_grocery/repositery/api/api_client.dart';
-import 'package:modern_grocery/repositery/model/product/getByIdProduct.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modern_grocery/repositery/model/Banner/CreateBanner_model.dart';
 

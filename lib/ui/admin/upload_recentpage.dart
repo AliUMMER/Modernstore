@@ -56,7 +56,8 @@ class _RecentPageState extends State<RecentPage> {
     print('Image path: ${widget.imagePath}');
     print('File exists: true');
 
-    //
+    // Use context.read (or _createBannerBloc.add)
+    // context.read is fine now since we will provide the bloc
     context.read<CreateBannerBloc>().add(
           FetchCreateBannerEvent(
             title: _titleController.text,
@@ -90,7 +91,7 @@ class _RecentPageState extends State<RecentPage> {
           labelText: label,
           labelStyle: const TextStyle(color: appColor.textColor),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: appColor.accentColor),
@@ -126,122 +127,133 @@ class _RecentPageState extends State<RecentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appColor.backgroundColor,
-      appBar: AppBar(
+    //
+    // --- FIX 1: Provide the BLoC to the widget tree ---
+    //
+    return BlocProvider(
+      create: (context) => _createBannerBloc,
+      child: Scaffold(
         backgroundColor: appColor.backgroundColor,
-        foregroundColor: appColor.textColor,
-        title: Text('Banner Management'),
-      ),
-      body: BlocListener<CreateBannerBloc, CreateBannerState>(
-        listener: (context, state) {
-          if (state is CreateBannerLoaded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Banner saved successfully!')),
-            );
-            _titleController.clear();
-            _categoryController.clear();
-            _typeController.clear();
-            _categoryIdController.clear();
-            _linkController.clear();
-            setState(() => _uploadProgress = 0.0);
-            Navigator.of(context).pop();
-          } else if (state is CreateBannerError) {
-            Text('Error: ${state.message}');
-          }
-        },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Image preview
-                Container(
-                  height: 200.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.grey),
+        appBar: AppBar(
+          backgroundColor: appColor.backgroundColor,
+          foregroundColor: appColor.textColor,
+          title: Text('Banner Management'),
+        ),
+        body: BlocListener<CreateBannerBloc, CreateBannerState>(
+          listener: (context, state) {
+            if (state is CreateBannerLoaded) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Banner saved successfully!')),
+              );
+              _titleController.clear();
+              _categoryController.clear();
+              _typeController.clear();
+              _categoryIdController.clear();
+              _linkController.clear();
+              setState(() => _uploadProgress = 0.0);
+              Navigator.of(context).pop();
+            } else if (state is CreateBannerError) {
+              //
+              // --- FIX 2: Show a SnackBar for the error ---
+              //
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${state.message}')),
+              );
+            }
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image preview
+                  Container(
+                    height: 200.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    child: _buildImagePreview(),
                   ),
-                  clipBehavior: Clip.hardEdge,
-                  child: _buildImagePreview(),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                // Upload progress
-                if (_uploadProgress > 0 && _uploadProgress < 1) ...[
-                  LinearProgressIndicator(
-                    value: _uploadProgress,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                        appColor.accentColor),
-                  ),
-                  const SizedBox(height: 8),
+                  // Upload progress
+                  if (_uploadProgress > 0 && _uploadProgress < 1) ...[
+                    LinearProgressIndicator(
+                      value: _uploadProgress,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          appColor.accentColor),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
+                      style: const TextStyle(color: appColor.textColor),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   Text(
-                    'Uploading: ${(_uploadProgress * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(color: appColor.textColor),
+                    'Banner Details',
+                    style: TextStyle(
+                      color: appColor.textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                ],
 
-                Text(
-                  'Banner Details',
-                  style: TextStyle(
-                    color: appColor.textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  _buildTextField(label: 'Title', controller: _titleController),
+                  _buildTextField(
+                      label: 'Category', controller: _categoryController),
+                  _buildTextField(label: 'Type', controller: _typeController),
+                  _buildTextField(
+                      label: 'Category ID', controller: _categoryIdController),
+                  _buildTextField(
+                    label: 'Link',
+                    controller: _linkController,
+                    isRequired: false,
                   ),
-                ),
-                const SizedBox(height: 16),
 
-                _buildTextField(label: 'Title', controller: _titleController),
-                _buildTextField(
-                    label: 'Category', controller: _categoryController),
-                _buildTextField(label: 'Type', controller: _typeController),
-                _buildTextField(
-                    label: 'Category ID', controller: _categoryIdController),
-                _buildTextField(
-                  label: 'Link',
-                  controller: _linkController,
-                  isRequired: false,
-                ),
+                  const SizedBox(height: 24),
 
-                const SizedBox(height: 24),
-
-                BlocBuilder<CreateBannerBloc, CreateBannerState>(
-                  builder: (context, state) {
-                    return ElevatedButton.icon(
-                      onPressed: state is CreateBannerLoading
-                          ? null
-                          : () => _saveImage(context),
-                      icon: state is CreateBannerLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.black,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Icon(Icons.save),
-                      label: Text(state is CreateBannerLoading
-                          ? 'Uploading...'
-                          : 'Save Banner'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: appColor.buttonColor,
-                        foregroundColor: Colors.black,
-                        minimumSize: const Size(double.infinity, 50),
-                        textStyle: const TextStyle(fontSize: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  BlocBuilder<CreateBannerBloc, CreateBannerState>(
+                    builder: (context, state) {
+                      return ElevatedButton.icon(
+                        onPressed: state is CreateBannerLoading
+                            ? null
+                            : () => _saveImage(context),
+                        icon: state is CreateBannerLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.save),
+                        label: Text(state is CreateBannerLoading
+                            ? 'Uploading...'
+                            : 'Save Banner'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: appColor.buttonColor,
+                          foregroundColor: Colors.black,
+                          minimumSize: const Size(double.infinity, 50),
+                          textStyle: const TextStyle(fontSize: 18),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
