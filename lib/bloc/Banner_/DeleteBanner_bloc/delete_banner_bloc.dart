@@ -11,7 +11,7 @@ class DeleteBannerBloc extends Bloc<DeleteBannerEvent, DeleteBannerState> {
     on<fetchDeleteBannerEvent>((event, emit) async {
       emit(DeleteBannerLoading());
       try {
-        await _deletebannerApi.detetebanner(event.BnnerId);
+        await _deletebannerApi.deletebanner(event.BnnerId);
 
         emit(DeleteBannerLoaded());
       } catch (e) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/bloc/Banner_/DeleteBanner_bloc/delete_banner_bloc.dart';
 import 'package:modern_grocery/bloc/Categories_/GetAllCategories/get_all_categories_bloc.dart';
 import 'package:modern_grocery/bloc/Login_/verify/verify_bloc.dart';
 import 'package:modern_grocery/bloc/userprofile/userprofile_bloc.dart';
@@ -77,6 +78,10 @@ class MyApp extends StatelessWidget {
                   BlocProvider(
                     create: (context) => GetAllBannerBloc(),
                   ),
+                    BlocProvider(
+                    create: (context) => DeleteBannerBloc(),
+                  ),
+
                   BlocProvider(
                     create: (context) => CreateCategoryBloc(
                       createcategoryApi: CreatecategoryApi(),
@@ -127,9 +132,7 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   title: 'Modern Store',
                   theme: ThemeData(
-                    colorScheme: ColorScheme.fromSeed(
-                      seedColor: Colors.deepPurple,
-                    ),
+                 
                     useMaterial3: true,
                   ),
                   locale: languageService.locale,

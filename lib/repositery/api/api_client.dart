@@ -59,8 +59,8 @@ class ApiClient {
     }
 
     if (kDebugMode) {
-      print('📡 Status: ${response.statusCode}');
-      print('🧾 Response: ${response.body}');
+      print('Status: ${response.statusCode}');
+      print('Response: ${response.body}');
     }
 
   

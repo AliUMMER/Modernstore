@@ -17,6 +17,7 @@ import 'package:modern_grocery/widgets/fontstyle.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback? onFavTap;
@@ -28,8 +29,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final CarouselController _carouselController = CarouselController();
   int _currrentBanner = 0;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   @override
   void initState() {
@@ -170,41 +172,7 @@ class _HomePageState extends State<HomePage> {
                       BlocBuilder<GetAllBannerBloc, GetAllBannerState>(
                         builder: (context, state) {
                           if (state is GetAllBannerLoading) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey[900]!,
-                              highlightColor: Colors.grey[800]!,
-                              child: CarouselSlider(
-                                options: CarouselOptions(
-                                  height: 200.h,
-                                  aspectRatio: 16 / 9,
-                                  viewportFraction: 0.8,
-                                  initialPage: 0,
-                                  enableInfiniteScroll: true,
-                                  reverse: false,
-                                  autoPlay: false,
-                                  enlargeCenterPage: true,
-                                  enlargeFactor: 0.3,
-                                  scrollDirection: Axis.horizontal,
-                                ),
-                                items: [1, 2, 3].map((i) {
-                                  return Builder(
-                                    builder: (BuildContext context) {
-                                      return Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 5.0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0.r),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }).toList(),
-                              ),
-                            );
+                            return _buildCarousalshimmer();
                           }
 
                           if (state is GetAllBannerError) {
@@ -270,6 +238,7 @@ class _HomePageState extends State<HomePage> {
                             return Column(
                               children: [
                                 CarouselSlider(
+                                  carouselController: _carouselController,
                                   items: bannerImages.map((imageUrl) {
                                     final String url =
                                         (imageUrl.images.isNotEmpty &&
@@ -286,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius:
                                           BorderRadius.circular(8.0.r),
                                       child: CachedNetworkImage(
-                                        imageUrl: url, // <-- USE THE FIXED URL
+                                        imageUrl: url,
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         errorWidget: (context, url, error) =>
@@ -320,42 +289,35 @@ class _HomePageState extends State<HomePage> {
                                     enlargeFactor: 0.3,
                                     scrollDirection: Axis.horizontal,
                                     onPageChanged: (index, reason) {
-                                      if (context.mounted) {
+                                      setState(() {
                                         _currrentBanner = index;
-                                      }
+                                      });
                                     },
                                   ),
                                 ),
                                 SizedBox(height: 22.h),
+                                // [ADD THIS IN ITS PLACE]
                                 if (bannerImages.length > 1)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: bannerImages
-                                        .asMap()
-                                        .entries
-                                        .map((entry) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // Handle indicator tap if needed
-                                        },
-                                        child: Container(
-                                          width: _currrentBanner == entry.key
-                                              ? 10.w
-                                              : 6.w,
-                                          height: 6.h,
-                                          margin: EdgeInsets.symmetric(
-                                            vertical: 8.h,
-                                            horizontal: 3.w,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: _currrentBanner == entry.key
-                                                ? Colors.white
-                                                : Colors.grey,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 8.h), // Adjust spacing as needed
+                                    child: AnimatedSmoothIndicator(
+                                      activeIndex: _currrentBanner,
+                                      count: bannerImages.length,
+                                      effect: WormEffect(
+                                        dotHeight: 8.h,
+                                        dotWidth: 8.w,
+                                        spacing: 5.w,
+                                        activeDotColor: Colors
+                                            .white, // Or use appColor.iconColor
+                                        dotColor: Colors.grey,
+                                      ),
+                                      onDotClicked: (index) {
+                                        // This makes the dots tappable
+                                        _carouselController
+                                            .animateToPage(index);
+                                      },
+                                    ),
                                   ),
                               ],
                             );
@@ -450,9 +412,7 @@ class _HomePageState extends State<HomePage> {
                               final category = Category[index];
                               final String categoryName = category.name;
                               final String imageUrl = category.image;
-                              //
-                              // --- FIX #3 & #4 (Category Image Logic) ---
-                              //
+
                               final bool isNetworkImage =
                                   (imageUrl.startsWith('http'));
 
@@ -988,6 +948,39 @@ Widget _buildshimmer() {
           ),
         );
       },
+    ),
+  );
+}
+
+Widget _buildCarousalshimmer() {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[900]!,
+    highlightColor: Colors.grey[800]!,
+    child: CarouselSlider(
+      options: CarouselOptions(
+        height: 200.h,
+        aspectRatio: 16 / 9,
+        viewportFraction: 0.8,
+        initialPage: 0,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: true,
+        enlargeFactor: 0.3,
+        scrollDirection: Axis.horizontal,
+      ),
+      items: [1, 2, 3].map((i) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5.0.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0.r),
+              ),
+            );
+          },
+        );
+      }).toList(),
     ),
   );
 }

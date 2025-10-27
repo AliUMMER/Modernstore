@@ -20,6 +20,10 @@ class fontStyles {
     color: appColor.primaryText,
   );
 
+  static TextStyle bodyText2 = TextStyle(
+    color: appColor.secondaryText,
+  );
+
   static TextStyle caption = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w300,

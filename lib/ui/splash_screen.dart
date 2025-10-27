@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_grocery/ui/admin/admin_navibar.dart';
+import 'package:modern_grocery/ui/bottom_navigationbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modern_grocery/ui/onboarding_page.dart';
 import 'package:modern_grocery/ui/location/location_page.dart';
@@ -23,14 +25,39 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
+    // --- ADD THIS LOGIC ---
+    // Check for any of the admin flags, just like in VerifyScreen
+    final role = prefs.getString('role');
+    final userType = prefs.getString('userType');
+    final isAdminFlag = prefs.getBool('isAdmin');
+
+    final bool isAdmin = role == 'admin' ||
+        role == 'Admin' ||
+        userType == 'admin' ||
+        userType == 'Admin' ||
+        isAdminFlag == true;
+ 
+
     Timer(
       const Duration(seconds: 2),
       () {
+        if (!mounted) return; // Always check if widget is still mounted
+
         if (token != null && token.isNotEmpty) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LocationPage()),
-          );
+          // --- THIS IS THE UPDATED REDIRECT ---
+          if (!isAdmin) {
+            // Send admins to AdminNavibar
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const AdminNavibar()),
+            );
+          } else {
+            // Send regular users to LocationPage
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => NavigationBarWidget()),
+            );
+          }
         } else {
+          // No token, send to Onboarding
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const OnboardingPage()),
           );

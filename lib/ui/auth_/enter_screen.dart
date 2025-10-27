@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:modern_grocery/bloc/Login_/login/login_bloc.dart';
 
 import 'package:modern_grocery/services/language_service.dart';
 import 'package:modern_grocery/ui/auth_/verify_screen.dart';
 import 'package:modern_grocery/ui/location/location_page.dart';
+import 'package:modern_grocery/widgets/app_color.dart';
+import 'package:modern_grocery/widgets/fontstyle.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,6 +24,13 @@ class _EnterScreenState extends State<EnterScreen> {
   final TextEditingController phoneController = TextEditingController();
   String selectedCountryCode = '+91';
   String selectedCountryFlag = '🇮🇳';
+  bool isLoading = false; // This will now be controlled by the BlocListener
+
+  @override
+  void dispose() {
+    phoneController.dispose();
+    super.dispose();
+  }
 
   void _handleLogin(BuildContext context) {
     final fullPhoneNumber = phoneController.text.trim();
@@ -42,6 +51,11 @@ class _EnterScreenState extends State<EnterScreen> {
         return BlocListener<LoginBloc, LoginState>(
           listener: (context, state) async {
             if (state is loginBlocLoaded) {
+              // --- FIX: Stop loading ---
+              setState(() {
+                isLoading = false;
+              });
+
               final token = state.login.accessToken;
               final prefs = await SharedPreferences.getInstance();
               await prefs.setString('token', token);
@@ -50,28 +64,43 @@ class _EnterScreenState extends State<EnterScreen> {
               final String numberToSave = phoneController.text.trim();
               await prefs.setString('number', numberToSave);
               print('Number saved: $numberToSave');
+              
+              if (!mounted) return; // Check if widget is still mounted
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) => VerifyScreen(
                           phoneNumber:
                               '${selectedCountryCode}${phoneController.text}',
-                          phoneNumberForApi: phoneController.text.trim(),
+                          PhoneNo: phoneController.text.trim(),
                         )),
               );
             } else if (state is loginBlocError) {
+              // --- FIX: Stop loading ---
+              setState(() {
+                isLoading = false;
+              });
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(languageService.getString(
-                    'login_error',
-                  )),
-                  backgroundColor: Colors.red,
+                  // --- REFACTORED SNACKBAR ---
+                  content: Text(
+                    languageService.getString(
+                        'login_error', ),
+                    style: fontStyles.errorstyle2, // White text
+                  ),
+                  backgroundColor: appColor.errorColor, // Use appColor
                 ),
               );
-            } else if (state is loginBlocLoading) {}
+            } else if (state is loginBlocLoading) {
+              // --- FIX: Start loading ---
+              setState(() {
+                isLoading = true;
+              });
+            }
           },
           child: Scaffold(
-            backgroundColor: const Color(0XFF0A0909),
+            backgroundColor: appColor.backgroundColor, // Use appColor
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
@@ -81,39 +110,43 @@ class _EnterScreenState extends State<EnterScreen> {
                     children: [
                       SizedBox(height: 0.05 * screenHeight),
 
-                      // Skip button
                       Align(
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                           onTap: () {
-                            // Show warning dialog before skipping
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   backgroundColor: const Color(0xFF1C1C1C),
                                   title: Text(
-                                    languageService
-                                        .getString('skip_warning_title'),
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFFF5E9B5),
-                                      fontWeight: FontWeight.w600,
+                                    // --- REFACTORED STYLE ---
+                                    languageService.getString(
+                                        'skip_warning_title',
+                                        ),
+                                    style: fontStyles.heading2.copyWith(
+                                      color: appColor.textColor,
                                     ),
                                   ),
                                   content: Text(
-                                    languageService
-                                        .getString('skip_warning_message'),
-                                    style: GoogleFonts.poppins(
-                                      color: const Color(0xFFFCF8E8),
+                                    // --- REFACTORED STYLE ---
+                                    languageService.getString(
+                                        'skip_warning_message',
+                                        ),
+                                    style: fontStyles.primaryTextStyle.copyWith(
+                                      color: appColor.textColor2,
                                     ),
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
                                       child: Text(
-                                        languageService.getString('cancel'),
-                                        style: GoogleFonts.poppins(
-                                          color: const Color(0xFFF5E9B5),
+                                        // --- REFACTORED STYLE ---
+                                        languageService.getString('cancel',
+                                            ),
+                                        style: fontStyles.primaryTextStyle
+                                            .copyWith(
+                                          color: appColor.textColor,
                                         ),
                                       ),
                                     ),
@@ -129,10 +162,11 @@ class _EnterScreenState extends State<EnterScreen> {
                                         );
                                       },
                                       child: Text(
-                                        languageService.getString('continue'),
-                                        style: GoogleFonts.poppins(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.w600,
+                                        // --- REFACTORED STYLE ---
+                                        languageService.getString('continue',
+                                            ),
+                                        style: fontStyles.heading2.copyWith(
+                                          color: appColor.errorColor,
                                         ),
                                       ),
                                     ),
@@ -148,7 +182,10 @@ class _EnterScreenState extends State<EnterScreen> {
                               gradient: const LinearGradient(
                                 begin: Alignment(0.00, -1.00),
                                 end: Alignment(0, 1),
-                                colors: [Color(0xFFF5E9B5), Color(0xFF8F8769)],
+                                colors: [
+                                  Color(0xFFF5E9B5),
+                                  Color(0xFF8F8769)
+                                ],
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24),
@@ -156,12 +193,11 @@ class _EnterScreenState extends State<EnterScreen> {
                             ),
                             child: Center(
                               child: Text(
+                                // --- REFACTORED STYLE ---
                                 languageService.getString(
-                                  'skip',
-                                ),
-                                style: GoogleFonts.poppins(
-                                  color: Color(0xFF0A0808),
-                                  fontSize: 12.sp,
+                                    'skip', ),
+                                style: fontStyles.caption.copyWith(
+                                  color: appColor.textColor3,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -214,13 +250,12 @@ class _EnterScreenState extends State<EnterScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 0.02 * screenWidth),
                         child: Text(
-                          languageService.getString(
-                            'enter_your_number',
-                          ),
-                          style: GoogleFonts.poppins(
-                            color: Color(0xFFF5E9B5),
+                          // --- REFACTORED STYLE ---
+                          languageService.getString('enter_your_number',
+                              ),
+                          style: fontStyles.heading2.copyWith(
+                            color: appColor.textColor,
                             fontSize: 25.sp,
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -232,13 +267,12 @@ class _EnterScreenState extends State<EnterScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 0.02 * screenWidth),
                         child: Text(
-                          languageService.getString(
-                            'mobile_number',
-                          ),
-                          style: GoogleFonts.poppins(
-                            color: Color(0xFFFCF8E8),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
+                          // --- REFACTORED STYLE ---
+                          languageService.getString('mobile_number',
+                              ),
+                          style: fontStyles.primaryTextStyle.copyWith(
+                            color: appColor.textColor2,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
@@ -253,29 +287,30 @@ class _EnterScreenState extends State<EnterScreen> {
                             width: 0.2 * screenWidth,
                             height: 54.h,
                             decoration: ShapeDecoration(
-                              color: const Color(0xFF0A0808),
+                              color: appColor.textColor3, // Use appColor
                               shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    width: 2, color: Color(0xFFFCF8E8)),
+                                side: BorderSide(
+                                    width: 2, color: appColor.textColor2),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             child: DropdownButton<String>(
                               value: selectedCountryFlag,
-                              icon: const Icon(Icons.arrow_drop_down,
-                                  color: Color(0xFFF5E9B5)),
+                              icon: Icon(Icons.arrow_drop_down,
+                                  color: appColor.iconColor), // Use appColor
                               isExpanded: true,
                               underline: Container(),
-                              dropdownColor: const Color(0xFF0A0808),
+                              dropdownColor: appColor.textColor3,
                               items: [
                                 DropdownMenuItem(
                                   value: '🇮🇳',
                                   child: Center(
                                     child: Text(
                                       '🇮🇳 +91',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFFF5E9B5),
-                                        fontSize: 14.sp,
+                                      // --- REFACTORED STYLE ---
+                                      style:
+                                          fontStyles.primaryTextStyle.copyWith(
+                                        color: appColor.textColor,
                                       ),
                                     ),
                                   ),
@@ -285,9 +320,10 @@ class _EnterScreenState extends State<EnterScreen> {
                                   child: Center(
                                     child: Text(
                                       '🇺🇸 +1',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFFF5E9B5),
-                                        fontSize: 14.sp,
+                                      // --- REFACTORED STYLE ---
+                                      style:
+                                          fontStyles.primaryTextStyle.copyWith(
+                                        color: appColor.textColor,
                                       ),
                                     ),
                                   ),
@@ -297,9 +333,10 @@ class _EnterScreenState extends State<EnterScreen> {
                                   child: Center(
                                     child: Text(
                                       '🇬🇧 +44',
-                                      style: GoogleFonts.poppins(
-                                        color: const Color(0xFFF5E9B5),
-                                        fontSize: 14.sp,
+                                      // --- REFACTORED STYLE ---
+                                      style:
+                                          fontStyles.primaryTextStyle.copyWith(
+                                        color: appColor.textColor,
                                       ),
                                     ),
                                   ),
@@ -326,25 +363,31 @@ class _EnterScreenState extends State<EnterScreen> {
                             child: Container(
                               height: 54.h,
                               decoration: ShapeDecoration(
-                                color: const Color(0xFF0A0808),
+                                color: appColor.textColor3, // Use appColor
                                 shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      width: 2, color: Color(0xFFFCF8E8)),
+                                  side: BorderSide(
+                                      width: 2, color: appColor.textColor2),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               child: TextFormField(
                                 controller: phoneController,
-                                style: GoogleFonts.poppins(
-                                    color: const Color(0xFFF5E9B5)),
+                                // --- REFACTORED STYLE ---
+                                style: fontStyles.primaryTextStyle.copyWith(
+                                  color: appColor.textColor,
+                                ),
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 15.w, vertical: 15.h),
-                                  hintText: languageService
-                                      .getString('enter_mobile_hint'),
-                                  hintStyle: GoogleFonts.poppins(
-                                      color: const Color(0x99F5E9B5)),
+                                  hintText: languageService.getString(
+                                      'enter_mobile_hint',
+                                ),
+                                  // --- REFACTORED STYLE ---
+                                  hintStyle:
+                                      fontStyles.primaryTextStyle.copyWith(
+                                    color: const Color(0x99F5E9B5),
+                                  ),
                                   border: InputBorder.none,
                                 ),
                                 inputFormatters: [
@@ -371,40 +414,60 @@ class _EnterScreenState extends State<EnterScreen> {
                       // Continue button
                       Center(
                         child: GestureDetector(
-                          onTap: () {
-                            if (phoneController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(languageService.getString(
-                                    'please_enter_phone',
-                                  )),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-                            _handleLogin(context);
-                          },
+                          // --- FIX: Corrected onTap logic ---
+                          onTap: isLoading
+                              ? null // Disable button when loading
+                              : () {
+                                  if (phoneController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          languageService.getString(
+                                              'please_enter_phone',
+                                             ),
+                                          style: fontStyles.errorstyle2,
+                                        ),
+                                        backgroundColor: appColor.errorColor,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  _handleLogin(context); // Call login
+                                },
                           child: Container(
                             width: 0.7 * screenWidth,
                             height: 54.h,
                             decoration: ShapeDecoration(
-                              color: const Color(0xFFF5E9B5),
+                              color: isLoading
+                                  ? appColor.loadingColor // Use appColor
+                                  : appColor.textColor, // Use appColor
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(25.r),
                               ),
                             ),
                             child: Center(
-                              child: Text(
-                                languageService.getString(
-                                  'continue',
-                                ),
-                                style: GoogleFonts.poppins(
-                                  color: const Color(0xFF0A0808),
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                              child: isLoading
+                                  ? SizedBox(
+                                      width: 24.w,
+                                      height: 24.h,
+                                      child: CircularProgressIndicator(
+                                        color: appColor.textColor3,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        languageService.getString('continue',
+                                            ),
+                                        // --- This was already correct ---
+                                        style: fontStyles.bodyText2.copyWith(
+                                          color: appColor.textColor3,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ),
                         ),

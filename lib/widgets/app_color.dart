@@ -11,11 +11,13 @@ class appColor {
   static const Color iconColor = Color(0xFFF5E9B5);
   static const Color accentColor = Colors.green;
   static const Color buttonColor = Color(0xFFFFF1C5);
-  static const Color cardShadowColor = Colors.black54;
+  static const Color textColor3 = Color(0xFF0A0808);
   static const Color heading2 = Color(0xFFFCF8E8);
+  static const Color loadingColor = Color(0x80F5E9B5);
 
   static const Color errorColor = Color(0xFFFF0000);
   static const Color onError = Color(0xFFFFFFFF);
+  static final Color errorContainer = Colors.grey[800]!;
 }
 
 

@@ -100,6 +100,7 @@ class AppLocalizations {
       'didnt_receive_code': 'Didn\'t receive the code?',
       'resend_code': 'Resend Code',
       'verify': 'Verify',
+      'filed_verfication':'Filed verfication',
       // Language
       'select_language': 'Select your preferred language',
       'language_changed': 'Language changed to',
